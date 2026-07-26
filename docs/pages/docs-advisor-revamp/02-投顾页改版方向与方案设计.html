@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>且慢投顾页改版方向与方案设计 | 2026-07</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <style>
+    :root {
+      --color-brand-primary: #1B88EE;
+      --color-poster-bg: #3180EC;
+      --color-summary-bg: #DBEBFF;
+      --color-summary-border: #9CCBF8;
+      --text-neutral: #333333;
+      --text-neutral-subtle: #606060;
+      --text-neutral-subtler: #999999;
+      --text-inverse: #FFFFFF;
+      --text-primary: #1B88EE;
+      --text-error: #FA440C;
+      --text-warning: #EA9500;
+      --text-success: #07AD8F;
+      --bg-page-deep: #F9FAFB;
+      --bg-card-default: #FFFFFF;
+      --bg-card-deep: #F9FAFB;
+      --bg-card-primary-faded: #F0F6FF;
+      --bg-card-warning-faded: #FFFAEF;
+      --border-neutral-faded: #D8D8D8;
+      --radius-small: 8px;
+      --radius-medium: 12px;
+      --radius-large: 24px;
+      --font-title: "Poppins", "PingFang SC", "Hiragino Sans GB", Arial, sans-serif;
+      --font-body: "Lora", "Songti SC", Georgia, serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body); background: var(--bg-page-deep); color: var(--text-neutral); line-height: 1.6; }
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 0 20px 72px; }
+    .hero {
+      background:
+        radial-gradient(circle at 85% 20%, rgba(255,255,255,0.18), transparent 40%),
+        linear-gradient(135deg, #0B5FBE 0%, #3180EC 45%, #1B88EE 100%);
+      color: #fff; margin: 0 -20px 24px; padding: 40px 28px 34px;
+      border-radius: 0 0 28px 28px;
+    }
+    .hero-kicker { font-family: var(--font-title); font-size: 13px; opacity: .85; letter-spacing: .06em; }
+    .hero h1 { font-family: var(--font-title); font-size: 32px; margin: 8px 0; line-height: 1.25; }
+    .hero p { max-width: 760px; font-size: 16px; opacity: .95; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px; border-radius: 8px;
+      padding: 10px 14px; font-family: var(--font-title); font-size: 14px; text-decoration: none; border: none; cursor: pointer;
+    }
+    .btn-primary { background: #fff; color: var(--color-brand-primary); }
+    .btn-ghost { background: rgba(255,255,255,.14); color: #fff; border: 1px solid rgba(255,255,255,.3); }
+    .summary {
+      background: var(--color-summary-bg); border: 1px solid var(--color-summary-border);
+      border-radius: 12px; padding: 16px; margin-bottom: 16px;
+    }
+    .summary h2 { font-family: var(--font-title); font-size: 18px; margin-bottom: 8px; }
+    .summary ul { padding-left: 18px; color: var(--text-neutral-subtle); font-size: 15px; }
+    .nav {
+      display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 22px; position: sticky; top: 0; z-index: 20;
+      background: rgba(249,250,251,.92); backdrop-filter: blur(8px); padding: 10px 0;
+    }
+    .nav a, .nav button {
+      text-decoration: none; color: var(--text-primary); background: #fff;
+      border: 1px solid var(--border-neutral-faded); border-radius: 999px;
+      padding: 6px 12px; font-size: 13px; font-family: var(--font-title); cursor: pointer;
+    }
+    .nav a.active, .nav button.active, .nav a:hover, .nav button:hover {
+      border-color: var(--border-primary); background: var(--bg-card-primary-faded);
+    }
+    section { margin-bottom: 30px; }
+    h2.sec { font-family: var(--font-title); font-size: 24px; margin-bottom: 12px; display: flex; gap: 8px; align-items: center; }
+    h3 { font-family: var(--font-title); font-size: 18px; margin: 16px 0 10px; }
+    .card {
+      background: #fff; border-radius: 8px; padding: 14px; border: 1px solid #EEF1F4; margin-bottom: 12px;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    @media (max-width: 960px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 26px; }
+      .phone-stage { justify-content: center; }
+    }
+    .principle {
+      border-left: 4px solid var(--color-brand-primary); background: #fff; border-radius: 8px; padding: 12px 14px;
+    }
+    .principle strong { font-family: var(--font-title); }
+    .principle p { font-size: 14px; color: var(--text-neutral-subtle); margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; }
+    th, td { border-bottom: 1px solid #EEF1F4; padding: 10px 12px; text-align: left; vertical-align: top; }
+    th { background: var(--bg-card-deep); font-family: var(--font-title); font-size: 13px; color: var(--text-neutral-subtle); }
+    .tag {
+      display: inline-block; font-size: 11px; font-family: var(--font-title);
+      padding: 2px 8px; border-radius: 999px; margin-right: 4px;
+    }
+    .tag-rec { background: #E8F8F4; color: var(--text-success); }
+    .tag-opt { background: var(--bg-card-primary-faded); color: var(--text-primary); }
+    .tag-warn { background: var(--bg-card-warning-faded); color: var(--text-warning); }
+    .tag-hot { background: #FEEDE9; color: var(--text-error); }
+    .scheme-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .scheme-tabs button {
+      border: 1px solid var(--border-neutral-faded); background: #fff; border-radius: 10px;
+      padding: 10px 14px; font-family: var(--font-title); font-size: 13px; cursor: pointer; color: var(--text-neutral-subtle);
+    }
+    .scheme-tabs button.active {
+      border-color: var(--color-brand-primary); background: var(--bg-card-primary-faded); color: var(--text-primary); font-weight: 600;
+    }
+    .scheme-panel { display: none; }
+    .scheme-panel.active { display: block; }
+    .phone-stage { display: flex; gap: 18px; flex-wrap: wrap; align-items: flex-start; }
+    .phone {
+      width: 320px; background: #111827; border-radius: 28px; padding: 12px;
+      box-shadow: 0 16px 40px rgba(27,136,238,.18);
+    }
+    .phone-inner {
+      background: linear-gradient(180deg, #EAF3FF 0%, #F9FAFB 28%, #F9FAFB 100%);
+      border-radius: 22px; min-height: 580px; overflow: hidden; color: #333;
+    }
+    .status-bar {
+      height: 28px; display: flex; justify-content: space-between; align-items: center;
+      padding: 0 14px; font-size: 11px; font-family: var(--font-title); color: #606060;
+    }
+    .p-head {
+      padding: 8px 14px 12px; display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--font-title);
+    }
+    .p-head h4 { font-size: 18px; }
+    .p-body { padding: 0 12px 16px; }
+    .mod {
+      background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 10px;
+      border: 1px solid #E8EEF5; animation: rise .45s ease both;
+    }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: none; } }
+    .mod h5 { font-family: var(--font-title); font-size: 13px; margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .mod p { font-size: 12px; color: #606060; }
+    .pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .pill {
+      font-size: 11px; font-family: var(--font-title); background: #F0F6FF; color: #1B88EE;
+      border-radius: 999px; padding: 4px 8px;
+    }
+    .cta {
+      margin-top: 8px; background: #1B88EE; color: #fff; border: none; border-radius: 8px;
+      width: 100%; padding: 10px; font-family: var(--font-title); font-size: 13px;
+    }
+    .cta.secondary { background: #F0F6FF; color: #1B88EE; }
+    .mini-list { margin-top: 8px; }
+    .mini-item {
+      display: flex; justify-content: space-between; gap: 8px; padding: 8px 0;
+      border-top: 1px solid #F1F3F5; font-size: 12px;
+    }
+    .mini-item strong { font-family: var(--font-title); font-size: 12px; }
+    .score { color: #1B88EE; font-family: var(--font-title); font-weight: 700; }
+    .side-note { flex: 1; min-width: 260px; }
+    .comp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    @media (max-width: 900px) { .comp-grid { grid-template-columns: 1fr; } }
+    .comp {
+      background: #fff; border: 1px solid #EEF1F4; border-radius: 10px; padding: 12px;
+      transition: border-color .2s, transform .2s;
+    }
+    .comp:hover { border-color: #9CCBF8; transform: translateY(-2px); }
+    .comp .t { font-family: var(--font-title); font-size: 14px; margin-bottom: 4px; }
+    .comp .d { font-size: 12px; color: #606060; }
+    .comp .meta { margin-top: 8px; font-size: 11px; font-family: var(--font-title); color: #999; }
+    .slider-box { background: #fff; border-radius: 8px; padding: 14px; border: 1px solid #EEF1F4; }
+    #mapChart { width: 100%; height: 360px; }
+    input[type=range] { width: 100%; accent-color: #1B88EE; }
+    .metric-switch { display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+    .metric-switch button {
+      border: 1px solid #D8D8D8; background: #fff; border-radius: 999px; padding: 6px 12px;
+      font-family: var(--font-title); font-size: 12px; cursor: pointer;
+    }
+    .metric-switch button.active { background: #1B88EE; color: #fff; border-color: #1B88EE; }
+    .footer {
+      margin-top: 28px; background: #3180EC; color: #fff; border-radius: 24px;
+      padding: 22px; text-align: center; font-family: var(--font-title); font-size: 13px;
+    }
+    .vote {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    }
+    @media (max-width: 900px) { .vote { grid-template-columns: 1fr 1fr; } }
+    .vote label {
+      display: block; background: #fff; border: 2px solid #EEF1F4; border-radius: 12px;
+      padding: 12px; cursor: pointer; font-family: var(--font-title); font-size: 13px;
+    }
+    .vote input { margin-right: 6px; accent-color: #1B88EE; }
+    .vote label:has(input:checked) { border-color: #1B88EE; background: #F0F6FF; }
+    .muted { color: #999; font-size: 12px; }
+    .flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-family: var(--font-title); font-size: 12px; }
+    .flow span { background: #F0F6FF; color: #1B88EE; border-radius: 8px; padding: 7px 9px; }
+    .flow i { color: #ccc; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="hero-kicker">Qieman · Advisor Page Redesign</div>
+      <h1>投顾页改版方向与方案设计</h1>
+      <p>在品类矩阵与推品逻辑升级背景下，把投顾一级页从「策略货架」升级为「推品中枢」。核心原则：优先推定制方案，再推标准策略；同时实践 AI 产品工厂——官方组件可编排、运营可调、用户可选布局。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="./01-投顾模块现况盘点报告.html"><i class="ri-file-list-3-line"></i> 返回现况报告</a>
+        <a class="btn btn-ghost" href="#schemes"><i class="ri-layout-4-line"></i> 看四套方案</a>
+        <a class="btn btn-ghost" href="#viz"><i class="ri-bubble-chart-line"></i> 风险地图交互</a>
+      </div>
+    </header>
+
+    <div class="summary">
+      <h2>对齐结论（建议先拍板）</h2>
+      <ul>
+        <li><strong>推荐主路径：方案 C（AI 编排服务页）为骨架 + 方案 D（风险地图）为货架增强 + 方案 B 的定制优先漏斗。</strong></li>
+        <li>方案 A（传统货架增强）只作过渡/兜底，不作为终局。</li>
+        <li>下一阶段产出：选定主方案后做高保真 DEMO + 产品规划计划书。</li>
+      </ul>
+    </div>
+
+    <nav class="nav">
+      <a href="#principles">原则</a>
+      <a href="#priority">主次取舍</a>
+      <a href="#factory">AI 工厂</a>
+      <a href="#viz">可视化</a>
+      <a href="#schemes">四套方案</a>
+      <a href="#compare">对比</a>
+      <a href="#align">对齐投票</a>
+    </nav>
+
+    <section id="principles">
+      <h2 class="sec"><i class="ri-compass-3-line"></i> 1. 改版原则</h2>
+      <div class="grid-2">
+        <div class="principle"><strong>P1 · 推品是唯一北极星</strong><p>一切模块取舍以「是否提高合适方案的曝光→理解→采纳→交易」为准。</p></div>
+        <div class="principle"><strong>P2 · 定制优先，标准兜底</strong><p>能定制则定制；活钱/稳钱可标准策略直推；长钱/复杂目标优先定制。</p></div>
+        <div class="principle"><strong>P3 · 工具服务货架，货架不淹没工具</strong><p>温度计/估值/风险地图服务于找品与解释，不与主推抢首屏。</p></div>
+        <div class="principle"><strong>P4 · AI 工厂生产方式</strong><p>页面=组件编排；官方默认布局 + 运营实验位 + 用户可选模块。</p></div>
+      </div>
+    </section>
+
+    <section id="priority">
+      <h2 class="sec"><i class="ri-sort-desc"></i> 2. 能力主次取舍</h2>
+      <table>
+        <thead>
+          <tr><th>层级</th><th>能力</th><th>一级页职责</th><th>取舍</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-hot">L0 首屏</span></td>
+            <td>为我推荐（定制/主推）、目标快捷入口、服务状态摘要</td>
+            <td>完成「下一笔钱该怎么配」</td>
+            <td>必做</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-rec">L1 主路径</span></td>
+            <td>四笔钱导航、定制方案、标准策略货架、持仓调优入口</td>
+            <td>按目标/场景完成推品</td>
+            <td>必做</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-opt">L2 增强</span></td>
+            <td>风险—收益地图、严选层、养老/全球/攒钱专区摘要</td>
+            <td>提高理解与发现效率</td>
+            <td>本期强烈建议</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-warn">L3 可选</span></td>
+            <td>每日估值、温度计精简卡、自建/DIY、用户自定义布局</td>
+            <td>服务专业用户与留存</td>
+            <td>组件化，默认折叠/可选</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-warn">L4 不做进主叙事</span></td>
+            <td>私享理财全流程、额度/支付基建、长内容流</td>
+            <td>分别归属资产/交易/发现</td>
+            <td>仅保留跳转，不堆模块</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card">
+        <div class="flow">
+          <span>识别意图</span><i class="ri-arrow-right-s-line"></i>
+          <span>轻量目标/KYC</span><i class="ri-arrow-right-s-line"></i>
+          <span>可定制？</span><i class="ri-arrow-right-s-line"></i>
+          <span>定制方案</span><i class="ri-arrow-right-s-line"></i>
+          <span>否则四笔钱/严选</span><i class="ri-arrow-right-s-line"></i>
+          <span>交易+陪伴</span>
+        </div>
+        <p class="muted" style="margin-top:8px;">并行旁路：持仓调优 · 风险地图浏览 · DIY/估值找品</p>
+      </div>
+    </section>
+
+    <section id="factory">
+      <h2 class="sec"><i class="ri-robot-2-line"></i> 3. AI 驱动服务页 · 组件工厂</h2>
+      <p style="font-size:14px;color:var(--text-neutral-subtle);margin-bottom:12px;">
+        页面不再一次性写死。官方提供「服务组件」目录，由编排引擎按客群/场景组装；运营可调权重与实验；进阶用户可添加/移除可选模块。
+      </p>
+      <div class="comp-grid">
+        <div class="comp"><div class="t">① 推荐引擎卡</div><div class="d">定制方案 / 主推策略二选一主 CTA</div><div class="meta">官方必选 · 推品核心</div></div>
+        <div class="comp"><div class="t">② 目标导航</div><div class="d">四笔钱 + 养老/攒钱/全球场景</div><div class="meta">官方必选</div></div>
+        <div class="comp"><div class="t">③ 持仓调优摘要</div><div class="d">有持仓用户显示缺口与一键优化</div><div class="meta">条件组件</div></div>
+        <div class="comp"><div class="t">④ 品类货架</div><div class="d">四笔钱主推层列表/卡片</div><div class="meta">官方默认开</div></div>
+        <div class="comp"><div class="t">⑤ 风险地图</div><div class="d">晨星风险分二维分布 + 滑杆筛选</div><div class="meta">官方默认开</div></div>
+        <div class="comp"><div class="t">⑥ 严选层</div><div class="d">扩展货架，支持筛选</div><div class="meta">默认折叠</div></div>
+        <div class="comp"><div class="t">⑦ 工具箱</div><div class="d">温度计、估值、信号</div><div class="meta">用户可选</div></div>
+        <div class="comp"><div class="t">⑧ 专区入口条</div><div class="d">养老/全球/攒钱/私享</div><div class="meta">运营可配</div></div>
+        <div class="comp"><div class="t">⑨ 小顾对话胶囊</div><div class="d">自然语言找方案、解释、对比</div><div class="meta">官方必选</div></div>
+        <div class="comp"><div class="t">⑩ 陪伴/内容条</div><div class="d">策略上新、专栏、周观点</div><div class="meta">运营实验位</div></div>
+        <div class="comp"><div class="t">⑪ 我的布局</div><div class="d">添加/移除/排序可选模块</div><div class="meta">进阶能力</div></div>
+        <div class="comp"><div class="t">⑫ 策略上新看板</div><div class="d">新重点策略预热与陪伴入口</div><div class="meta">战役组件</div></div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <h3 style="margin-top:0;">生产方式（AI 产品工厂落地）</h3>
+        <ol style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);">
+          <li><strong>组件定义</strong>：输入（用户画像/持仓/品类）、输出（卡片 UI + 跳转 + 埋点）、评测集。</li>
+          <li><strong>编排发布</strong>：AI 实验室/运营台选择模板 → 预览 → 灰度 → 全量。</li>
+          <li><strong>千人千面规则</strong>：新户偏规划+主推；在管户偏调优+加仓；高阶户偏地图+严选+DIY。</li>
+          <li><strong>治理</strong>：组件有 owner、版本、成功率、推品贡献；60 天无效则归档。</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="viz">
+      <h2 class="sec"><i class="ri-bubble-chart-line"></i> 4. 可视化选品：风险地图（优于纯列表）</h2>
+      <div class="slider-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+          <div>
+            <strong style="font-family:var(--font-title);">风险偏好滑杆</strong>
+            <div class="muted">拖动筛选可见策略（基于晨星风险分）</div>
+          </div>
+          <div style="min-width:220px;flex:1;">
+            <input id="riskRange" type="range" min="0" max="100" value="40" />
+            <div class="muted">当前上限：风险分 ≤ <span id="riskVal">40</span></div>
+          </div>
+        </div>
+        <div class="metric-switch">
+          <button class="active" data-metric="risk">晨星风险分</button>
+          <button data-metric="maxdd">最大回撤（示意）</button>
+          <button data-metric="hold">持有期限</button>
+        </div>
+        <div id="mapChart"></div>
+        <p class="muted">更好的形态建议：① 风险地图 + 右侧列表联动；② 四笔钱色带分区；③ 点击气泡进方案对比；④ 支持「看我持仓落点」叠加个人组合风险。</p>
+      </div>
+    </section>
+
+    <section id="schemes">
+      <h2 class="sec"><i class="ri-layout-masonry-line"></i> 5. 四套方案设计</h2>
+      <div class="scheme-tabs">
+        <button class="active" data-scheme="a">A 货架增强</button>
+        <button data-scheme="b">B 规划中枢</button>
+        <button data-scheme="c">C AI 编排页</button>
+        <button data-scheme="d">D 风险地图货架</button>
+      </div>
+
+      <!-- A -->
+      <div class="scheme-panel active" id="scheme-a">
+        <div class="phone-stage">
+          <div class="phone"><div class="phone-inner">
+            <div class="status-bar"><span>09:41</span><span>且慢</span></div>
+            <div class="p-head"><h4>投顾</h4><span style="color:#1B88EE;font-size:12px;">小顾</span></div>
+            <div class="p-body">
+              <div class="mod">
+                <h5>运营精选 <span class="pill">传统</span></h5>
+                <p>新增长钱策略上线，查看说明与陪伴专栏</p>
+              </div>
+              <div class="mod">
+                <h5>四笔钱 <span class="pill">活钱/稳钱/长钱/保障</span></h5>
+                <div class="mini-list">
+                  <div class="mini-item"><div><strong>货币三佳</strong><br/>随时存取</div><div class="score">R1</div></div>
+                  <div class="mini-item"><div><strong>稳稳的幸福</strong><br/>1年以上</div><div class="score">R2</div></div>
+                  <div class="mini-item"><div><strong>全球丰收</strong><br/>3年以上</div><div class="score">R2</div></div>
+                </div>
+              </div>
+              <div class="mod">
+                <h5>更多投资</h5>
+                <div class="pill-row"><span class="pill">严选</span><span class="pill">估值</span><span class="pill">攒钱</span><span class="pill">养老</span></div>
+              </div>
+            </div>
+          </div></div>
+          <div class="side-note card">
+            <h3 style="margin-top:0;">方案 A · 传统页面增强</h3>
+            <p style="font-size:14px;color:var(--text-neutral-subtle);">在现有「运营位 + 四笔钱 + 更多投资」上做信息优化：主推/严选分层标签、策略对比、风险分展示、新策略预热位。</p>
+            <p style="margin-top:10px;"><span class="tag tag-warn">过渡方案</span><span class="tag tag-opt">改动小</span></p>
+            <ul style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);margin-top:8px;">
+              <li>优点：上线快，兼容旧心智</li>
+              <li>缺点：仍是货架思维，定制优先难落地</li>
+              <li>适用：策略矩阵先上、页面后改的过渡期</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- B -->
+      <div class="scheme-panel" id="scheme-b">
+        <div class="phone-stage">
+          <div class="phone"><div class="phone-inner">
+            <div class="status-bar"><span>09:41</span><span>且慢</span></div>
+            <div class="p-head"><h4>投顾</h4><span style="color:#1B88EE;font-size:12px;">规划</span></div>
+            <div class="p-body">
+              <div class="mod" style="background:linear-gradient(135deg,#DBEBFF,#fff);border-color:#9CCBF8;">
+                <h5>为你生成方案 <span class="pill">定制优先</span></h5>
+                <p>基于目标与风险偏好，优先匹配定制方案；若场景可由标准策略覆盖，则直接推荐。</p>
+                <button class="cta">开始规划 / 获取方案</button>
+                <button class="cta secondary" style="margin-top:6px;">我已有持仓，做调优</button>
+              </div>
+              <div class="mod">
+                <h5>按目标选</h5>
+                <div class="pill-row">
+                  <span class="pill">活钱</span><span class="pill">稳钱</span><span class="pill">长钱</span><span class="pill">养老</span><span class="pill">攒钱</span>
+                </div>
+              </div>
+              <div class="mod">
+                <h5>匹配结果预览</h5>
+                <div class="mini-list">
+                  <div class="mini-item"><div><strong>定制方案 · 稳健增长</strong><br/>优先推荐</div><div class="score">定制</div></div>
+                  <div class="mini-item"><div><strong>备选 · 春华秋实</strong><br/>标准策略</div><div class="score">R3</div></div>
+                </div>
+              </div>
+            </div>
+          </div></div>
+          <div class="side-note card">
+            <h3 style="margin-top:0;">方案 B · 规划驱动推品中枢</h3>
+            <p style="font-size:14px;color:var(--text-neutral-subtle);">首屏从货架改为「获取方案」。所有路径先走轻量目标确认，再分流定制/标准策略。货架退到结果页或次级。</p>
+            <p style="margin-top:10px;"><span class="tag tag-rec">推荐骨架之一</span><span class="tag tag-hot">转化导向</span></p>
+            <ul style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);margin-top:8px;">
+              <li>优点：完美契合「定制优先」原则</li>
+              <li>风险：老用户找货架路径变长，需保留快捷浏览</li>
+              <li>关键：轻量 KYC 体验必须极短</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- C -->
+      <div class="scheme-panel" id="scheme-c">
+        <div class="phone-stage">
+          <div class="phone"><div class="phone-inner">
+            <div class="status-bar"><span>09:41</span><span>AI 编排</span></div>
+            <div class="p-head"><h4>投顾</h4><span style="color:#1B88EE;font-size:12px;">编辑布局</span></div>
+            <div class="p-body">
+              <div class="mod" style="background:linear-gradient(135deg,#1B88EE,#3180EC);color:#fff;border:none;">
+                <h5 style="color:#fff;">今日建议 <span class="pill" style="background:rgba(255,255,255,.2);color:#fff;">千人千面</span></h5>
+                <p style="color:rgba(255,255,255,.9);">你的长钱缺口较大，建议先完成定制方案确认。</p>
+                <button class="cta" style="background:#fff;color:#1B88EE;">查看定制方案</button>
+              </div>
+              <div class="mod">
+                <h5>官方组件 · 已启用</h5>
+                <div class="pill-row">
+                  <span class="pill">推荐引擎</span><span class="pill">目标导航</span><span class="pill">风险地图</span>
+                </div>
+              </div>
+              <div class="mod">
+                <h5>可选模块</h5>
+                <div class="pill-row">
+                  <span class="pill">温度计</span><span class="pill">严选</span><span class="pill">估值</span><span class="pill">攒钱</span>
+                </div>
+                <button class="cta secondary">添加 / 移除模块</button>
+              </div>
+              <div class="mod">
+                <h5>小顾</h5>
+                <p>问我：这笔钱怎么配？或对比两个策略</p>
+              </div>
+            </div>
+          </div></div>
+          <div class="side-note card">
+            <h3 style="margin-top:0;">方案 C · AI 编排服务页（建议主方案）</h3>
+            <p style="font-size:14px;color:var(--text-neutral-subtle);">把投顾页做成「可编排的服务操作系统」。官方默认布局保证推品；运营可做实验；用户可轻度个性化。组件由 AI 实验室生产与发布。</p>
+            <p style="margin-top:10px;"><span class="tag tag-rec">主推荐</span><span class="tag tag-hot">AI 工厂样板</span></p>
+            <ul style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);margin-top:8px;">
+              <li>优点：一次建设，长期可运营；对齐组织 AI 生产方式</li>
+              <li>风险：组件治理与埋点要求高；首版需收敛默认布局</li>
+              <li>落地：MVP 先做官方 6 个必选/默认组件，用户自定义放二期</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- D -->
+      <div class="scheme-panel" id="scheme-d">
+        <div class="phone-stage">
+          <div class="phone"><div class="phone-inner">
+            <div class="status-bar"><span>09:41</span><span>地图</span></div>
+            <div class="p-head"><h4>投顾</h4><span style="color:#1B88EE;font-size:12px;">地图/列表</span></div>
+            <div class="p-body">
+              <div class="mod">
+                <h5>风险—持有期地图 <span class="pill">主推+严选</span></h5>
+                <p>滑动风险：低 → 高；点选气泡查看策略</p>
+                <div style="height:120px;border-radius:10px;background:
+                  linear-gradient(90deg,#7DD4C4 0%,#FBCA74 55%,#F88D72 100%);
+                  position:relative;margin-top:8px;">
+                  <div style="position:absolute;left:8%;top:60%;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(27,136,238,.35);"></div>
+                  <div style="position:absolute;left:22%;top:45%;width:12px;height:12px;border-radius:50%;background:#fff;"></div>
+                  <div style="position:absolute;left:38%;top:35%;width:14px;height:14px;border-radius:50%;background:#fff;"></div>
+                  <div style="position:absolute;left:78%;top:25%;width:16px;height:16px;border-radius:50%;background:#fff;"></div>
+                </div>
+              </div>
+              <div class="mod">
+                <h5>当前筛选 · 风险分 ≤ 40</h5>
+                <div class="mini-list">
+                  <div class="mini-item"><div><strong>债基优等生</strong><br/>风险分 6</div><div class="score">主推</div></div>
+                  <div class="mini-item"><div><strong>全球丰收</strong><br/>风险分 18</div><div class="score">主推</div></div>
+                  <div class="mini-item"><div><strong>春华秋实</strong><br/>风险分 21</div><div class="score">主推</div></div>
+                </div>
+              </div>
+              <button class="cta">结合我的持仓看落点</button>
+            </div>
+          </div></div>
+          <div class="side-note card">
+            <h3 style="margin-top:0;">方案 D · 风险地图货架</h3>
+            <p style="font-size:14px;color:var(--text-neutral-subtle);">用晨星风险分做空间化货架，支持滑杆与指标切换（风险分/最大回撤/波动）。列表仍在，但地图是理解层。</p>
+            <p style="margin-top:10px;"><span class="tag tag-rec">强烈建议并入主方案</span></p>
+            <ul style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);margin-top:8px;">
+              <li>优点：解决「只看列表不知道相对位置」</li>
+              <li>可叠加：持仓落点、四笔钱色带、严选描边</li>
+              <li>注意：指标切换需统一口径说明，避免温度计/估值式误解</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="compare">
+      <h2 class="sec"><i class="ri-scales-3-line"></i> 6. 方案对比与组合建议</h2>
+      <table>
+        <thead>
+          <tr><th>维度</th><th>A 货架增强</th><th>B 规划中枢</th><th>C AI 编排</th><th>D 风险地图</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>推品效率</td><td>中</td><td>高</td><td>高</td><td>中高</td></tr>
+          <tr><td>定制优先落地</td><td>弱</td><td>强</td><td>强</td><td>中</td></tr>
+          <tr><td>老用户习惯兼容</td><td>强</td><td>中</td><td>中（可兼容）</td><td>中高</td></tr>
+          <tr><td>运营弹性</td><td>中</td><td>中</td><td>很强</td><td>中</td></tr>
+          <tr><td>AI 工厂样板价值</td><td>低</td><td>中</td><td>很高</td><td>中</td></tr>
+          <tr><td>研发复杂度</td><td>低</td><td>中</td><td>高（可分期）</td><td>中</td></tr>
+          <tr><td>建议定位</td><td>过渡</td><td>漏斗内核</td><td>页面骨架</td><td>货架增强模块</td></tr>
+        </tbody>
+      </table>
+      <div class="card">
+        <h3 style="margin-top:0;">建议组合：C 骨架 + B 漏斗 + D 模块（A 作灰度对照）</h3>
+        <ol style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);">
+          <li><strong>MVP（4–6 周）</strong>：默认布局 = 推荐引擎卡 + 目标导航 + 四笔钱货架 + 风险地图 + 小顾胶囊；定制优先分流规则上线。</li>
+          <li><strong>V1.1</strong>：持仓调优摘要、严选层、专区条、运营实验位。</li>
+          <li><strong>V1.2</strong>：用户自定义布局；组件工厂与 AI 实验室打通发布。</li>
+          <li><strong>伴随策略战役</strong>：新重点策略上新看板 + 产品页/陪伴体系同步。</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="align">
+      <h2 class="sec"><i class="ri-checkbox-multiple-line"></i> 7. 对齐投票（会议用）</h2>
+      <div class="card">
+        <p style="font-size:14px;color:var(--text-neutral-subtle);margin-bottom:12px;">请选择你支持的主方案方向（可多选思路，但需定一个主骨架）：</p>
+        <div class="vote">
+          <label><input type="radio" name="main" value="a" /> A 货架增强作主骨架</label>
+          <label><input type="radio" name="main" value="b" /> B 规划中枢作主骨架</label>
+          <label><input type="radio" name="main" value="c" checked /> C AI 编排作主骨架</label>
+          <label><input type="radio" name="main" value="d" /> D 风险地图作主骨架</label>
+        </div>
+        <div style="margin-top:14px;">
+          <div style="font-family:var(--font-title);font-size:13px;margin-bottom:8px;">附加必选增强</div>
+          <label style="display:block;font-size:14px;color:var(--text-neutral-subtle);margin:4px 0;"><input type="checkbox" checked /> 定制优先分流（B 的漏斗）</label>
+          <label style="display:block;font-size:14px;color:var(--text-neutral-subtle);margin:4px 0;"><input type="checkbox" checked /> 风险地图模块（D）</label>
+          <label style="display:block;font-size:14px;color:var(--text-neutral-subtle);margin:4px 0;"><input type="checkbox" checked /> 新策略上线战役组件</label>
+          <label style="display:block;font-size:14px;color:var(--text-neutral-subtle);margin:4px 0;"><input type="checkbox" /> 用户自定义布局（放二期）</label>
+        </div>
+        <div class="callout" style="margin-top:14px;background:#FFFAEF;border:1px solid #FFDC9E;border-radius:12px;padding:12px;font-size:14px;color:#606060;">
+          <strong style="color:#333;">对齐后产出物：</strong>高保真产品 DEMO（含 2–3 客群千人千面）→ 产品规划与计划书（里程碑对接策略上线/陪伴/组件工厂）→ 埋点与实验设计。
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="sec"><i class="ri-question-answer-line"></i> 8. 需要你确认的关键问题</h2>
+      <div class="grid-2">
+        <div class="card">
+          <ol style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);">
+            <li>研究院品类矩阵最终分层：主推 / 严选 / 长尾如何定义？</li>
+            <li>新重点策略清单与上线节奏（对应产品页、陪伴）？</li>
+            <li>「定制优先」在活钱/稳钱是否全面例外？</li>
+            <li>风险地图主指标：晨星风险分是否作为默认？最大回撤是否并列？</li>
+          </ol>
+        </div>
+        <div class="card">
+          <ol start="5" style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);">
+            <li>用户自定义布局是否进入本期 MVP？</li>
+            <li>投顾页与首页推品职责如何切分，避免重复？</li>
+            <li>是否需要保留 A 方案作为对照实验组？</li>
+            <li>成功指标：定制方案点击率、方案采纳率、策略 AUM，哪 3 个是 P0？</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      盈米基金｜Qieman · 投顾页改版方向稿<br/>
+      <span style="opacity:.85;">对齐后进入 DEMO 与计划书阶段 · <a href="./01-投顾模块现况盘点报告.html" style="color:#fff;">现况报告</a></span>
+    </footer>
+  </div>
+
+  <script>
+    // scheme tabs
+    document.querySelectorAll('.scheme-tabs button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.scheme-tabs button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.scheme-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('scheme-' + btn.dataset.scheme).classList.add('active');
+      });
+    });
+
+    const strategies = [
+      { name: '货币三佳', risk: 1, maxdd: 0.1, hold: 1, bucket: '活钱', tier: '主推' },
+      { name: '债基优等生', risk: 6, maxdd: 1.04, hold: 2, bucket: '稳钱', tier: '主推' },
+      { name: '稳稳的幸福', risk: 11, maxdd: 2.79, hold: 3, bucket: '稳钱', tier: '主推' },
+      { name: '全球丰收', risk: 18, maxdd: 4.04, hold: 4, bucket: '长钱', tier: '主推' },
+      { name: '春华秋实', risk: 21, maxdd: 12.83, hold: 4, bucket: '长钱', tier: '主推' },
+      { name: '添富权益严选', risk: 81, maxdd: 28, hold: 4, bucket: '严选', tier: '严选' }
+    ];
+    const colors = { '活钱': '#69B1F4', '稳钱': '#7DD4C4', '长钱': '#FBCA74', '严选': '#F88D72' };
+    const holdLabel = { 1: '随时', 2: '≥6月', 3: '≥1年', 4: '≥3年' };
+    let metric = 'risk';
+    const chart = echarts.init(document.getElementById('mapChart'));
+
+    function render() {
+      const maxRisk = Number(document.getElementById('riskRange').value);
+      document.getElementById('riskVal').textContent = maxRisk;
+      const filtered = strategies.filter(s => s.risk <= maxRisk);
+      const points = filtered.map(s => {
+        let x = s.risk, xName = '晨星风险分';
+        if (metric === 'maxdd') { x = s.maxdd; xName = '最大回撤 %'; }
+        if (metric === 'hold') { x = s.hold; xName = '持有期限档'; }
+        return {
+          value: [x, s.risk],
+          name: s.name,
+          itemStyle: { color: colors[s.bucket] },
+          label: { show: true, formatter: s.name, position: 'top', fontSize: 11, color: '#333' },
+          raw: s, xName
+        };
+      });
+      chart.setOption({
+        grid: { left: 50, right: 24, top: 36, bottom: 48 },
+        tooltip: {
+          formatter: (p) => {
+            const s = p.data.raw;
+            return `<strong>${s.name}</strong><br/>分层：${s.tier}/${s.bucket}<br/>风险分：${s.risk}<br/>最大回撤：-${s.maxdd}%<br/>建议持有：${holdLabel[s.hold]}`;
+          }
+        },
+        xAxis: {
+          name: metric === 'risk' ? '晨星风险分' : (metric === 'maxdd' ? '最大回撤%' : '持有期限档'),
+          nameTextStyle: { color: '#999' },
+          splitLine: { lineStyle: { type: 'dashed', color: '#eee' } },
+          axisLabel: metric === 'hold' ? { formatter: (v) => holdLabel[v] || v } : {}
+        },
+        yAxis: {
+          name: '风险分（纵轴固定）',
+          nameTextStyle: { color: '#999' },
+          min: 0, max: 100,
+          splitLine: { lineStyle: { type: 'dashed', color: '#eee' } }
+        },
+        series: [{
+          type: 'scatter',
+          symbolSize: (val) => 16 + Math.min(val[1], 100) * 0.18,
+          data: points
+        }]
+      });
+    }
+
+    document.getElementById('riskRange').addEventListener('input', render);
+    document.querySelectorAll('.metric-switch button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.metric-switch button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        metric = btn.dataset.metric;
+        render();
+      });
+    });
+    render();
+    window.addEventListener('resize', () => chart.resize());
+  </script>
+</body>
+</html>

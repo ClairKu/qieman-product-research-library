@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>且慢投顾一级页面改版 · 改版方向与方案设计 v0.1</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+  :root{
+    --brand:#1B88EE; --brand-bg:#F0F6FF;
+    --up:#FA440C; --down:#07AD8F; --warn:#EA9500; --warn-bg:#FFFAEF;
+    --t1:#333; --t2:#606060; --t3:#999;
+    --bg:#F5F7FA; --card:#fff; --line:#E8ECF1;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--t1); line-height:1.75; font-size:15px;}
+  .wrap{max-width:1200px; margin:0 auto; padding:32px 24px 80px;}
+  header.hero{background:linear-gradient(135deg,#0D5FBF,#1B88EE 60%,#3FA2F7); color:#fff; border-radius:16px; padding:40px 44px; margin-bottom:28px;}
+  header.hero h1{font-size:28px; font-weight:700; letter-spacing:.5px;}
+  header.hero .sub{margin-top:10px; opacity:.92; font-size:14px;}
+  header.hero .tags{margin-top:16px;}
+  header.hero .tags span{display:inline-block; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.35); border-radius:20px; padding:3px 14px; font-size:12.5px; margin:0 8px 8px 0;}
+  h2.sec{font-size:21px; font-weight:700; margin:44px 0 6px; padding-left:14px; border-left:5px solid var(--brand);}
+  h2.sec .no{color:var(--brand); margin-right:8px;}
+  p.secdesc{color:var(--t2); font-size:13.5px; margin-bottom:16px; padding-left:19px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:24px 26px; margin-bottom:18px;}
+  .card h3{font-size:16.5px; margin-bottom:12px;}
+  .card h4{font-size:14.5px; margin:14px 0 8px; color:var(--t1);}
+  table{width:100%; border-collapse:collapse; font-size:13.5px; margin:10px 0;}
+  th{background:#F4F8FD; color:var(--t2); font-weight:600; text-align:left;}
+  th,td{border:1px solid var(--line); padding:8px 12px; vertical-align:top;}
+  .tag{display:inline-block; font-size:11.5px; border-radius:4px; padding:1px 8px; margin-right:6px; white-space:nowrap;}
+  .tag.b{background:var(--brand-bg); color:var(--brand);}
+  .tag.g{background:#EAF7F4; color:var(--down);}
+  .tag.o{background:var(--warn-bg); color:var(--warn);}
+  .tag.r{background:#FEEFE9; color:var(--up);}
+  .tag.gray{background:#F2F3F5; color:var(--t3);}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  @media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr;} .phones{flex-direction:column; align-items:center;}}
+  ul.ls{padding-left:20px;} ul.ls li{margin:5px 0;}
+  ol.ls{padding-left:20px;} ol.ls li{margin:5px 0;}
+  .hl{color:var(--brand); font-weight:600;}
+  .warnbox{background:var(--warn-bg); border:1px solid #F5DFB8; border-radius:10px; padding:14px 18px; font-size:13px; color:#8A6420; margin:14px 0;}
+  .funnel{display:flex; flex-direction:column; align-items:center; gap:6px; margin:18px 0;}
+  .funnel .f{color:#fff; text-align:center; border-radius:8px; padding:10px 6px; font-size:13.5px; font-weight:600;}
+  .funnel .f small{display:block; font-weight:400; font-size:11.5px; opacity:.9;}
+  /* phone mockup */
+  .phones{display:flex; gap:26px; justify-content:center; flex-wrap:wrap; margin:20px 0;}
+  .phone{width:300px; flex-shrink:0; background:#111; border-radius:34px; padding:10px; box-shadow:0 12px 32px rgba(0,0,0,.18);}
+  .phone .screen{background:#F5F7FA; border-radius:26px; overflow:hidden; height:600px; display:flex; flex-direction:column;}
+  .phone .titlebar{background:#fff; padding:12px 14px 8px; font-size:14px; font-weight:700; text-align:center; border-bottom:1px solid var(--line); flex-shrink:0;}
+  .phone .body{flex:1; overflow-y:auto; padding:10px;}
+  .phone .cap{ text-align:center; color:var(--t2); font-size:13px; margin-top:10px; font-weight:600;}
+  .m{background:#fff; border-radius:10px; padding:10px 12px; margin-bottom:8px; font-size:12px;}
+  .m .mt{font-size:12.5px; font-weight:700; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;}
+  .m .mt .op{font-size:10.5px; color:var(--t3); font-weight:400;}
+  .m .md{color:var(--t2); font-size:11px; line-height:1.6;}
+  .m.hero-m{background:linear-gradient(120deg,#E8F3FF,#F0F6FF); border:1px solid #CFE5FB;}
+  .m .btn{display:inline-block; background:var(--brand); color:#fff; border-radius:14px; padding:2px 12px; font-size:10.5px; margin-top:6px;}
+  .m .btn.ghost{background:#fff; color:var(--brand); border:1px solid var(--brand);}
+  .chips{display:flex; gap:5px; flex-wrap:wrap; margin-top:6px;}
+  .chips i{font-style:normal; background:#F2F6FB; border-radius:4px; padding:1px 7px; font-size:10px; color:var(--t2);}
+  .row-strat{display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--line); font-size:11px;}
+  .row-strat:last-child{border-bottom:none;}
+  .row-strat .rr{color:var(--up); font-weight:700;}
+  .tabbar-mini{display:flex; gap:4px; margin-bottom:6px;}
+  .tabbar-mini i{font-style:normal; font-size:10.5px; padding:2px 9px; border-radius:12px; background:#EEF1F5; color:var(--t2);}
+  .tabbar-mini i.on{background:var(--brand); color:#fff;}
+  .aiin{background:#fff; border:1.5px solid var(--brand); border-radius:20px; padding:7px 12px; font-size:11px; color:var(--t3); display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
+  .aiin b{color:var(--brand); font-size:10.5px;}
+  .drag{border:1.5px dashed #B9D7F5; background:#F7FBFF; color:var(--brand); text-align:center; border-radius:10px; padding:8px; font-size:11px; margin-bottom:8px;}
+  /* viz */
+  #riskChart{width:100%; height:480px;}
+  .viz-ctrl{display:flex; align-items:center; gap:18px; flex-wrap:wrap; margin:12px 0;}
+  .viz-ctrl label{font-size:13px; color:var(--t2);}
+  .viz-ctrl select{padding:5px 10px; border:1px solid var(--line); border-radius:6px; font-size:13px; color:var(--t1);}
+  .rangebox{display:flex; align-items:center; gap:8px; flex:1; min-width:280px;}
+  .rangebox input[type=range]{flex:1; accent-color:var(--brand);}
+  .rangebox .val{font-size:12.5px; color:var(--brand); font-weight:700; min-width:86px;}
+  #stratList{margin-top:8px;}
+  #stratList .li{display:grid; grid-template-columns:26px 1.6fr 1fr .8fr .8fr .8fr .9fr; gap:8px; padding:8px 10px; border-bottom:1px solid var(--line); font-size:12.5px; align-items:center; border-radius:6px;}
+  #stratList .li.head{color:var(--t3); font-size:11.5px; border-bottom:2px solid var(--line);}
+  #stratList .li.sel{background:var(--brand-bg);}
+  #stratList .dot{width:10px; height:10px; border-radius:50%; display:inline-block;}
+  footer{color:var(--t3); font-size:12px; text-align:center; margin-top:56px; line-height:1.8;}
+  .kv{display:flex; gap:12px; flex-wrap:wrap; margin:8px 0;}
+  .kv .k{background:#F7F9FC; border:1px solid var(--line); border-radius:10px; padding:10px 16px; font-size:12.5px; color:var(--t2); flex:1; min-width:150px;}
+  .kv .k b{display:block; font-size:15px; color:var(--t1); margin-bottom:2px;}
+  .flowline{display:flex; align-items:stretch; gap:0; flex-wrap:wrap; margin:12px 0;}
+  .flowline .n{background:#F4F8FD; border:1px solid #CFE5FB; border-radius:8px; padding:8px 14px; font-size:12.5px; text-align:center; align-self:center;}
+  .flowline .a{align-self:center; color:var(--brand); padding:0 8px; font-weight:700;}
+  .pill-list{display:flex; flex-wrap:wrap; gap:8px; margin:8px 0;}
+  .pill-list span{background:#fff; border:1px solid var(--line); border-radius:18px; padding:4px 14px; font-size:12.5px; color:var(--t2);}
+  .pill-list span.core{border-color:var(--brand); color:var(--brand); background:var(--brand-bg); font-weight:600;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>且慢「投顾」一级页面改版 · 改版方向与方案设计</h1>
+  <div class="sub">v0.1 讨论稿 ｜ 2026-07-23 ｜ 配套文档：《01-投顾模块现况报告》 ｜ 用于方案对齐，对齐后进入产品DEMO与产品规划计划书阶段</div>
+  <div class="tags">
+    <span>核心目的：推品</span><span>原则：定制方案优先，标准策略兜底</span><span>供给底座：研究院品类矩阵</span>
+    <span>四笔钱 + 严选双体系升级</span><span>AI产品工厂模式落地</span>
+  </div>
+</header>
+
+<!-- ============ 0 设计输入 ============ -->
+<h2 class="sec"><span class="no">0</span>设计输入与命题拆解</h2>
+<p class="secdesc">先把本次改版的输入条件与设计命题摆到一张桌面上，所有方案都必须回答这些命题。</p>
+<div class="card">
+  <div class="grid2">
+    <div>
+      <h4>业务输入</h4>
+      <ul class="ls">
+        <li><b>品类矩阵升级</b>：研究院提供新品类体系（品类表待接入），四笔钱与严选策略体系同步升级，将有新重点策略上线，需要配套产品页面与陪伴体系。</li>
+        <li><b>推品是核心目的</b>：页面的第一KPI是推品转化（签约/跟投），不是浏览时长。</li>
+        <li><b>推品优先级铁律</b>：所有推品逻辑<span class="hl">优先推定制方案，再推标准策略</span>。</li>
+        <li><b>现有资产</b>：规划（四笔钱规划/定制方案/养老规划）、工具（温度计、每日估值、行情信号、指数估值、自建自助、额度宝）、专区（养老、全球）、策略货架。</li>
+      </ul>
+    </div>
+    <div>
+      <h4>设计命题（每个方案必须回答）</h4>
+      <ol class="ls">
+        <li><b>定位命题</b>：这个页面是「工具+货架」还是「服务门户」？用户为什么每周回来？</li>
+        <li><b>分发命题</b>：怎么让四类用户（跟推荐/按目标/按持仓/自主DIY）各自高效找到适合的方案？主次如何取舍？</li>
+        <li><b>呈现命题</b>：策略不只是列表——如何用风险×收益二维视图（基于组合风险分数）让用户「看见」货架全貌？</li>
+        <li><b>生产方式命题</b>：页面如何支持AI产品工厂——运营弹性编排、用户自选布局、服务组件化？</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 1 设计原则与推品漏斗 ============ -->
+<h2 class="sec"><span class="no">1</span>设计原则与推品总漏斗</h2>
+<p class="secdesc">先定“骨架逻辑”，再谈页面形态。三个方案共用同一套推品漏斗与组件底座，差别只在“编排方式”。</p>
+
+<div class="card">
+  <h3>1.1 供给底座：品类矩阵 → 双体系 → 服务化包装</h3>
+  <div class="flowline">
+    <div class="n"><b>研究院品类矩阵</b><br><span style="color:var(--t3);font-size:11px">（品类表待接入·占位）</span></div>
+    <div class="a">→</div>
+    <div class="n"><b>四笔钱体系</b><br>活钱 / 稳钱 / 长钱 / 保障<br><span style="font-size:11px;color:var(--t3)">按资金久期分桶</span></div>
+    <div class="a">＋</div>
+    <div class="n"><b>严选体系</b><br>官方严选 / 主理人策略<br><span style="font-size:11px;color:var(--t3)">按品类与能力圈严选</span></div>
+    <div class="a">→</div>
+    <div class="n"><b>服务化包装</b><br>定制方案 / 标准策略 / 专区 / 工具<br><span style="font-size:11px;color:var(--t3)">推品的四种形态</span></div>
+  </div>
+  <p style="font-size:13px;color:var(--t2)">品类矩阵是「货」的坐标系：每只策略都应有品类标签（资产类别×地域×策略风格×风险档），这是货架可视化、AI推荐、运营编排的共同数据前提。<b>建议将「品类打标」列为改版P0数据工程。</b></p>
+</div>
+
+<div class="card">
+  <h3>1.2 推品总漏斗：一条主路 + 三条辅路</h3>
+  <div class="funnel">
+    <div class="f" style="width:92%;background:#0D5FBF">进入投顾页：状态识别（新客 / 有持仓 / 有目标 / 高活跃）<small>千人千面的分流依据</small></div>
+    <div class="f" style="width:76%;background:#1B88EE">主路：规划引导 → <b>定制方案</b>（四笔钱规划 / 养老规划 / AI小顾定制）<small>推品第一优先级：先定制</small></div>
+    <div class="f" style="width:60%;background:#3FA2F7">辅路1：标准策略货架（四笔钱分桶 + 严选 + 专区）<small>不愿走规划的用户直接选品</small></div>
+    <div class="f" style="width:44%;background:#74BCF9">辅路2：持仓调优（诊断 → 调仓/补配建议 → 推品）<small>存量用户的复购引擎</small></div>
+    <div class="f" style="width:30%;background:#A8D4FB;color:#0D5FBF">辅路3：自主DIY（工具 + 筛选 + 自建组合）<small>留住专业用户，不是推品主战场</small></div>
+  </div>
+  <h4>主次取舍（明确牺牲什么）</h4>
+  <ul class="ls">
+    <li><b>首屏只留一个主行动</b>：未完成规划者首屏主推「做规划→出定制方案」；已有定制方案者首屏主推「方案执行/调优」。标准货架永远在第二屏起。</li>
+    <li><b>工具降级为“钩子”</b>：温度计、每日估值等工具不再平铺一级入口，而是收进「市场工具条」，其价值是高频回访钩子＋向推品场景导流（如温度低→估值机会→对应品类策略）。</li>
+    <li><b>DIY收纳到货架尾部</b>：自建自助、全量筛选收进「自己选」入口，服务专业用户但不占首屏。</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>1.3 四类用户 × 推品路径矩阵</h3>
+  <table>
+    <tr><th style="width:14%">用户模式</th><th style="width:26%">典型场景</th><th style="width:32%">页面应答（按优先级）</th><th>成功指标</th></tr>
+    <tr><td><b>跟推荐</b><br><span class="tag b">主力</span></td><td>“你们觉得我该买什么？”</td><td>规划引导 → 定制方案；未愿规划则给「官方主推位」（当季重点策略，按品类轮换）</td><td>规划完成率、定制方案转化率</td></tr>
+    <tr><td><b>按目标</b><br><span class="tag b">主力</span></td><td>“我这笔钱两年后要用” “我要攒养老钱”</td><td>四笔钱分桶入口 + 目标式导购（期限/用途二问直达品类）→ 对应桶内定制或标准策略</td><td>分桶入口点击→签约转化</td></tr>
+    <tr><td><b>按持仓调优</b><br><span class="tag g">存量</span></td><td>“我买的怎么样？要不要调？”</td><td>持仓诊断卡（四笔钱结构缺口）→ 补配建议 → 推缺口品类的方案</td><td>诊断使用率、调优后加购率</td></tr>
+    <tr><td><b>自主DIY</b><br><span class="tag gray">少数</span></td><td>“我自己会选，给我工具”</td><td>风险×收益全景图、指标筛选、自建组合；不打扰，但在结果页保留“对比官方方案”钩子</td><td>工具复用频次、DIY→官方方案回流率</td></tr>
+  </table>
+</div>
+
+<!-- ============ 2 三个方案 ============ -->
+<h2 class="sec"><span class="no">2</span>三个候选方案</h2>
+<p class="secdesc">三案共用同一推品漏斗，差别在于页面的「编排方式」与「生产方式」：A是固定编排，B是运营编排，C是AI+用户共同编排。先看首屏线框直觉，再看架构与评估。</p>
+
+<div class="phones">
+  <!-- 方案A -->
+  <div>
+    <div class="phone"><div class="screen">
+      <div class="titlebar">投顾 <span style="font-weight:400;font-size:10px;color:#999">方案A·固定页</span></div>
+      <div class="body">
+        <div class="m hero-m">
+          <div class="mt">我的四笔钱规划 <span class="op">已完成 2/4</span></div>
+          <div class="md">长钱缺口 ¥52,000 · 养老未规划</div>
+          <span class="btn">继续规划，生成定制方案</span>
+        </div>
+        <div class="m">
+          <div class="mt">官方主推 · 本季重点</div>
+          <div class="md">全球多资产配置方案（定制）<br><span style="color:#FA440C;font-weight:700">预期波动适中 · 先看是否适合你</span></div>
+          <span class="btn ghost">1分钟测适配</span>
+        </div>
+        <div class="m">
+          <div class="mt">市场工具条</div>
+          <div class="chips"><i>温度计 32°</i><i>每日估值</i><i>行情信号</i><i>指数估值</i><i>额度宝</i></div>
+        </div>
+        <div class="m">
+          <div class="mt">四笔钱货架</div>
+          <div class="tabbar-mini"><i class="on">活钱</i><i>稳钱</i><i>长钱</i><i>养老</i><i>全球</i></div>
+          <div class="row-strat"><span>货币三佳</span><span class="rr">7日年化 —</span></div>
+          <div class="row-strat"><span>随时取用 · 低风险</span><span style="color:#999">去看看</span></div>
+        </div>
+        <div class="m">
+          <div class="mt">严选策略 <span class="op">查看全部</span></div>
+          <div class="row-strat"><span>我要稳稳的幸福</span><span class="rr">+4.85%/年</span></div>
+          <div class="row-strat"><span>懒猫全球配置</span><span class="rr">+5.95%/年</span></div>
+        </div>
+        <div class="m"><div class="mt">自己选</div><div class="md">风险收益全景图 · 筛选器 · 自建组合</div></div>
+      </div>
+    </div></div>
+    <div class="cap">方案A · 规划驱动的固定页升级</div>
+  </div>
+  <!-- 方案B -->
+  <div>
+    <div class="phone"><div class="screen">
+      <div class="titlebar">投顾 <span style="font-weight:400;font-size:10px;color:#999">方案B·编排卡片流</span></div>
+      <div class="body">
+        <div class="m" style="border:1px solid #CFE5FB;background:#F7FBFF">
+          <div class="mt">slot-1 状态卡（系统选择）<span class="op">人群：有持仓未调优</span></div>
+          <div class="md">你的稳钱占比偏低，市场温度 32°，适合补配固收+</div>
+          <span class="btn">看补配方案（定制）</span>
+        </div>
+        <div class="m">
+          <div class="mt">slot-2 运营位（后台可配）<span class="op">档期：严选升级周</span></div>
+          <div class="md">新重点策略上线：全球股债严选系列<br>四笔钱对应桶位自动挂载</div>
+          <span class="btn ghost">查看新品类</span>
+        </div>
+        <div class="m">
+          <div class="mt">slot-3 工具卡（按行为召回）</div>
+          <div class="chips"><i>你常看：每日估值</i><i>温度计 32°</i><i>行情信号 2条</i></div>
+        </div>
+        <div class="m">
+          <div class="mt">slot-4 货架卡（按品类矩阵渲染）</div>
+          <div class="tabbar-mini"><i class="on">为你排序</i><i>稳钱</i><i>长钱</i><i>全球</i></div>
+          <div class="row-strat"><span>马拉松固收增强</span><span class="rr">回撤6.3%</span></div>
+          <div class="row-strat"><span>蛋黄全球债</span><span class="rr">回撤2.8%</span></div>
+        </div>
+        <div class="m"><div class="mt">slot-5 陪伴卡</div><div class="md">主理人观点 · 调仓通知 · 持有报告</div></div>
+      </div>
+    </div></div>
+    <div class="cap">方案B · 工具+货架的编排式产品页</div>
+  </div>
+  <!-- 方案C -->
+  <div>
+    <div class="phone"><div class="screen">
+      <div class="titlebar">投顾 <span style="font-weight:400;font-size:10px;color:#999">方案C·AI可组装</span></div>
+      <div class="body">
+        <div class="aiin">说说这笔钱的用途，AI小顾帮你配…<b>对话</b></div>
+        <div class="m hero-m">
+          <div class="mt">AI今日看板（官方组件·常驻）</div>
+          <div class="md">温度32° · 你的组合昨日 -0.21% · 长钱缺口未补<br><b style="color:#1B88EE">建议：继续上次的养老定制方案 →</b></div>
+        </div>
+        <div class="m">
+          <div class="mt">我的方案 <span class="op">组件 · 可移除</span></div>
+          <div class="md">四笔钱执行进度 2/4 · 稳钱已达标</div>
+        </div>
+        <div class="m">
+          <div class="mt">风险收益全景图 <span class="op">组件 · 用户自选添加</span></div>
+          <div class="md">滑动风险档位，查看严选策略分布 ▦</div>
+        </div>
+        <div class="m">
+          <div class="mt">严选货架 <span class="op">组件 · 官方推荐</span></div>
+          <div class="row-strat"><span>思远定投全球好资产</span><span class="rr">+14.6%/年</span></div>
+        </div>
+        <div class="drag">＋ 添加模块（估值表 / 额度宝 / 行情信号 / 攒钱计划…）</div>
+      </div>
+    </div></div>
+    <div class="cap">方案C · AI驱动的可组装服务页</div>
+  </div>
+</div>
+
+<!-- 方案A 详情 -->
+<div class="card">
+  <h3><span class="tag b">方案A</span>规划驱动的传统页升级 —— “一条漏斗做到底”</h3>
+  <div class="grid2">
+    <div>
+      <h4>信息架构（固定五段式）</h4>
+      <ol class="ls">
+        <li><b>规划状态区</b>（首屏主行动）：四笔钱规划进度 / 定制方案入口 / 养老规划，按用户状态切换文案与CTA。</li>
+        <li><b>官方主推位</b>：当季1个重点定制方案 + 1个重点标准策略，运营手动排期。</li>
+        <li><b>市场工具条</b>：温度计、每日估值、行情信号、指数估值、额度宝收纳为一行图标 + 异动红点。</li>
+        <li><b>货架区</b>：四笔钱分桶Tab（活钱/稳钱/长钱/养老/全球）+ 严选策略列表 + 风险收益全景图入口。</li>
+        <li><b>自己选</b>：筛选器、自建自助组合、全部策略。</li>
+      </ol>
+      <h4>推品链路</h4>
+      <div class="flowline">
+        <div class="n">规划状态区</div><div class="a">→</div><div class="n">测评/目标采集</div><div class="a">→</div><div class="n">定制方案</div><div class="a">未转化↘</div><div class="n">对应桶标准策略</div>
+      </div>
+    </div>
+    <div>
+      <h4>评估</h4>
+      <table>
+        <tr><th>维度</th><th>评估</th></tr>
+        <tr><td>推品效率</td><td>主路清晰、定制优先落地最彻底；但所有人看同一张页面，对存量/高活用户浪费首屏</td></tr>
+        <tr><td>运营弹性</td><td>低：主推位靠版本或简单CMS，调整周期长</td></tr>
+        <tr><td>研发成本</td><td>低：1-2个迭代可上线，改版风险最小</td></tr>
+        <tr><td>AI产品工厂契合</td><td>弱：页面结构写死，无法承接组件化生产方式</td></tr>
+        <tr><td>适用判断</td><td>适合作为<b>兜底/降级形态</b>或极限工期下的过渡版</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 方案B 详情 -->
+<div class="card">
+  <h3><span class="tag b">方案B</span>工具+货架的编排式产品页 —— “运营可配的千人千面卡片流”</h3>
+  <div class="grid2">
+    <div>
+      <h4>核心机制：插槽 + 组件注册表 + 编排规则</h4>
+      <ul class="ls">
+        <li><b>页面 = 插槽序列</b>（slot-1..n），每个插槽由「编排引擎」按 <span class="hl">人群 × 档期 × 行为</span> 决定渲染哪个组件。</li>
+        <li><b>组件注册表</b>：规划卡、状态诊断卡、官方主推卡、工具卡、货架卡（按品类矩阵渲染）、专区卡、陪伴卡、全景图卡……每个组件有统一契约（数据接口 + 埋点 + 降级态）。</li>
+        <li><b>运营后台</b>：新策略上线＝配置一张「主推卡」+ 挂载货架桶位，<b>不需要发版</b>；档期化运营（严选升级周、养老月）。</li>
+      </ul>
+      <h4>千人千面编排示例</h4>
+      <table>
+        <tr><th>人群</th><th>slot-1（主行动）</th><th>slot-2</th></tr>
+        <tr><td>新客未规划</td><td>四笔钱规划引导（→定制）</td><td>官方主推卡</td></tr>
+        <tr><td>有持仓未签约</td><td>持仓诊断卡（→定制调优）</td><td>对应缺口货架卡</td></tr>
+        <tr><td>已定制未执行</td><td>方案执行提醒卡</td><td>市场工具卡</td></tr>
+        <tr><td>高活跃DIY型</td><td>风险收益全景图</td><td>筛选器/自建入口</td></tr>
+      </table>
+    </div>
+    <div>
+      <h4>评估</h4>
+      <table>
+        <tr><th>维度</th><th>评估</th></tr>
+        <tr><td>推品效率</td><td>高：主行动随用户状态切换，定制优先规则内置于编排引擎（规则可审计，合规友好）</td></tr>
+        <tr><td>运营弹性</td><td>高：策略上线、专区档期均后台配置；具备A/B实验位</td></tr>
+        <tr><td>研发成本</td><td>中：需要组件契约、编排引擎、运营后台三件套；可复用现有卡片体系逐步迁移</td></tr>
+        <tr><td>AI产品工厂契合</td><td>中高：组件化是AI工厂的前置条件，编排规则未来可由AI生成</td></tr>
+        <tr><td>风险</td><td>编排规则需合规审查（投顾建议适当性）；千人千面需埋点与人群平台支撑</td></tr>
+      </table>
+      <div class="warnbox">合规注意：按持仓/测评结果差异化推品属于投顾建议范畴，编排规则需留痕、可回溯，且与用户风险测评结果做适当性校验。</div>
+    </div>
+  </div>
+</div>
+
+<!-- 方案C 详情 -->
+<div class="card">
+  <h3><span class="tag b">方案C</span>AI驱动的可组装服务页 —— “AI产品工厂的门店”</h3>
+  <div class="grid2">
+    <div>
+      <h4>三层结构</h4>
+      <ol class="ls">
+        <li><b>AI层（常驻）</b>：顶部AI小顾入口 + 「AI今日看板」组件——把行情、持仓、规划缺口合成为一句今日建议（内容经合规审核链路），是页面的“每天回来的理由”。</li>
+        <li><b>官方组件层</b>：官方推荐的服务组件集（我的方案、严选货架、全景图、专区、陪伴流），默认布局由运营/AI编排，逻辑同方案B。</li>
+        <li><b>用户组装层</b>：用户可添加/移除/排序可选组件（估值表、额度宝、行情信号、攒钱计划、自建组合看板…），形成个人化投顾工作台；官方保留1-2个不可移除的合规与主推位。</li>
+      </ol>
+      <h4>生产方式变革（AI产品工厂落地点）</h4>
+      <ul class="ls">
+        <li>服务组件 = <b>数据契约 + 卡片模板 + 行动点</b>（复用已验证的微信AI原子组件PRD范式，见 docs/02）。</li>
+        <li>新策略上线流程：研究院出品类与策略 → AI按组件模板自动生成产品页/陪伴内容初稿 → 合规审核 → 运营一键挂载。<b>页面成为服务组件的分发容器，而非一次性开发的界面。</b></li>
+        <li>同一套组件可同时分发到：APP投顾页 / 微信小程序AI对话流 / 企微陪伴消息，一次生产多端复用。</li>
+      </ul>
+    </div>
+    <div>
+      <h4>评估</h4>
+      <table>
+        <tr><th>维度</th><th>评估</th></tr>
+        <tr><td>推品效率</td><td>潜力最高（AI结合上下文的主动推品），但依赖AI建议质量与信任建立，短期不确定性大</td></tr>
+        <tr><td>运营弹性</td><td>最高：组件市场 + AI编排；运营从“配页面”升级为“管组件供给”</td></tr>
+        <tr><td>研发成本</td><td>高：组件框架、用户布局系统、AI编排与合规链路；需分阶段</td></tr>
+        <tr><td>AI产品工厂契合</td><td>强：即是AI产品工厂的产品形态本身</td></tr>
+        <tr><td>风险</td><td>AI输出合规（需智审类审核前置）；用户自选布局可能弱化官方推品位——用锁定槽位解决；老年/低频用户认知成本</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 演进关系 -->
+<div class="card">
+  <h3>2.4 推荐路线：三案是同一体系的三个阶段（B起步、预埋C）</h3>
+  <div class="flowline">
+    <div class="n"><b>Phase 1（本次改版）</b><br>落地方案B骨架：组件契约 + 插槽编排 + 4类人群规则<br><span style="font-size:11px;color:var(--t3)">首屏主行动=定制优先；全景图作为货架呈现升级点</span></div>
+    <div class="a">→</div>
+    <div class="n"><b>Phase 2（+1季度）</b><br>接入AI看板组件与AI编排试验位<br><span style="font-size:11px;color:var(--t3)">配合新重点策略上线做档期运营</span></div>
+    <div class="a">→</div>
+    <div class="n"><b>Phase 3</b><br>开放用户组装层，组件市场化<br><span style="font-size:11px;color:var(--t3)">AI产品工厂全流程跑通</span></div>
+  </div>
+  <ul class="ls">
+    <li><b>为什么不直接做C</b>：C的价值兑现依赖组件底座与AI信任度；先用B把组件化和编排跑通，C是打开用户编辑权限+AI接管编排，增量可控。</li>
+    <li><b>为什么不停在A</b>：A无法承接“新策略持续上线”的运营节奏（每次都要排期开发），与AI产品工厂的生产方式目标相悖。</li>
+  </ul>
+</div>
+
+<!-- ============ 3 风险收益可视化 ============ -->
+<h2 class="sec"><span class="no">3</span>风险×收益可视化专题（真实数据交互演示）</h2>
+<p class="secdesc">回答“怎么可视化呈现推品/严选策略的风险与收益分布”。下图使用盈米MCP实取的17只代表性货架策略真实数据（净值截止2026-07-22，组合风险分数生效日2026-06-30），可直接操作体验。</p>
+
+<div class="card">
+  <h3>3.1 交互演示：策略风险收益全景图</h3>
+  <div class="viz-ctrl">
+    <label>纵轴指标：
+      <select id="ySel">
+        <option value="annualizedReturn" selected>年化收益率（成立以来）</option>
+        <option value="maxDrawdown">最大回撤</option>
+        <option value="volatility">波动率</option>
+        <option value="sharpe">夏普比率</option>
+      </select>
+    </label>
+    <div class="rangebox">
+      <label>风险分数档位</label>
+      <input type="range" id="rMin" min="0" max="100" value="0">
+      <input type="range" id="rMax" min="0" max="100" value="100">
+      <span class="val" id="rVal">0 - 100</span>
+    </div>
+  </div>
+  <div id="riskChart"></div>
+  <div id="stratList"></div>
+  <p style="font-size:11.5px;color:var(--t3);margin-top:10px">数据来源：盈米MCP（GetStrategyDetails / BatchGetStrategyRiskInfo），历史业绩不代表未来表现，不构成投资建议。横轴为组合风险分数（0-100，与晨星组合风险分数同类口径）；长赢-S定投因风险分数缺失未纳入。</p>
+</div>
+
+<div class="card">
+  <h3>3.2 呈现形态建议：全景图不止散点，推荐「风险光谱带 + 散点详图」双层结构</h3>
+  <table>
+    <tr><th style="width:16%">形态</th><th style="width:34%">说明</th><th style="width:25%">适用人群/场景</th><th>取舍建议</th></tr>
+    <tr>
+      <td><b>①风险光谱带</b>（移动端首选）</td>
+      <td>横向0-100风险分数色带（低→高由绿到红），策略以头像点落位其上；<b>拖动滑块或点击风险档</b>，下方列表联动展示该档位策略卡。一维、单手可操作。</td>
+      <td>大众用户，四笔钱语境（每个桶对应色带一段）</td>
+      <td><span class="tag g">推荐P0</span>放入货架区顶部，替代纯列表的第一入口</td>
+    </tr>
+    <tr>
+      <td><b>②风险×收益散点</b>（如上演示）</td>
+      <td>二维全貌，支持切换Y轴指标（年化/回撤/波动/夏普）、按品类着色、框选对比。信息量最大。</td>
+      <td>进阶用户、DIY路径；也适合投教内容嵌入</td>
+      <td><span class="tag o">推荐P1</span>作为“全景图”独立页，从光谱带“展开全景”进入</td>
+    </tr>
+    <tr>
+      <td><b>③品类矩阵热力图</b></td>
+      <td>行=品类（品类矩阵）、列=风险档，格内为策略数与代表策略；直接把研究院品类表变成可购的货架地图。</td>
+      <td>运营视角与货架完整性检查；用户端适合“按品类逛”</td>
+      <td><span class="tag o">P1-P2</span>依赖品类打标完成</td>
+    </tr>
+    <tr>
+      <td><b>④我的坐标叠加</b></td>
+      <td>在①②上叠加“你的组合当前落点”与“定制方案目标落点”，让调优可视：从这里→到那里。</td>
+      <td>持仓调优路径的核心呈现</td>
+      <td><span class="tag r">差异化亮点</span>建议与定制方案联动，P1</td>
+    </tr>
+  </table>
+  <h4>关键设计细节</h4>
+  <ul class="ls">
+    <li><b>以组合风险分数为唯一横轴锚点</b>（口径统一、监管可解释），风险五档（低/中低/中/中高/高）作为色带分段背景，兼容用户已有认知。</li>
+    <li><b>指标切换白名单</b>：年化收益、最大回撤、波动率、夏普，均为已有MCP口径，避免自造指标；默认年化收益+悬浮展示回撤。</li>
+    <li><b>推品埋点位</b>：点击任一策略点 → 策略半屏卡（含“看是否适合我”按钮→定制流程），保证可视化服务于推品而非纯浏览。</li>
+    <li><b>数据前提</b>：全量货架策略需补齐风险分数与品类标签（本次演示17只中1只缺失，全量覆盖率待数据盘点）。</li>
+  </ul>
+</div>
+
+<!-- ============ 4 对齐清单 ============ -->
+<h2 class="sec"><span class="no">4</span>对齐清单（下次对齐会议程）</h2>
+<div class="card">
+  <table>
+    <tr><th style="width:8%">#</th><th style="width:30%">待决策/待输入</th><th style="width:42%">选项与建议</th><th>影响</th></tr>
+    <tr><td>D1</td><td><b>方案选型</b></td><td>建议：B起步、预埋C（见2.4）；若工期极紧则A过渡</td><td>决定整体排期与技术架构</td></tr>
+    <tr><td>D2</td><td><b>品类矩阵接入</b></td><td>请提供研究院品类表（xlsx/csv），确定品类→四笔钱桶→严选系列的映射规则</td><td>货架结构、全景图、打标工程的前提</td></tr>
+    <tr><td>D3</td><td><b>新重点策略清单</b></td><td>四笔钱/严选升级后的重点策略名单与上线节奏</td><td>官方主推位排期、DEMO选用数据</td></tr>
+    <tr><td>D4</td><td><b>定制方案的承接口径</b></td><td>“定制优先”落到页面：定制方案由AI小顾出、投顾人工出、还是模板化组合方案？转化口径如何定义？</td><td>主路漏斗设计与合规链路</td></tr>
+    <tr><td>D5</td><td><b>内部数据补充</b></td><td>投顾页与各模块的UV/点击/转化/复访数据；现有页面截图与模块清单核对</td><td>现况报告占位补全、编排规则冷启动</td></tr>
+    <tr><td>D6</td><td><b>可视化方案确认</b></td><td>光谱带（P0）+ 散点全景（P1)+ 我的坐标叠加（P1）组合是否成立；晨星风险分数是否为最终口径</td><td>货架呈现升级范围</td></tr>
+    <tr><td>D7</td><td><b>AI产品工厂边界</b></td><td>Phase 2/3 中AI生成内容（看板建议、编排规则）的合规审核链路与责任主体</td><td>方案C推进节奏</td></tr>
+  </table>
+  <p style="font-size:13px;color:var(--t2)">对齐通过后进入下一阶段交付：交互DEMO（可点击原型）+ 产品规划与计划书（含排期、资源、指标体系）。</p>
+</div>
+
+<footer>
+  且慢投顾一级页面改版 · 改版方向与方案设计 v0.1 ｜ 2026-07-23 ｜ 数据来源：盈米MCP实取（截止2026-07-22）与公开资料<br>
+  本文档为内部产品讨论稿，所涉历史业绩不代表未来表现，不构成投资建议。
+</footer>
+</div>
+
+<script>
+const STRATS = [
+  {code:"ZH012636",name:"货币三佳",bucket:"活钱",riskLevelName:"低风险",riskScore:1,annualizedReturn:2.66,maxDrawdown:0.00,volatility:0.15,sharpe:7.78,inception:"2017-01",manager:"盈米"},
+  {code:"ZH045531",name:"南方梦想佳",bucket:"稳钱",riskLevelName:"中低风险",riskScore:3,annualizedReturn:2.01,maxDrawdown:1.24,volatility:0.67,sharpe:0.76,inception:"2020-07",manager:"南方基金"},
+  {code:"ZH038532",name:"小确幸计划",bucket:"稳钱",riskLevelName:"中低风险",riskScore:8,annualizedReturn:3.36,maxDrawdown:2.13,volatility:1.99,sharpe:0.93,inception:"2019-11",manager:"盈米基金"},
+  {code:"SI000210",name:"蛋黄全球债",bucket:"稳钱",riskLevelName:"中低风险",riskScore:8,annualizedReturn:0.81,maxDrawdown:2.77,volatility:1.89,sharpe:-0.37,inception:"2024-09",manager:"盈米(PMS)"},
+  {code:"ZH045075",name:"马拉松固收增强",bucket:"稳钱",riskLevelName:"中风险",riskScore:9,annualizedReturn:3.11,maxDrawdown:6.26,volatility:3.13,sharpe:0.51,inception:"2020-06",manager:"华夏财富"},
+  {code:"ZH013136",name:"我要稳稳的幸福",bucket:"稳钱",riskLevelName:"中低风险",riskScore:11,annualizedReturn:4.85,maxDrawdown:2.79,volatility:2.36,sharpe:1.42,inception:"2017-01",manager:"交银施罗德"},
+  {code:"ZH045070",name:"添富小确幸",bucket:"稳钱",riskLevelName:"中低风险",riskScore:13,annualizedReturn:2.25,maxDrawdown:4.39,volatility:2.71,sharpe:0.28,inception:"2021-12",manager:"汇添富基金"},
+  {code:"ZH032680",name:"春华秋实",bucket:"长钱",riskLevelName:"中风险",riskScore:21,annualizedReturn:5.41,maxDrawdown:12.83,volatility:5.75,sharpe:0.68,inception:"2019-01",manager:"静静聊吧"},
+  {code:"SI000164",name:"懒猫全球配置",bucket:"长钱",riskLevelName:"中风险",riskScore:42,annualizedReturn:5.95,maxDrawdown:9.92,volatility:8.10,sharpe:0.55,inception:"2023-07",manager:"盈米基金"},
+  {code:"LONG_WIN",name:"长赢指数投资计划-150份",bucket:"长钱",riskLevelName:"中高风险",riskScore:56,annualizedReturn:4.74,maxDrawdown:19.79,volatility:11.13,sharpe:0.29,inception:"2015-07",manager:"盈米(E大)"},
+  {code:"SI000035",name:"周周同行",bucket:"长钱",riskLevelName:"中高风险",riskScore:60,annualizedReturn:1.49,maxDrawdown:34.93,volatility:15.10,sharpe:0.00,inception:"2021-05",manager:"盈米"},
+  {code:"SI000153",name:"思远定投全球好资产",bucket:"长钱",riskLevelName:"中风险",riskScore:67,annualizedReturn:14.58,maxDrawdown:14.01,volatility:13.42,sharpe:0.97,inception:"2023-05",manager:"盈米基金"},
+  {code:"ZH150669",name:"颐养天年养老计划",bucket:"养老",riskLevelName:"中高风险",riskScore:70,annualizedReturn:5.99,maxDrawdown:15.64,volatility:14.90,sharpe:0.30,inception:"2023-07",manager:"盈米基金"},
+  {code:"SI000212",name:"蛋黄全球股",bucket:"长钱",riskLevelName:"中高风险",riskScore:71,annualizedReturn:17.64,maxDrawdown:14.06,volatility:15.05,sharpe:1.07,inception:"2024-09",manager:"盈米(PMS)"},
+  {code:"SI000224",name:"道格全球精选",bucket:"长钱",riskLevelName:"中高风险",riskScore:75,annualizedReturn:4.72,maxDrawdown:15.01,volatility:18.71,sharpe:0.17,inception:"2025-08",manager:"盈米(PMS)"},
+  {code:"ZH045072",name:"添富权益严选",bucket:"长钱",riskLevelName:"中高风险",riskScore:81,annualizedReturn:2.22,maxDrawdown:40.40,volatility:17.18,sharpe:0.04,inception:"2021-12",manager:"汇添富基金"}
+];
+const BUCKET_COLOR = {"活钱":"#07AD8F","稳钱":"#1B88EE","长钱":"#FA440C","养老":"#EA9500"};
+const Y_LABEL = {annualizedReturn:"年化收益率(%)",maxDrawdown:"最大回撤(%)",volatility:"波动率(%)",sharpe:"夏普比率"};
+let selCode = null;
+
+const chart = echarts.init(document.getElementById('riskChart'));
+function currentFilter(){
+  let lo = +document.getElementById('rMin').value, hi = +document.getElementById('rMax').value;
+  if(lo>hi){ [lo,hi]=[hi,lo]; }
+  return [lo,hi];
+}
+function render(){
+  const yKey = document.getElementById('ySel').value;
+  const [lo,hi] = currentFilter();
+  document.getElementById('rVal').textContent = lo + " - " + hi;
+  const buckets = ["活钱","稳钱","长钱","养老"];
+  const series = buckets.map(b=>({
+    name:b, type:'scatter', symbolSize:d=>18,
+    itemStyle:{color:BUCKET_COLOR[b], opacity:.85},
+    emphasis:{scale:1.6},
+    data: STRATS.filter(s=>s.bucket===b && s.riskScore>=lo && s.riskScore<=hi)
+      .map(s=>({value:[s.riskScore, s[yKey]], name:s.name, s}))
+  }));
+  chart.setOption({
+    grid:{left:60,right:30,top:56,bottom:52},
+    legend:{top:6, data:buckets},
+    tooltip:{trigger:'item', formatter:p=>{
+      const s=p.data.s;
+      return `<b>${s.name}</b><br/>风险分数：${s.riskScore}（${s.riskLevelName}）<br/>年化收益：${s.annualizedReturn}%<br/>最大回撤：${s.maxDrawdown}%<br/>波动率：${s.volatility}%　夏普：${s.sharpe}<br/>主理人：${s.manager}　成立：${s.inception}`;
+    }},
+    xAxis:{name:'组合风险分数', min:0, max:100, splitLine:{show:false},
+      axisLabel:{color:'#606060'}, nameTextStyle:{color:'#999'}},
+    yAxis:{name:Y_LABEL[yKey], type:'value', axisLabel:{color:'#606060'}, nameTextStyle:{color:'#999'},
+      splitLine:{lineStyle:{type:'dashed', color:'#E8ECF1'}}},
+    series: series.concat([{ // risk band background via markArea on a dummy series
+      type:'scatter', data:[], markArea:{silent:true, itemStyle:{opacity:.06},
+        data:[[{xAxis:0,itemStyle:{color:'#07AD8F'}},{xAxis:10}],
+              [{xAxis:10,itemStyle:{color:'#1B88EE'}},{xAxis:30}],
+              [{xAxis:30,itemStyle:{color:'#EA9500'}},{xAxis:55}],
+              [{xAxis:55,itemStyle:{color:'#FA440C'}},{xAxis:80}],
+              [{xAxis:80,itemStyle:{color:'#B71C1C'}},{xAxis:100}]]}
+    }])
+  }, true);
+  renderList(lo,hi,yKey);
+}
+function renderList(lo,hi,yKey){
+  const el = document.getElementById('stratList');
+  const rows = STRATS.filter(s=>s.riskScore>=lo&&s.riskScore<=hi).sort((a,b)=>a.riskScore-b.riskScore);
+  let h = `<div class="li head"><span></span><span>策略</span><span>桶/风险档</span><span>风险分</span><span>年化</span><span>回撤</span><span>主理人</span></div>`;
+  rows.forEach(s=>{
+    h += `<div class="li ${s.code===selCode?'sel':''}" data-code="${s.code}">
+      <span class="dot" style="background:${BUCKET_COLOR[s.bucket]}"></span>
+      <span><b>${s.name}</b></span>
+      <span>${s.bucket} · ${s.riskLevelName}</span>
+      <span><b>${s.riskScore}</b></span>
+      <span style="color:${s.annualizedReturn>=0?'#FA440C':'#07AD8F'}">${s.annualizedReturn}%</span>
+      <span>${s.maxDrawdown}%</span>
+      <span style="color:#999">${s.manager}</span></div>`;
+  });
+  el.innerHTML = h;
+  el.querySelectorAll('.li[data-code]').forEach(n=>n.onclick=()=>{selCode=n.dataset.code; render();});
+}
+chart.on('click', p=>{ if(p.data&&p.data.s){ selCode=p.data.s.code; render(); }});
+document.getElementById('ySel').onchange = render;
+document.getElementById('rMin').oninput = render;
+document.getElementById('rMax').oninput = render;
+window.addEventListener('resize', ()=>chart.resize());
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>且慢投顾页改版 · 方向与方案对照</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  <style>
+    :root {
+      --brand: #1B88EE;
+      --poster: #3180EC;
+      --text: #333;
+      --subtle: #606060;
+      --subtler: #999;
+      --page: #F9FAFB;
+      --card: #fff;
+      --summary-bg: #DBEBFF;
+      --summary-border: #9CCBF8;
+      --success: #07AD8F;
+      --warning: #EA9500;
+      --error: #FA440C;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--page); color: var(--text);
+      font-family: Lora, Georgia, "PingFang SC", serif; font-size: 16px; line-height: 1.65;
+    }
+    h1,h2,h3,h4,.brand { font-family: Poppins, Arial, "PingFang SC", sans-serif; font-weight: 600; margin: 0 0 12px; }
+    a { color: var(--brand); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .poster {
+      background: linear-gradient(135deg, #1B88EE, #3180EC 50%, #7DD4C4);
+      color: #fff; padding: 40px 48px;
+      display: grid; grid-template-columns: 1.5fr 1fr; gap: 28px; align-items: center;
+    }
+    .poster h1 { font-size: 30px; line-height: 1.25; }
+    .poster .sub { opacity: .92; }
+    .poster .meta { margin-top: 16px; font-size: 13px; opacity: .85; }
+    .badge {
+      display: inline-block; background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.35);
+      border-radius: 999px; padding: 4px 12px; font-size: 12px; margin-bottom: 10px;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 20px 72px; }
+    .summary {
+      background: var(--summary-bg); border: 1px solid var(--summary-border);
+      border-radius: 12px; padding: 16px 18px; margin: -28px 0 20px; position: relative;
+    }
+    .card {
+      background: var(--card); border-radius: 8px; padding: 20px; margin-bottom: 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.03);
+    }
+    .card h2 { font-size: 22px; }
+    .card h3 { font-size: 18px; margin-top: 18px; }
+    .muted { color: var(--subtler); font-size: 13px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { border-bottom: 1px solid #EEE; padding: 10px 8px; text-align: left; vertical-align: top; }
+    th { color: var(--subtler); font-family: Poppins, sans-serif; font-size: 12px; }
+    .principle {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px;
+    }
+    .principle .item {
+      background: #F0F6FF; border-radius: 8px; padding: 12px; font-size: 13px;
+    }
+    .principle .item strong { display: block; color: var(--brand); font-family: Poppins, sans-serif; margin-bottom: 4px; }
+    .scheme {
+      border: 1px solid #E6EEF8; border-radius: 12px; overflow: hidden; height: 100%;
+      display: flex; flex-direction: column;
+    }
+    .scheme .hd {
+      padding: 14px 16px; color: #fff; font-family: Poppins, sans-serif;
+    }
+    .scheme.a .hd { background: #69B1F4; }
+    .scheme.b .hd { background: #1B88EE; }
+    .scheme.c .hd { background: #07AD8F; }
+    .scheme .bd { padding: 14px 16px; flex: 1; font-size: 14px; color: var(--subtle); }
+    .scheme .bd ul { margin: 8px 0 0; padding-left: 18px; }
+    .tag {
+      display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px;
+      font-family: Poppins, sans-serif; margin-right: 4px;
+    }
+    .tag-rec { background: #E8F8F4; color: var(--success); }
+    .tag-p0 { background: #F0F6FF; color: var(--brand); }
+    .tag-p1 { background: #FFFAEF; color: var(--warning); }
+    .tag-cut { background: #FEEDE9; color: var(--error); }
+    .phone {
+      width: 280px; margin: 0 auto; background: #111; border-radius: 28px; padding: 10px;
+      box-shadow: 0 12px 40px rgba(27,136,238,.18);
+    }
+    .phone-inner {
+      background: linear-gradient(180deg, #EAF4FF 0%, #F9FAFB 28%, #F9FAFB 100%);
+      border-radius: 22px; overflow: hidden; min-height: 520px; color: var(--text);
+    }
+    .status { text-align: center; font-size: 11px; color: var(--subtler); padding: 8px; font-family: Poppins, sans-serif; }
+    .mod {
+      margin: 8px 12px; background: #fff; border-radius: 10px; padding: 10px 12px; font-size: 12px;
+      border: 1px solid #EEF3F8;
+    }
+    .mod.hero {
+      background: linear-gradient(120deg, #3180EC, #69B1F4); color: #fff; border: none;
+    }
+    .mod .t { font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+    .mod.opt { border-style: dashed; opacity: .85; }
+    .slider-demo {
+      background: #F0F6FF; border-radius: 8px; padding: 8px; margin-top: 6px;
+    }
+    .slider-demo input { width: 100%; accent-color: var(--brand); }
+    #riskMap { height: 280px; }
+    .flow {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0;
+    }
+    .flow span {
+      background: #F0F6FF; color: var(--brand); border-radius: 8px; padding: 8px 10px;
+      font-size: 12px; font-family: Poppins, sans-serif; font-weight: 600;
+    }
+    .flow .arr { background: transparent; color: #CCC; padding: 0; }
+    .callout {
+      border-left: 3px solid var(--brand); background: #F0F6FF; padding: 12px 14px;
+      border-radius: 0 8px 8px 0; margin: 12px 0; font-size: 14px; color: var(--subtle);
+    }
+    .callout.warn { border-left-color: var(--warning); background: #FFFAEF; }
+    .decision label {
+      display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px;
+      border: 1px solid #E8EEF5; border-radius: 8px; margin: 8px 0; cursor: pointer;
+    }
+    .decision label:hover { border-color: var(--brand); background: #FAFCFF; }
+    .decision input { margin-top: 3px; accent-color: var(--brand); }
+    .check-table input[type=checkbox] { accent-color: var(--brand); width: 16px; height: 16px; }
+    .footer {
+      background: var(--poster); color: #fff; text-align: center; padding: 28px 16px; font-size: 13px;
+    }
+    .mermaid-box {
+      background: #FAFCFF; border: 1px solid #E6EEF8; border-radius: 8px; padding: 16px; overflow-x: auto;
+      font-family: Poppins, monospace; font-size: 13px; line-height: 1.8; color: var(--subtle);
+    }
+    .mermaid-box .node { color: var(--brand); font-weight: 600; }
+    @media (max-width: 900px) {
+      .poster, .grid-2, .grid-3, .principle { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: 1fr 1fr; }
+      .poster { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="poster">
+    <div>
+      <div class="badge">对齐文档 · 非 DEMO</div>
+      <h1>投顾页改版方向与三方案对照</h1>
+      <div class="sub">核心目的是推品。定制优先于标准策略。推荐默认：C 为页框 + B 为选品交互 + A 为货架供给。</div>
+      <div class="meta">
+        配套现况：<a href="./01-现状盘点报告.html" style="color:#fff;text-decoration:underline;">01-现状盘点报告.html</a><br />
+        日期：2026-07-23 · 阶段：方案对齐（拍板后再做产品 DEMO / 规划计划书）
+      </div>
+    </div>
+    <div>
+      <div class="mod hero" style="margin:0;">
+        <div class="t">推品漏斗（目标态）</div>
+        曝光匹配 → 定制/场景方案 → 标准策略 → 签约交易 → 陪伴复购
+      </div>
+      <div class="mod" style="margin:10px 0 0;">
+        <div class="t">北极星对齐</div>
+        定制账户渗透 · 矩阵策略有效曝光 · 首投/加仓转化（指标待拉数定基线）
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section class="summary">
+      <h2 class="brand" style="font-size:18px;color:var(--brand);">推荐结论（供拍板）</h2>
+      <p style="margin:0;color:var(--subtle);">
+        采用 <strong>组合方案 C+B</strong>：以 AI 组件化服务页为生产与分发框架，以晨星风险地图为选品主交互；
+        <strong>方案 A 的矩阵货架规则</strong>作为 P0 内容底座（先冻结主推清单并换品）。
+        用户自定义布局建议 <strong>P1</strong>，P0 只做运营编排千人千面。
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>一、统一设计原则</h2>
+      <div class="principle">
+        <div class="item"><strong>推品优先</strong>有效曝光→匹配→签约，不为堆功能</div>
+        <div class="item"><strong>定制 &gt; 标准</strong>有定制条件先推定制/场景方案</div>
+        <div class="item"><strong>主次清晰</strong>主动匹配 &gt; 风险发现 &gt; 工具专区 &gt; DIY</div>
+        <div class="item"><strong>组件生产</strong>运营可编排；用户可裁剪（后置）</div>
+      </div>
+
+      <h3>信息架构主次</h3>
+      <div class="flow">
+        <span>首屏：为我匹配</span><span class="arr">→</span>
+        <span>风险/目标发现</span><span class="arr">→</span>
+        <span>四笔钱主推货架</span><span class="arr">→</span>
+        <span>工具与专区</span><span class="arr">→</span>
+        <span>严选/DIY</span>
+      </div>
+
+      <div class="mermaid-box">
+        <div><span class="node">User</span> → 轻量意图/KYC（可跳过但降级）</div>
+        <div>→ <span class="node">MatchEngine</span>（定制账户 / 场景方案 / 矩阵策略）</div>
+        <div>→ <span class="node">PageComposer</span>（官方组件编排 · 客群模板）</div>
+        <div>→ 组件：定制卡 · 风险地图 · 四笔钱货架 · 规划入口 · 温度计 · 专区 · 严选</div>
+        <div>→ 交易 / 陪伴回流 → 再匹配</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>二、三套方案一览</h2>
+      <div class="grid-3">
+        <article class="scheme a">
+          <div class="hd">方案 A · 服务货架升级</div>
+          <div class="bd">
+            <div><span class="tag tag-p0">最快上线</span></div>
+            <p>传统一级页增强：收束工具入口，按矩阵重排四笔钱/严选，定制入口强化。</p>
+            <ul>
+              <li>改动面小，承接换品</li>
+              <li>仍偏「货架心智」</li>
+              <li>可视化与千人千面弱</li>
+            </ul>
+          </div>
+        </article>
+        <article class="scheme b">
+          <div class="hd">方案 B · 风险地图发现</div>
+          <div class="bd">
+            <div><span class="tag tag-p0">选品体验</span></div>
+            <p>晨星风险分 × 收益/回撤二维视图 + 滑杆，与列表联动。</p>
+            <ul>
+              <li>解决「只会点头部」</li>
+              <li>需矩阵数据治理</li>
+              <li> alone 仍缺服务编排</li>
+            </ul>
+          </div>
+        </article>
+        <article class="scheme c">
+          <div class="hd">方案 C · AI 组件化服务页</div>
+          <div class="bd">
+            <div><span class="tag tag-rec">主航道</span></div>
+            <p>页面=可编排服务组件；运营调模板；用户可增减可选模块。</p>
+            <ul>
+              <li>改变生产方式</li>
+              <li>对接小顾/实验室</li>
+              <li>工程与治理成本更高</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>三、推荐组合 C+B 线框示意</h2>
+      <div class="grid-2">
+        <div>
+          <div class="phone">
+            <div class="phone-inner">
+              <div class="status">且慢投顾 · 为我服务</div>
+              <div class="mod hero">
+                <div class="t">为你匹配到 1 个定制方向</div>
+                稳健增值 · 建议持有 1–3 年<br />
+                <span style="opacity:.9;">查看定制方案 →</span>
+              </div>
+              <div class="mod">
+                <div class="t">按风险找策略</div>
+                <div class="slider-demo">
+                  <div style="display:flex;justify-content:space-between;font-size:11px;color:#606060;">
+                    <span>更稳健</span><span id="riskLabel">晨星分 ≤ 45</span><span>更积极</span>
+                  </div>
+                  <input id="riskSlider" type="range" min="10" max="80" value="45" />
+                </div>
+                <div id="riskMap"></div>
+              </div>
+              <div class="mod">
+                <div class="t">四笔钱主推 · 稳钱</div>
+                花好月圆 · 息息相关 · 我要稳稳的幸福
+              </div>
+              <div class="mod opt">
+                <div class="t">可选 · 市场温度计</div>
+                中证全A 低估 — 可移除
+              </div>
+              <div class="mod opt">
+                <div class="t">沉底 · 严选 / DIY</div>
+                更多策略 · 每日估值 · 自建
+              </div>
+            </div>
+          </div>
+          <p class="muted" style="text-align:center;margin-top:10px;">示意线框，非高保真 DEMO</p>
+        </div>
+        <div>
+          <h3 style="margin-top:0;">首屏模块（必选 / 可选）</h3>
+          <table>
+            <tr><th>模块</th><th>类型</th><th>作用</th></tr>
+            <tr><td>为我匹配（定制/场景）</td><td><span class="tag tag-p0">必选</span></td><td>推品第一优先级</td></tr>
+            <tr><td>风险地图 + 滑杆</td><td><span class="tag tag-p0">必选</span></td><td>标准策略发现</td></tr>
+            <tr><td>四笔钱主推货架</td><td><span class="tag tag-p0">必选</span></td><td>矩阵供给落地</td></tr>
+            <tr><td>持仓调优摘要（老客）</td><td><span class="tag tag-p1">可选</span></td><td>诊断→行动</td></tr>
+            <tr><td>温度计 / 估值</td><td><span class="tag tag-p1">可选</span></td><td>市场敏感客群</td></tr>
+            <tr><td>养老 / 全球专区</td><td><span class="tag tag-p1">可选</span></td><td>场景入口</td></tr>
+            <tr><td>严选 / 自建 DIY</td><td><span class="tag tag-cut">沉底</span></td><td>高手路径</td></tr>
+          </table>
+
+          <h3>风险可视化交互</h3>
+          <ul>
+            <li><strong>主轴</strong>：晨星组合风险分（已有 MCP 数据）</li>
+            <li><strong>切换指标</strong>：最大回撤 / 近 1 年收益 / 建议持有期</li>
+            <li><strong>滑杆</strong>：过滤地图点与下方列表（双向联动）</li>
+            <li><strong>点击策略</strong>：半屏摘要 → 详情 / 跟投；若可定制则引导升级定制</li>
+            <li><strong>更好形态</strong>：不只散点，可加「风险轨道」——横向一条从稳健到积极的轨道，策略以节点分布，比纯二维更易一手操作</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>四、方案对比与取舍</h2>
+      <table>
+        <tr>
+          <th>维度</th><th>A 货架升级</th><th>B 风险地图</th><th>C 组件化</th><th>C+B（推荐）</th>
+        </tr>
+        <tr>
+          <td>推品效率</td><td>中</td><td>中高</td><td>高（取决于编排）</td><td>高</td>
+        </tr>
+        <tr>
+          <td>定制优先落地</td><td>弱（靠 Banner）</td><td>中</td><td>强</td><td>强</td>
+        </tr>
+        <tr>
+          <td>矩阵换品承接</td><td>强</td><td>强</td><td>中（需内容协议）</td><td>强</td>
+        </tr>
+        <tr>
+          <td>AI 工厂实践</td><td>弱</td><td>弱</td><td>强</td><td>强</td>
+        </tr>
+        <tr>
+          <td>工期风险</td><td>低</td><td>中</td><td>高</td><td>中高（可分期）</td>
+        </tr>
+        <tr>
+          <td>合规友好</td><td>低（仍裸货架）</td><td>中（可绑风险）</td><td>高（可绑 KYC 模板）</td><td>高</td>
+        </tr>
+      </table>
+
+      <h3>分期建议（若选 C+B）</h3>
+      <table>
+        <tr><th>阶段</th><th>范围</th><th>验收</th></tr>
+        <tr>
+          <td>P0</td>
+          <td>冻结主推清单；A 级货架换品；定制卡强化；风险滑杆+列表联动 MVP</td>
+          <td>矩阵主推露出率；定制入口 CTR；匹配后转化待拉数</td>
+        </tr>
+        <tr>
+          <td>P1</td>
+          <td>组件编排后台；客群模板千人千面；风险轨道/指标切换；老客调优组件</td>
+          <td>模板数、编排时效、定制账户渗透贡献</td>
+        </tr>
+        <tr>
+          <td>P2</td>
+          <td>用户自定义布局；与小顾/实验室双向组件复用</td>
+          <td>组件复用率、用户保存布局占比</td>
+        </tr>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>五、官方服务组件目录（AI 产品工厂）</h2>
+      <table>
+        <tr><th>组件 ID</th><th>名称</th><th>数据依赖</th><th>运营可配</th><th>用户可删</th></tr>
+        <tr><td>C-MATCH</td><td>为我匹配 / 定制卡</td><td>KYC、账户、资配</td><td>文案/跳转/客群</td><td>否</td></tr>
+        <tr><td>C-RISKMAP</td><td>风险地图</td><td>晨星分、收益、回撤</td><td>默认轴/主推高亮</td><td>否（P0）</td></tr>
+        <tr><td>C-M4SHELF</td><td>四笔钱主推货架</td><td>矩阵清单</td><td>排序/上下架</td><td>否</td></tr>
+        <tr><td>C-PLAN</td><td>规划入口（四笔钱/养老/攒钱）</td><td>场景配置</td><td>是</td><td>是</td></tr>
+        <tr><td>C-DIAG</td><td>持仓调优摘要</td><td>诊断结果</td><td>阈值/文案</td><td>是</td></tr>
+        <tr><td>C-TEMP</td><td>市场温度计</td><td>行情 MCP</td><td>是</td><td>是</td></tr>
+        <tr><td>C-ZONE</td><td>专区（养老/全球）</td><td>运营位</td><td>是</td><td>是</td></tr>
+        <tr><td>C-MORE</td><td>严选 / DIY</td><td>策略库</td><td>是</td><td>是</td></tr>
+      </table>
+      <div class="callout">
+        生产方式：研究院出矩阵 → 运营在组件上配置主推与模板 → 页面编排发布 → 效果回流（曝光/匹配/签约）→ 再编排。
+        与 AI 实验室 / 小顾共用组件与事件口径。
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>六、路径主次取舍（落地口径）</h2>
+      <table>
+        <tr><th>路径</th><th>主次</th><th>投顾页动作</th><th>不做</th></tr>
+        <tr><td>主动推品</td><td>主</td><td>首屏匹配结果 + 主推高亮</td><td>无差别轮播堆品</td></tr>
+        <tr><td>定制方案</td><td>主</td><td>有条件强制优先于列表</td><td>把定制藏在 Banner  tip</td></tr>
+        <tr><td>规划（四笔钱/养老/攒钱）</td><td>主辅助</td><td>组件入口；结果回流匹配</td><td>多个规划 Banner 并列抢首屏</td></tr>
+        <tr><td>持仓调优</td><td>老客主</td><td>诊断摘要→一键方案</td><td>与资产页重复展示大段分析</td></tr>
+        <tr><td>目标自选</td><td>辅助</td><td>风险/目标滑杆驱动货架</td><td>仅 Tab 切换无解释</td></tr>
+        <tr><td>DIY</td><td>次</td><td>严选/估值/自建沉底</td><td>占首屏</td></tr>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>七、与矩阵 / 合规 / 小顾的衔接</h2>
+      <div class="grid-2">
+        <div>
+          <h3 style="margin-top:0;">策略矩阵</h3>
+          <ul>
+            <li>以矩阵冻结「主推集合」，现网独有品（货币三佳、超级理财加、保险）进「运营扩展位」或补入矩阵。</li>
+            <li>新品（稳健3070、守恒、行业风向标）有策略页+陪伴包才上风险地图。</li>
+            <li>私募占位不进零售默认模板。</li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="margin-top:0;">合规与小顾</h3>
+          <ul>
+            <li>P1 起：轻量意图/KYC 后再展示完整地图（可浏览降级列表）。</li>
+            <li>匹配话术与适当性留痕复用投顾 2.0。</li>
+            <li>小顾可唤起同一组件（C-MATCH / C-RISKMAP），避免两套货架。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card decision" id="align">
+      <h2>八、对齐决议表（请勾选）</h2>
+      <p class="muted">本页仅用于对齐。勾选结果可截图或备注后进入下一阶段：产品 DEMO + 产品规划与计划书。</p>
+
+      <h3>1. 主方案</h3>
+      <label><input type="radio" name="scheme" value="A" /> 方案 A：服务货架升级（最快换品）</label>
+      <label><input type="radio" name="scheme" value="B" /> 方案 B：风险地图发现</label>
+      <label><input type="radio" name="scheme" value="C" /> 方案 C：AI 组件化服务页</label>
+      <label><input type="radio" name="scheme" value="CB" checked /> <strong>方案 C+B（推荐）</strong>：组件页框 + 风险地图 + A 货架规则作 P0 底座</label>
+
+      <h3>2. 主推货架冻结源</h3>
+      <label><input type="radio" name="shelf" value="matrix" checked /> 以研究院策略矩阵为准，现网差异品迁出或补矩阵</label>
+      <label><input type="radio" name="shelf" value="live" /> 以现网货架为准，矩阵仅作投研参考</label>
+      <label><input type="radio" name="shelf" value="hybrid" /> 混合：矩阵主推 + 固定运营扩展位（保险/机构）</label>
+
+      <h3>3. 首屏 KYC</h3>
+      <label><input type="radio" name="kyc" value="none" /> P0 不强制，保持可浏览货架</label>
+      <label><input type="radio" name="kyc" value="soft" checked /> 轻量意图（目标/期限/风险）后出匹配；可跳过但降级</label>
+      <label><input type="radio" name="kyc" value="hard" /> 强制 KYC 后才展示策略地图/货架</label>
+
+      <h3>4. 用户自定义布局</h3>
+      <label><input type="radio" name="layout" value="p0" /> 进入 P0</label>
+      <label><input type="radio" name="layout" value="p1" checked /> 进入 P1（推荐）：P0 只做运营编排千人千面</label>
+      <label><input type="radio" name="layout" value="no" /> 不做</label>
+
+      <h3>5. 清单确认</h3>
+      <table class="check-table">
+        <tr><th style="width:40px;">✓</th><th>事项</th><th>Owner 建议</th></tr>
+        <tr><td><input type="checkbox" /></td><td>冻结公募主推清单（含上下架与排序）</td><td>投研 + 产品</td></tr>
+        <tr><td><input type="checkbox" /></td><td>明确保险/机构品是否进投顾页及位置</td><td>产品 + 业务</td></tr>
+        <tr><td><input type="checkbox" /></td><td>补神策基线：投顾页曝光/点击/定制 CTR/转化</td><td>数据</td></tr>
+        <tr><td><input type="checkbox" /></td><td>确认 P0 范围与目标上线窗口</td><td>产品负责人</td></tr>
+        <tr><td><input type="checkbox" /></td><td>启动下一阶段：交互 DEMO + 规划计划书</td><td>产品</td></tr>
+      </table>
+
+      <div class="callout warn">
+        对齐完成后告诉我主方案与冻结源选择，我再进入<strong>产品 DEMO</strong>与<strong>产品规划计划书</strong>阶段。
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>附录 · 方案 A/B/C 单独说明</h2>
+      <h3>A. 服务货架升级</h3>
+      <p>保留现结构，做减法与换品：定制卡视觉升权；四笔钱按矩阵梯度排序；底部工具收成「工具抽屉」；严选保留。适合矩阵紧急上新，但不解决产品库心智。</p>
+      <h3>B. 风险地图发现</h3>
+      <p>以可视化替代纯列表。建议「风险轨道 + 散点」双模：轨道适合拇指滑动，散点适合桌面/深度比较。指标切换要有合规脚注（历史业绩不预示未来）。</p>
+      <h3>C. AI 组件化服务页</h3>
+      <p>把投顾页定义为「服务编排画布」。官方模板：新客转化版 / 老客调优版 / 市场敏感版 / 小白兜底版。运营改的是组件参数与顺序，而不是每次重做页面。这是 AI 产品工厂在 C 端一级页的样板间。</p>
+    </section>
+  </div>
+
+  <footer class="footer">
+    盈米基金｜且慢 Qieman · 投顾页改版方案对照 · 内部对齐材料
+  </footer>
+
+  <script>
+    const pts = [
+      [3, 1.63, '花好月圆'], [6, 1.19, '债基优等生'], [9, 3.44, '息息相关'],
+      [11, 6.08, '稳稳幸福'], [15, 7.91, '风和日丽'], [18, 6.35, '全球丰收'],
+      [21, 7.7, '春华秋实'], [30, 13.11, '天颐五剑'], [49, 24.11, '简慢'],
+      [59, 30.53, '中西合璧'], [60, 27.8, '周周同行'], [67, 29.01, '思远'],
+      [73, 36.68, '进取派'], [74, 26.19, 'U定投']
+    ];
+    const el = document.getElementById('riskMap');
+    const chart = echarts.init(el);
+    const label = document.getElementById('riskLabel');
+    const slider = document.getElementById('riskSlider');
+
+    function render(maxRisk) {
+      const data = pts.filter(p => p[0] <= maxRisk).map(p => ({ value: [p[0], p[1]], name: p[2] }));
+      chart.setOption({
+        animationDuration: 300,
+        grid: { left: 28, right: 8, top: 16, bottom: 24 },
+        xAxis: { min: 0, max: 80, show: false, splitLine: { show: false } },
+        yAxis: { show: false, splitLine: { show: false } },
+        tooltip: { formatter: p => `${p.data.name}<br/>风险分 ${p.value[0]} · 近1年 ${p.value[1]}%` },
+        series: [{
+          type: 'scatter',
+          symbolSize: 11,
+          data,
+          itemStyle: { color: '#1B88EE' }
+        }]
+      });
+    }
+    render(45);
+    slider.addEventListener('input', () => {
+      const v = Number(slider.value);
+      label.textContent = `晨星分 ≤ ${v}`;
+      render(v);
+    });
+    window.addEventListener('resize', () => chart.resize());
+  </script>
+</body>
+</html>

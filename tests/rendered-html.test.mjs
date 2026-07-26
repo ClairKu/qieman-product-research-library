@@ -89,3 +89,27 @@ test("published copies contain no local or placeholder URLs", async () => {
   await access(new URL("../public/og.png", import.meta.url));
   await access(root);
 });
+
+test("GitHub Pages artifact is standalone and keeps all hosted routes", async () => {
+  const html = await readFile(new URL("../docs/index.html", import.meta.url), "utf8");
+  const hosted = [...html.matchAll(/href="(pages\/[^"]+)"/g)].map(
+    (match) => match[1],
+  );
+
+  assert.equal(hosted.length, 18);
+  assert.equal(new Set(hosted).size, 18);
+  assert.doesNotMatch(html, /<script\b|localhost:|invalid\.invalid|href="\/pages\//);
+  assert.match(
+    html,
+    /https:\/\/clairku\.github\.io\/qieman-product-research-library\/og\.png/,
+  );
+
+  await Promise.all(
+    hosted.map((href) =>
+      access(new URL(`../docs/${decodeURIComponent(href)}`, import.meta.url)),
+    ),
+  );
+  await access(new URL("../docs/assets/index-ZS8EjuPg.css", import.meta.url));
+  await access(new URL("../docs/og.png", import.meta.url));
+  await access(new URL("../docs/.nojekyll", import.meta.url));
+});
