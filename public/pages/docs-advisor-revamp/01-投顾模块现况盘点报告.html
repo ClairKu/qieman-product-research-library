@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>且慢投顾模块现况盘点报告 | 2026-07</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <style>
+    :root {
+      --color-brand-primary: #1B88EE;
+      --color-poster-bg: #3180EC;
+      --color-summary-bg: #DBEBFF;
+      --color-summary-border: #9CCBF8;
+      --text-neutral: #333333;
+      --text-neutral-subtle: #606060;
+      --text-neutral-subtler: #999999;
+      --text-inverse: #FFFFFF;
+      --text-primary: #1B88EE;
+      --text-error: #FA440C;
+      --text-warning: #EA9500;
+      --text-success: #07AD8F;
+      --bg-page-deep: #F9FAFB;
+      --bg-card-default: #FFFFFF;
+      --bg-card-deep: #F9FAFB;
+      --bg-card-primary-faded: #F0F6FF;
+      --bg-card-warning-faded: #FFFAEF;
+      --bg-card-error-faded: #FEEDE9;
+      --border-neutral-faded: #D8D8D8;
+      --border-primary: #1B88EE;
+      --radius-small: 8px;
+      --radius-medium: 12px;
+      --radius-large: 24px;
+      --spacing-module: 16px;
+      --font-title: "Poppins", "PingFang SC", "Hiragino Sans GB", Arial, sans-serif;
+      --font-body: "Lora", "Songti SC", Georgia, serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-page-deep);
+      color: var(--text-neutral);
+      line-height: 1.6;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px 64px; }
+    .hero {
+      background: linear-gradient(135deg, #3180EC 0%, #1B88EE 55%, #0B5FBE 100%);
+      color: var(--text-inverse);
+      border-radius: 0 0 var(--radius-large) var(--radius-large);
+      padding: 40px 28px 36px;
+      margin: 0 -20px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "";
+      position: absolute; right: -40px; top: -40px;
+      width: 280px; height: 280px; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+    }
+    .hero-kicker { font-family: var(--font-title); font-size: 13px; opacity: 0.85; letter-spacing: 0.08em; text-transform: uppercase; }
+    .hero h1 { font-family: var(--font-title); font-size: 32px; font-weight: 700; margin: 10px 0 8px; line-height: 1.25; }
+    .hero p { font-size: 16px; max-width: 720px; opacity: 0.95; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 999px; padding: 6px 12px; font-size: 13px; font-family: var(--font-title);
+    }
+    .summary {
+      background: var(--color-summary-bg);
+      border: 1px solid var(--color-summary-border);
+      border-radius: var(--radius-medium);
+      padding: 16px;
+      margin-bottom: var(--spacing-module);
+    }
+    .summary h2 { font-family: var(--font-title); font-size: 18px; margin-bottom: 8px; color: var(--text-neutral); }
+    .summary ul { padding-left: 18px; color: var(--text-neutral-subtle); font-size: 15px; }
+    .summary li { margin: 4px 0; }
+    .nav {
+      display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 24px; position: sticky; top: 0; z-index: 10;
+      background: rgba(249,250,251,0.92); backdrop-filter: blur(8px); padding: 10px 0;
+    }
+    .nav a {
+      text-decoration: none; color: var(--text-primary); background: var(--bg-card-default);
+      border: 1px solid var(--border-neutral-faded); border-radius: 999px;
+      padding: 6px 12px; font-size: 13px; font-family: var(--font-title);
+    }
+    .nav a:hover { border-color: var(--border-primary); background: var(--bg-card-primary-faded); }
+    .nav a.primary { background: var(--color-brand-primary); color: #fff; border-color: var(--color-brand-primary); }
+    section { margin-bottom: 28px; }
+    h2.sec {
+      font-family: var(--font-title); font-size: 24px; margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    h3 { font-family: var(--font-title); font-size: 18px; margin: 18px 0 10px; }
+    .card {
+      background: var(--bg-card-default); border-radius: var(--radius-small);
+      padding: 14px; margin-bottom: 12px; border: 1px solid #EEF1F4;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    @media (max-width: 900px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 26px; }
+    }
+    .kpi {
+      background: var(--bg-card-default); border-radius: var(--radius-small); padding: 14px;
+      border-left: 4px solid var(--color-brand-primary);
+    }
+    .kpi .label { font-size: 12px; color: var(--text-neutral-subtler); font-family: var(--font-title); }
+    .kpi .value { font-size: 22px; font-family: var(--font-title); font-weight: 700; margin: 4px 0; }
+    .kpi .hint { font-size: 12px; color: var(--text-neutral-subtle); }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; border-radius: 8px; overflow: hidden; }
+    th, td { border-bottom: 1px solid #EEF1F4; padding: 10px 12px; text-align: left; vertical-align: top; }
+    th { background: var(--bg-card-deep); font-family: var(--font-title); font-size: 13px; color: var(--text-neutral-subtle); }
+    .tag {
+      display: inline-block; font-size: 11px; font-family: var(--font-title);
+      padding: 2px 8px; border-radius: 999px; margin-right: 4px; white-space: nowrap;
+    }
+    .tag-p0 { background: var(--bg-card-error-faded); color: var(--text-error); }
+    .tag-p1 { background: var(--bg-card-warning-faded); color: var(--text-warning); }
+    .tag-ok { background: #E8F8F4; color: var(--text-success); }
+    .tag-warn { background: var(--bg-card-warning-faded); color: var(--text-warning); }
+    .tag-muted { background: #F0F0F0; color: var(--text-neutral-subtler); }
+    .tag-blue { background: var(--bg-card-primary-faded); color: var(--text-primary); }
+    .ia {
+      display: grid; gap: 8px; font-family: var(--font-title); font-size: 13px;
+    }
+    .ia-row {
+      display: grid; grid-template-columns: 120px 1fr; gap: 10px; align-items: stretch;
+    }
+    .ia-label {
+      background: var(--color-poster-bg); color: #fff; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; padding: 10px; text-align: center;
+    }
+    .ia-body {
+      background: #fff; border: 1px dashed var(--border-neutral-faded); border-radius: 8px;
+      padding: 10px 12px; color: var(--text-neutral-subtle);
+    }
+    .timeline { border-left: 3px solid var(--color-summary-border); padding-left: 16px; }
+    .tl-item { position: relative; margin-bottom: 14px; }
+    .tl-item::before {
+      content: ""; position: absolute; left: -23px; top: 6px; width: 10px; height: 10px;
+      border-radius: 50%; background: var(--color-brand-primary);
+    }
+    .tl-date { font-family: var(--font-title); font-size: 13px; color: var(--text-primary); }
+    .tl-title { font-family: var(--font-title); font-size: 15px; margin: 2px 0; }
+    .tl-desc { font-size: 13px; color: var(--text-neutral-subtle); }
+    .callout {
+      background: var(--bg-card-warning-faded); border: 1px solid #FFDC9E;
+      border-radius: 12px; padding: 12px 14px; font-size: 14px; color: var(--text-neutral-subtle);
+    }
+    .callout strong { color: var(--text-neutral); }
+    .footer {
+      margin-top: 36px; background: var(--color-poster-bg); color: #fff;
+      border-radius: var(--radius-large); padding: 22px; text-align: center;
+      font-family: var(--font-title); font-size: 13px;
+    }
+    .footer a { color: #fff; }
+    .muted { color: var(--text-neutral-subtler); font-size: 12px; }
+    .flow {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-family: var(--font-title); font-size: 13px;
+    }
+    .flow span {
+      background: var(--bg-card-primary-faded); color: var(--text-primary);
+      border-radius: 8px; padding: 8px 10px;
+    }
+    .flow i { color: var(--text-neutral-subtler); }
+    #riskChart { width: 100%; height: 340px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="hero-kicker">Qieman · Advisor Module Audit</div>
+      <h1>且慢投顾模块现况盘点报告</h1>
+      <p>面向「四笔钱 / 严选策略体系升级 + 投顾一级页改版」的基线盘点：覆盖投顾页信息架构、规划/工具/专区/货架能力、上线里程碑、推品逻辑、体验问题与数据缺口。</p>
+      <div class="hero-meta">
+        <span class="chip"><i class="ri-calendar-line"></i> 报告日期 2026-07-23</span>
+        <span class="chip"><i class="ri-focus-3-line"></i> 核心目的：推品</span>
+        <span class="chip"><i class="ri-shield-check-line"></i> 原则：定制优先 → 标准策略</span>
+        <span class="chip"><i class="ri-links-line"></i> 关联 <a href="./02-投顾页改版方向与方案设计.html" style="color:#fff;text-decoration:underline;">改版方案</a></span>
+      </div>
+    </header>
+
+    <div class="summary">
+      <h2><i class="ri-flashlight-line"></i> 一句话结论</h2>
+      <ul>
+        <li><strong>投顾页是一级页中长期未整体升级的“货架型页面”</strong>：结构仍以「运营位 + 四笔钱货架 + 更多投资入口」为主，规划/定制/陪伴能力已在周边成熟，但未收敛成一级页主叙事。</li>
+        <li><strong>推品能力分散</strong>：四笔钱主推、严选、定制方案、养老/攒钱、工具找品并行存在；用户既要“被推荐”，也要“能查找/能调优/能 DIY”，主次不清。</li>
+        <li><strong>本次改版窗口明确</strong>：配合研究院品类矩阵与四笔钱/严选策略体系升级，应把投顾页从“策略列表页”升级为“推品中枢 + AI 可编排服务页”。</li>
+      </ul>
+    </div>
+
+    <nav class="nav">
+      <a href="#ia">页面结构</a>
+      <a href="#inventory">能力盘点</a>
+      <a href="#milestone">里程碑</a>
+      <a href="#logic">推品逻辑</a>
+      <a href="#ux">体验问题</a>
+      <a href="#usage">使用复用</a>
+      <a href="#riskmap">风险分布示意</a>
+      <a href="#gaps">缺口</a>
+      <a class="primary" href="./02-投顾页改版方向与方案设计.html">查看改版方案 →</a>
+    </nav>
+
+    <section id="context">
+      <h2 class="sec"><i class="ri-flag-2-line"></i> 1. 项目背景与定位</h2>
+      <div class="grid-3">
+        <div class="kpi">
+          <div class="label">组织目标（O2-KR1）</div>
+          <div class="value">策略矩阵重构</div>
+          <div class="hint">8 月前完成新策略体系与配套服务；非货自营 AUM ≥35 亿（业务 DRI）</div>
+        </div>
+        <div class="kpi">
+          <div class="label">产品目标（本项目）</div>
+          <div class="value">投顾页升级</div>
+          <div class="hint">唯一长期未升级的一级页；承接品类矩阵与推品逻辑</div>
+        </div>
+        <div class="kpi">
+          <div class="label">生产方式升级</div>
+          <div class="value">AI 产品工厂</div>
+          <div class="hint">官方组件编排 + 运营可调 + 用户可选布局</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <p style="font-size:15px;color:var(--text-neutral-subtle);">
+          投顾页当前应承担的角色：<strong>投前推品与方案获取主入口</strong>。它不是资产页（持仓经营），也不是发现页（内容消费），更不是小顾对话页本身；但必须与定制账户、AI 小顾、养老/攒钱、工具找品形成统一漏斗：
+        </p>
+        <div class="flow" style="margin-top:12px;">
+          <span>场景/目标识别</span><i class="ri-arrow-right-s-line"></i>
+          <span>轻量 KYC / 持仓上下文</span><i class="ri-arrow-right-s-line"></i>
+          <span>优先定制方案</span><i class="ri-arrow-right-s-line"></i>
+          <span>标准四笔钱/严选</span><i class="ri-arrow-right-s-line"></i>
+          <span>交易与陪伴承接</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="ia">
+      <h2 class="sec"><i class="ri-layout-masonry-line"></i> 2. 投顾页现况信息架构（基线）</h2>
+      <p class="muted" style="margin-bottom:10px;">基于 2023-02 投顾页优化需求、客服知识库路径说明，以及 2024–2025 增量能力叠层还原。线上 App 原生页需登录态复核，标注「待 App 截图确认」。</p>
+      <div class="ia">
+        <div class="ia-row">
+          <div class="ia-label">顶部服务</div>
+          <div class="ia-body">标题「且慢投顾」· 了解投顾服务 · 分享 · <strong>小顾/AI 超级入口</strong>（首页/资产/投顾三端露出）· 小顾 2.0 规划书入口（2025.11 可见专属顾问信息）</div>
+        </div>
+        <div class="ia-row">
+          <div class="ia-label">运营位</div>
+          <div class="ia-body">Seeker 可配固定运营位（历史上用于小顾问诊、养老场景）；支持标题/副标/跳转/生效时间</div>
+        </div>
+        <div class="ia-row">
+          <div class="ia-label">四笔钱货架</div>
+          <div class="ia-body">Tab：活钱管理 / 短期稳健（稳钱）/ 长期投资（长钱）/ 保险保障 · 策略卡片（名称、一句话、建议持有、收益/跟投方式等）· Seeker 维护排序</div>
+        </div>
+        <div class="ia-row">
+          <div class="ia-label">更多投资</div>
+          <div class="ia-body">严选策略（底部/二级页 m4/more）· 每日估值（idx-eval）· 心愿攒钱专区入口（2024.3）· 其他工具/专区入口叠层</div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:12px;">
+        <strong>关键判断：</strong>投顾页长期被当成「四笔钱策略货架 + 入口集合」，规划能力（四笔钱规划/定制方案/养老规划）与工具能力（温度计/估值）分散在首页、小顾、专区、资产路径中，一级页缺乏统一推品叙事。
+      </div>
+    </section>
+
+    <section id="inventory">
+      <h2 class="sec"><i class="ri-stack-line"></i> 3. 全 App 相关能力盘点</h2>
+
+      <h3>3.1 规划类</h3>
+      <table>
+        <thead>
+          <tr><th>模块</th><th>定位与体验</th><th>推品/承接</th><th>复用状态</th><th>里程碑</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>四笔钱投资规划</strong><br/><span class="tag tag-blue">投前</span></td>
+            <td>小顾问诊 2.0：按活钱/稳钱/长钱/保障做资金规划；路径较完整，但完成后仍常落到标准策略推荐。</td>
+            <td>规划结果 → 四笔钱策略卡片；尚未全面落到「账户调整方案」。</td>
+            <td>小顾/首页/投顾运营位复用；资产页有四笔钱配置分析。</td>
+            <td>2022-05 投资规划上线；2023 投后分析增强；2026 规划升级进行中。</td>
+          </tr>
+          <tr>
+            <td><strong>定制方案 / 定制账户</strong><br/><span class="tag tag-ok">投顾2.0</span></td>
+            <td>按账户目标匹配资配方案+产品组合；活钱/稳钱场景仍优先标准策略。</td>
+            <td>长钱/高预期收益场景主推；创建账户结果页、账户设置、小顾提问可进入。</td>
+            <td>与账户模型、执行计划、MESN 底座打通；投顾页主货架未突出。</td>
+            <td>2024 投顾2.0 方案；2024–2025 灰度/内测；2025-09 下单展示优化。</td>
+          </tr>
+          <tr>
+            <td><strong>养老规划 / 养老专区</strong><br/><span class="tag tag-blue">场景</span></td>
+            <td>测算 + 专区货架 + 个人养老金/Y 份额/保险；路径重，决策链长。</td>
+            <td>颐养天年等养老策略；税延养老投顾升级（组织目标）。</td>
+            <td>投顾页运营位/专区入口；首页也曾露出。</td>
+            <td>2022 退休养老规划；2023 养老专区 2.0；持续迭代养老金能力。</td>
+          </tr>
+          <tr>
+            <td><strong>心愿攒钱 / 攒钱计划</strong><br/><span class="tag tag-blue">场景</span></td>
+            <td>场景化目标攒钱；与账户体系部分特殊化（存量升级受限）。</td>
+            <td>场景账户 + 对应策略/挑战玩法；可做获客钩子。</td>
+            <td>投顾页「更多投资」+ 首页快捷入口 + 搜索推荐。</td>
+            <td>2024-03 内测/对外；2024-06 首页快捷入口。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>3.2 工具类</h3>
+      <table>
+        <thead>
+          <tr><th>模块</th><th>作用</th><th>与推品关系</th><th>入口现状</th><th>备注</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>市场温度计</strong></td>
+            <td>估值/股债利差综合温度；用于中长期配置参考。</td>
+            <td>配置指引与内容 IP（四笔钱专栏）强相关；非直接交易货架。</td>
+            <td>首页强露出；策略页/内容可联动。</td>
+            <td>与每日估值算法不同，客服需解释口径差异。</td>
+          </tr>
+          <tr>
+            <td><strong>每日估值</strong></td>
+            <td>主流指数 PE/PB 百分位着色；交易日晚间更新。</td>
+            <td>支持估值交易/指数类找品；偏工具用户。</td>
+            <td>投顾页更多投资 → idx-eval；历史反馈「藏得深」。</td>
+            <td>2022 算法升级；持续维护追踪产品。</td>
+          </tr>
+          <tr>
+            <td><strong>市场风向 / 行情信号</strong></td>
+            <td>热点与解读（发现页「市场风向」、温度计本周解读）。</td>
+            <td>偏内容激活；与严选/主题策略联动弱。</td>
+            <td>发现页为主；非投顾页主模块。</td>
+            <td>2025-01 发现页增强。</td>
+          </tr>
+          <tr>
+            <td><strong>自建组合</strong></td>
+            <td>用户 DIY 组合；专业门槛高。</td>
+            <td>满足高阶 DIY 找品；不应与官方推品抢主位。</td>
+            <td>我的/管理策略路径；投顾页弱露出。</td>
+            <td>与官方货架边界需明确。</td>
+          </tr>
+          <tr>
+            <td><strong>额度宝 / 限额相关能力</strong></td>
+            <td>支付限额、极速汇款、升级限额等资金侧能力。</td>
+            <td>不直接推品，影响买入转化与大额承接。</td>
+            <td>盈米宝充值/失败页等交易链路。</td>
+            <td>是否作为投顾页工具模块需产品确认；当前更偏交易基建。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>3.3 专区与货架</h3>
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="margin-top:0;">四笔钱主货架（主推层）</h3>
+          <p style="font-size:14px;color:var(--text-neutral-subtle);">客服知识库（更新至 2026-04）可见主推骨架：</p>
+          <ul style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);margin-top:8px;">
+            <li><strong>活钱</strong>：盈米宝、货币三佳</li>
+            <li><strong>稳钱</strong>：花好月圆、债基优等生、我要稳稳的幸福、超级理财加</li>
+            <li><strong>长钱</strong>：全球丰收、春华秋实、周周同行、进取派优选等</li>
+            <li><strong>暂不归长钱展示</strong>：长赢 150 份 / S 定投（信号类，单独运营）</li>
+            <li><strong>保险保障</strong>：运营位轮换（攒多多/领多多/福满佳等）</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0;">严选层 / 专区层</h3>
+          <ul style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);">
+            <li><strong>严选策略页</strong>：三笔钱 Tab 列表；入口在投顾页底部「更多投资」。</li>
+            <li><strong>养老专区</strong>：测算、养老金、Y 份额、养老策略专栏化运营。</li>
+            <li><strong>全球能力</strong>：更多以「全球丰收」等策略/资产配置能力存在；独立「全球专区」形态待 App 截图确认。</li>
+            <li><strong>私享理财</strong>：高客/多品类承接，入口偏资产页更多，非投顾页主叙事。</li>
+          </ul>
+          <div class="callout" style="margin-top:10px;">
+            研究院品类表（企业微信文档）本次未能匿名打开，需登录后同步品类矩阵明细到本报告附录。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="milestone">
+      <h2 class="sec"><i class="ri-timeline-view"></i> 4. 上线里程碑（投顾相关主线）</h2>
+      <div class="timeline card">
+        <div class="tl-item">
+          <div class="tl-date">2022-05</div>
+          <div class="tl-title">四笔钱投资规划（小顾咨询 2.0）</div>
+          <div class="tl-desc">投前规划主路径成型；仍以标准策略承接为主。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2022 H2 – 2023</div>
+          <div class="tl-title">养老规划 / 养老专区 2.0</div>
+          <div class="tl-desc">场景专区建设；投顾页运营位承接养老入口。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2023-02-21</div>
+          <div class="tl-title">四笔钱投顾页 + 严选策略页优化（近一次整体页改）</div>
+          <div class="tl-desc">运营位、四笔钱 Tab、严选二级页、估值入口；之后多为策略上下架与局部入口叠加。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2023-09</div>
+          <div class="tl-title">AI 小顾超级入口</div>
+          <div class="tl-desc">投顾能力开始对话化；首页/投顾入口逐步统一到小顾。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2023-12</div>
+          <div class="tl-title">APP 改版思路：明确投顾页整体升级待做</div>
+          <div class="tl-desc">当时判断：投顾页「未突显投顾服务，货架缺引导，规划路径单一」。资产/首页后续有升级，投顾页整体仍滞后。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2024</div>
+          <div class="tl-title">投顾 2.0 / 定制账户落地推进</div>
+          <div class="tl-desc">账户目标 → 资配方案 → 定制组合；心愿攒钱上线；AI 超级入口三端露出。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2025–2026 H1</div>
+          <div class="tl-title">定制方案体验优化、小顾整合投顾 2.0、策略精选机制讨论</div>
+          <div class="tl-desc">四笔钱/严选上下线标准、账户诊断/陪伴底座增强；一级投顾页仍未体系化改版。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2026 H2（当前）</div>
+          <div class="tl-title">四笔钱策略矩阵重构 + 投顾页升级窗口</div>
+          <div class="tl-desc">新重点策略上线准备（产品页、陪伴体系）；投顾页作为推品中枢一并升级。</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="logic">
+      <h2 class="sec"><i class="ri-git-branch-line"></i> 5. 推品逻辑现况 vs 目标原则</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="margin-top:0;">现况（实际发生）</h3>
+          <ol style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);">
+            <li>多数用户在投顾页直接浏览四笔钱主推策略（货架选品）。</li>
+            <li>严选作为「更多选择」长列表，偏查找型用户。</li>
+            <li>定制方案存在，但入口分散在账户创建/小顾/内测链路，投顾页不主推。</li>
+            <li>规划完成后常回到标准策略，定制与标准策略的优先级未被一级页显性表达。</li>
+            <li>运营位可临时推场景，但缺少稳定的「人—场景—方案」状态机。</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0;">目标原则（本次对齐）</h3>
+          <ol style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);">
+            <li><strong>所有推品逻辑优先推定制方案</strong>，再推标准策略。</li>
+            <li>标准策略按品类矩阵分层：四笔钱主推层 / 严选层 / 长尾层。</li>
+            <li>活钱、稳钱可继续优先标准策略（已能较好满足）；长钱/复杂目标优先定制。</li>
+            <li>支持四类用户意图并行，但主次分明：被推荐 / 按持仓调优 / 按目标选品 / DIY 找品。</li>
+            <li>合规与适当性：展示与推荐需可解释、可留痕；避免纯货架式“随便挑”。</li>
+          </ol>
+        </div>
+      </div>
+      <table style="margin-top:12px;">
+        <thead>
+          <tr><th>用户意图</th><th>现有承接</th><th>主次建议</th><th>一级页处理</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>主动被推荐</td>
+            <td>运营位、四笔钱货架、小顾</td>
+            <td><span class="tag tag-p0">主</span></td>
+            <td>首屏「为我推荐」：定制优先，否则主推策略</td>
+          </tr>
+          <tr>
+            <td>按目标选品</td>
+            <td>四笔钱 Tab、攒钱、养老、账户目标</td>
+            <td><span class="tag tag-p0">主</span></td>
+            <td>目标导航（四笔钱/场景）→ 方案</td>
+          </tr>
+          <tr>
+            <td>按持仓调优</td>
+            <td>账户诊断、资产分析、小顾诊断</td>
+            <td><span class="tag tag-p1">次主</span></td>
+            <td>有持仓用户展示「优化建议摘要」跳转</td>
+          </tr>
+          <tr>
+            <td>查找 / DIY</td>
+            <td>严选列表、估值、自建、搜索</td>
+            <td><span class="tag tag-muted">辅</span></td>
+            <td>工具与严选下沉，不占首屏</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="ux">
+      <h2 class="sec"><i class="ri-emotion-unhappy-line"></i> 6. 产品体验问题（证据化）</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="margin-top:0;">结构与定位</h3>
+          <ul style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);">
+            <li>与首页推品/四笔钱内容重叠（客服周报多次反馈）。</li>
+            <li>规划入口历史像 Banner，服务感弱（2023 APP 改版思路已指出）。</li>
+            <li>工具入口藏得深（估值等），专业用户找得到，大众用户找不到。</li>
+            <li>定制方案未成为一级页主 CTA。</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0;">推品与认知</h3>
+          <ul style="padding-left:18px;font-size:14px;color:var(--text-neutral-subtle);">
+            <li>用户仍在「选策略」，而非「确认方案」。</li>
+            <li>四笔钱、账户、组合、方案术语成本高。</li>
+            <li>严选与主推边界对用户不清晰（只是更多列表）。</li>
+            <li>风险—收益关系主要靠卡片数字，缺少空间化理解。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="usage">
+      <h2 class="sec"><i class="ri-bar-chart-box-line"></i> 7. 用户使用与复用情况</h2>
+      <div class="callout">
+        <strong>数据诚实声明：</strong>本报告先给「能力复用地图」与「建议指标字典」。PV/UV、转化、复购、定制渗透等经营数据需从埋点/经营看板拉数后回填，禁止用猜测数充当事实。
+      </div>
+      <h3>7.1 能力复用地图（质性）</h3>
+      <table>
+        <thead>
+          <tr><th>能力</th><th>投顾页</th><th>首页</th><th>资产/账户</th><th>小顾</th><th>发现/内容</th><th>顾问工作台</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>四笔钱主推策略</td>
+            <td>●</td><td>●</td><td>○</td><td>●</td><td>●</td><td>○</td>
+          </tr>
+          <tr>
+            <td>严选策略</td>
+            <td>●</td><td>○</td><td>○</td><td>○</td><td>○</td><td>○</td>
+          </tr>
+          <tr>
+            <td>投资规划</td>
+            <td>○</td><td>○</td><td>○</td><td>●</td><td>○</td><td>●</td>
+          </tr>
+          <tr>
+            <td>定制方案</td>
+            <td>△</td><td>△</td><td>●</td><td>●</td><td>○</td><td>●</td>
+          </tr>
+          <tr>
+            <td>温度计/估值</td>
+            <td>○</td><td>●</td><td>○</td><td>○</td><td>●</td><td>○</td>
+          </tr>
+          <tr>
+            <td>养老/攒钱</td>
+            <td>●</td><td>●</td><td>○</td><td>○</td><td>●</td><td>○</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="muted">图例：● 主入口/强复用 · ○ 弱入口 · △ 有能力但曝光不足</p>
+
+      <h3>7.2 建议补齐的指标（待拉数）</h3>
+      <div class="grid-4">
+        <div class="kpi"><div class="label">曝光</div><div class="value">投顾页 DAU</div><div class="hint">及模块曝光率</div></div>
+        <div class="kpi"><div class="label">点击</div><div class="value">CTR</div><div class="hint">规划/定制/四笔钱/严选/工具</div></div>
+        <div class="kpi"><div class="label">转化</div><div class="value">方案→下单</div><div class="hint">定制 vs 标准策略分流</div></div>
+        <div class="kpi"><div class="label">复用</div><div class="value">30 日回访</div><div class="hint">同模块二次使用 / 调仓</div></div>
+      </div>
+    </section>
+
+    <section id="riskmap">
+      <h2 class="sec"><i class="ri-bubble-chart-line"></i> 8. 策略风险分布示意（真实风险分抽样）</h2>
+      <p style="font-size:14px;color:var(--text-neutral-subtle);margin-bottom:10px;">
+        以下使用且慢策略风险接口返回的 <strong>riskScore（晨星产品组合风险分数口径）</strong> 做可视化示意，X=风险分，Y=建议持有期限档位（示意映射）。完整品类矩阵上线后应替换为研究院正式清单 + 最大回撤等可切换指标。
+      </p>
+      <div class="card">
+        <div id="riskChart"></div>
+        <p class="muted">数据日期：scoreEffectiveDate ≈ 2026-06-30；仅抽样主推/严选代表策略，非完整货架。</p>
+      </div>
+    </section>
+
+    <section id="gaps">
+      <h2 class="sec"><i class="ri-error-warning-line"></i> 9. 缺口、风险与对齐问题</h2>
+      <table>
+        <thead>
+          <tr><th>优先级</th><th>缺口</th><th>影响</th><th>建议动作</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-p0">P0</span></td>
+            <td>研究院品类矩阵文档未同步到本地（企微登录墙）</td>
+            <td>货架分层与新重点策略清单无法最终定稿</td>
+            <td>导出 sheet → 附录；对齐四笔钱/严选上下线标准</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-p0">P0</span></td>
+            <td>投顾页原生 App 最新截图与埋点漏斗未复核</td>
+            <td>IA 还原可能有局部偏差</td>
+            <td>本周内完成截图走查 + 模块 PV 拉数</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-p1">P1</span></td>
+            <td>定制优先原则与现货架心智冲突</td>
+            <td>改版后用户可能「找不到熟悉的四笔钱列表」</td>
+            <td>方案中保留货架，但降为次级；首屏改推品</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-p1">P1</span></td>
+            <td>合规：货架式展示 vs 适当性推荐边界</td>
+            <td>监管趋严下纯列表风险上升</td>
+            <td>轻量 KYC / 目标确认后再展开匹配方案</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-warn">P2</span></td>
+            <td>温度计与每日估值口径差异</td>
+            <td>客诉与信任成本</td>
+            <td>工具区统一解释组件，避免并列冲突</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2 class="sec"><i class="ri-checkbox-circle-line"></i> 10. 对齐后的下一步</h2>
+      <div class="card">
+        <ol style="padding-left:18px;font-size:15px;color:var(--text-neutral-subtle);">
+          <li>先对齐 <a href="./02-投顾页改版方向与方案设计.html">改版方向与 4 套方案</a>（本周）。</li>
+          <li>选定主方案后做高保真 DEMO（含风险地图与组件编排）。</li>
+          <li>同步输出产品规划与计划书：里程碑对接策略上线、陪伴体系、AI 工厂组件库。</li>
+          <li>补齐：品类表、App 截图、模块漏斗数据、新重点策略清单。</li>
+        </ol>
+      </div>
+    </section>
+
+    <footer class="footer">
+      盈米基金｜Qieman · 投顾页改版项目基线报告<br/>
+      <span style="opacity:.85;">证据来源：投顾页 2023 需求、投顾2.0 方案、客服知识库、2026 H2 OKR、策略风险接口；品类矩阵待同步</span>
+    </footer>
+  </div>
+
+  <script>
+    const chart = echarts.init(document.getElementById('riskChart'));
+    const data = [
+      { name: '货币三佳', risk: 1, hold: 1, bucket: '活钱', maxdd: 0 },
+      { name: '债基优等生', risk: 6, hold: 2, bucket: '稳钱', maxdd: 1.04 },
+      { name: '我要稳稳的幸福', risk: 11, hold: 3, bucket: '稳钱', maxdd: 2.79 },
+      { name: '全球丰收', risk: 18, hold: 4, bucket: '长钱', maxdd: 4.04 },
+      { name: '春华秋实', risk: 21, hold: 4, bucket: '长钱', maxdd: 12.83 },
+      { name: '添富权益严选', risk: 81, hold: 4, bucket: '严选', maxdd: null }
+    ];
+    const holdLabel = { 1: '随时', 2: '≥6月', 3: '≥1年', 4: '≥3年' };
+    const colorMap = { '活钱': '#69B1F4', '稳钱': '#7DD4C4', '长钱': '#FBCA74', '严选': '#F88D72' };
+    chart.setOption({
+      color: ['#69B1F4'],
+      grid: { left: 50, right: 30, top: 40, bottom: 50 },
+      tooltip: {
+        formatter: (p) => {
+          const d = data[p.dataIndex];
+          return `<strong>${d.name}</strong><br/>风险分：${d.risk}<br/>建议持有：${holdLabel[d.hold]}<br/>分层：${d.bucket}` +
+            (d.maxdd != null ? `<br/>最大回撤(客服库口径)：-${d.maxdd}%` : '');
+        }
+      },
+      xAxis: {
+        name: '晨星风险分 →',
+        nameTextStyle: { color: '#999' },
+        min: 0, max: 100, splitLine: { lineStyle: { type: 'dashed', color: '#eee' } }
+      },
+      yAxis: {
+        name: '持有期限档',
+        nameTextStyle: { color: '#999' },
+        min: 0.5, max: 4.5,
+        axisLabel: { formatter: (v) => holdLabel[v] || '' },
+        splitLine: { lineStyle: { type: 'dashed', color: '#eee' } }
+      },
+      series: [{
+        type: 'scatter',
+        symbolSize: (val) => 18 + val[0] * 0.15,
+        data: data.map(d => ({
+          value: [d.risk, d.hold],
+          itemStyle: { color: colorMap[d.bucket] },
+          label: { show: true, formatter: d.name, position: 'top', fontSize: 11, color: '#333' }
+        }))
+      }]
+    });
+    window.addEventListener('resize', () => chart.resize());
+  </script>
+</body>
+</html>

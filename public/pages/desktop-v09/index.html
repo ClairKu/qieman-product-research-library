@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<!-- saved from url=(0161)/pages/advisor-revamp/02-%E6%94%B9%E7%89%88%E6%96%B9%E5%90%91%E4%B8%8E%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1.html#d1 -->
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>且慢投顾页改版：方向与方案设计（V0.9 对齐稿）</title>
+<link href="./且慢投顾页改版：方向与方案设计（V0.9 对齐稿）_files/remixicon.css" rel="stylesheet">
+<script src="./且慢投顾页改版：方向与方案设计（V0.9 对齐稿）_files/echarts.min.js"></script>
+<script>if(typeof echarts==="undefined")document.write('<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"><\/script>')</script>
+<style>
+:root{
+  --brand:#1B88EE; --poster-bg:#3180EC; --summary-bg:#DBEBFF; --summary-border:#9CCBF8;
+  --t1:#333333; --t2:#606060; --t3:#999999; --tinv:#FFFFFF;
+  --err:#FA440C; --warn:#EA9500; --ok:#07AD8F;
+  --bg-page:#F9FAFB; --card:#FFFFFF; --card-deep:#F9FAFB; --card-deeper:#F7F7F7;
+  --card-pfade:#F0F6FF; --card-wfade:#FFFAEF; --card-efade:#FEEDE9;
+  --bd:#D8D8D8; --bd-blue:#9CCBF8; --bd-yellow:#FFDC9E; --bd-red:#FAB6A5;
+  --r-s:8px; --r-m:12px; --r-l:24px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-page);color:var(--t1);font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;line-height:1.65;font-size:15px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 40px}
+.poster{background:var(--poster-bg);color:#fff;border-radius:0 0 var(--r-l) var(--r-l);padding:56px 40px 44px;margin-bottom:16px}
+.poster h1{font-size:32px;font-weight:700;margin-bottom:12px}
+.poster .sub{font-size:16px;opacity:.85}
+.poster .tags{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}
+.poster .tag{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:2px 12px;font-size:13px}
+.summary{background:var(--summary-bg);border:1px solid var(--summary-border);border-radius:var(--r-m);padding:18px 20px;margin-bottom:16px}
+.summary h2{font-size:18px;margin-bottom:8px}
+.summary li{margin-left:20px;margin-bottom:4px;color:var(--t2)}
+.summary b{color:var(--t1)}
+section{margin-bottom:28px}
+.sec-title{font-size:24px;font-weight:700;margin:34px 0 6px;display:flex;align-items:center;gap:10px}
+.sec-title i{color:var(--brand);font-size:26px}
+.sec-desc{color:var(--t3);font-size:14px;margin-bottom:14px}
+.card{background:var(--card);border-radius:var(--r-s);padding:18px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card h3{font-size:18px;margin-bottom:10px}
+.card h4{font-size:15px;margin:14px 0 6px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:860px){.g2,.g3{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:var(--card-deeper);color:var(--t2);font-weight:600;padding:8px 10px;text-align:left}
+td{padding:8px 10px;border-bottom:1px solid #F0F0F0;vertical-align:top}
+.callout{border-radius:var(--r-s);padding:12px 16px;margin:12px 0;font-size:14px}
+.callout.warn{background:var(--card-wfade);border:1px solid var(--bd-yellow);color:#8A6200}
+.callout.ok{background:var(--card-pfade);border:1px solid var(--bd-blue);color:#1163AE}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:12px;margin-right:6px}
+.pill.a{background:var(--card-pfade);color:var(--brand)} .pill.b{background:#E6F7F3;color:var(--ok)}
+.pill.c{background:var(--card-wfade);color:var(--warn)} .pill.d{background:var(--card-efade);color:var(--err)}
+/* 方案头 */
+.plan-head{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.plan-badge{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;flex-shrink:0}
+.plan-head .nm{font-size:20px;font-weight:700}
+.plan-head .po{font-size:13px;color:var(--t3)}
+/* 页面骨架示意 */
+.mock{border:1.5px solid var(--bd-blue);border-radius:var(--r-m);padding:10px;background:var(--card-deep)}
+.mock .mrow{border-radius:6px;padding:8px 10px;margin-bottom:6px;font-size:12.5px;text-align:center;color:var(--t2);background:#fff;border:1px dashed var(--bd)}
+.mock .mrow.hi{background:var(--card-pfade);border:1.5px solid var(--brand);color:var(--brand);font-weight:600}
+.mock .mrow.ai{background:linear-gradient(90deg,#F0F6FF,#EAF9F6);border:1.5px solid var(--ok);color:#0B8A72;font-weight:600}
+.mock .mcols{display:flex;gap:6px;margin-bottom:6px}
+.mock .mcols .mrow{flex:1;margin-bottom:0}
+/* 决策树 */
+.flow{display:flex;flex-direction:column;gap:0;align-items:center}
+.fnode{border-radius:var(--r-s);padding:8px 18px;font-size:13.5px;text-align:center;margin:4px 0;max-width:640px}
+.fnode.q{background:var(--card-pfade);border:1.5px solid var(--brand);color:var(--brand);font-weight:600}
+.fnode.r{background:#fff;border:1px solid var(--bd);color:var(--t2)}
+.fnode.hot{background:var(--card-efade);border:1.5px solid var(--err);color:var(--err);font-weight:600}
+.farrow{color:var(--t3);font-size:16px;line-height:1}
+/* 原型区 */
+.proto{background:#fff;border:2px solid var(--brand);border-radius:var(--r-m);padding:16px;margin-top:8px}
+.proto-bar{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-bottom:8px}
+.proto-bar .seg{display:flex;border:1px solid var(--brand);border-radius:8px;overflow:hidden}
+.proto-bar .seg button{border:0;background:#fff;color:var(--brand);padding:5px 14px;font-size:13px;cursor:pointer}
+.proto-bar .seg button.on{background:var(--brand);color:#fff}
+.slider-box{flex:1;min-width:260px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--t2)}
+input[type=range]{flex:1;accent-color:var(--brand)}
+#riskVal{font-weight:700;color:var(--brand);font-family:Poppins,Arial;min-width:70px}
+#protoChart{width:100%;height:440px}
+.match-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+@media(max-width:860px){.match-list{grid-template-columns:1fr}}
+.match-card{border:1px solid var(--bd);border-radius:var(--r-s);padding:10px 12px;font-size:13px;background:var(--card-deep)}
+.match-card.best{border:1.5px solid var(--err);background:var(--card-efade)}
+.match-card .mn{font-weight:700;font-size:14px}
+.match-card .mm{color:var(--t3);font-size:12px}
+.match-card .md{display:flex;justify-content:space-between;margin-top:4px;color:var(--t2)}
+.match-card .md b{color:var(--err);font-family:Poppins,Arial}
+/* 组件卡 */
+.comp{border:1px solid var(--bd);border-radius:var(--r-s);padding:10px 12px;background:#fff;font-size:13px}
+.comp .cn{font-weight:700;display:flex;align-items:center;gap:6px}
+.comp .cn i{color:var(--brand)}
+.comp .cd{color:var(--t2);font-size:12.5px;margin-top:3px}
+.comp .ct{margin-top:6px}
+.comp .ct span{display:inline-block;background:var(--card-deeper);border-radius:4px;padding:0 6px;font-size:11px;color:var(--t3);margin-right:4px}
+.comp.official{border-left:4px solid var(--brand)}
+.comp.optional{border-left:4px solid var(--warn)}
+.score{font-family:Poppins,Arial;font-weight:700}
+.s5{color:var(--ok)} .s3{color:var(--warn)} .s1{color:var(--err)}
+.footer{background:var(--poster-bg);color:#fff;border-radius:var(--r-l) var(--r-l) 0 0;text-align:center;padding:28px;margin-top:40px;font-size:14px}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+.toc a{color:var(--brand);text-decoration:none;background:var(--card-pfade);border:1px solid var(--bd-blue);border-radius:999px;padding:3px 14px;font-size:13px}
+.toc a:hover{background:var(--brand);color:#fff}
+.phase{display:flex;gap:10px;align-items:stretch}
+.phase .ph{flex:1;border-radius:var(--r-s);padding:12px;font-size:13px;border:1px solid var(--bd)}
+.phase .ph .pt{font-weight:700;font-size:14px;margin-bottom:4px}
+.phase .ph.p1{background:var(--card-pfade);border-color:var(--bd-blue)}
+.phase .ph.p2{background:#EAF9F6;border-color:#9BE0D2}
+.phase .ph.p3{background:var(--card-wfade);border-color:var(--bd-yellow)}
+@media(max-width:860px){.phase{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="poster">
+  <h1>且慢投顾页改版：方向与方案设计</h1>
+  <div class="sub">V0.9 对齐稿 · 用于方案共识，对齐后进入产品DEMO与产品规划书阶段</div>
+  <div class="sub" style="margin-top:6px;font-size:13px">2026年7月23日 ｜ 输入：现况盘点报告 + 品类矩阵（待补）+ 新四笔钱/严选策略体系升级计划</div>
+  <div class="tags"><span class="tag">核心目的：推品</span><span class="tag">原则：定制方案优先，标准策略兜底</span><span class="tag">形态：AI产品工厂 · 组件化编排</span><span class="tag">方案B内含可交互原型（真实数据）</span></div>
+</div>
+
+<div class="toc">
+  <a href="/pages/advisor-revamp/02-%E6%94%B9%E7%89%88%E6%96%B9%E5%90%91%E4%B8%8E%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1.html#d1">① 背景与目标</a><a href="/pages/advisor-revamp/02-%E6%94%B9%E7%89%88%E6%96%B9%E5%90%91%E4%B8%8E%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1.html#d2">② 核心设计逻辑</a><a href="/pages/advisor-revamp/02-%E6%94%B9%E7%89%88%E6%96%B9%E5%90%91%E4%B8%8E%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1.html#d3">③ 方案A 结构进化</a><a href="/pages/advisor-revamp/02-%E6%94%B9%E7%89%88%E6%96%B9%E5%90%91%E4%B8%8E%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1.html#d4">④ 方案B 配置地图</a><a href="/pages/advisor-revamp/02-%E6%94%B9%E7%89%88%E6%96%B9%E5%90%91%E4%B8%8E%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1.html#d5">⑤ 方案C AI服务工厂</a><a href="/pages/advisor-revamp/02-%E6%94%B9%E7%89%88%E6%96%B9%E5%90%91%E4%B8%8E%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1.html#d6">⑥ 方案D 对话即页面</a><a href="/pages/advisor-revamp/02-%E6%94%B9%E7%89%88%E6%96%B9%E5%90%91%E4%B8%8E%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1.html#d7">⑦ 方案对比</a><a href="/pages/advisor-revamp/02-%E6%94%B9%E7%89%88%E6%96%B9%E5%90%91%E4%B8%8E%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1.html#d8">⑧ 推荐路线</a><a href="/pages/advisor-revamp/02-%E6%94%B9%E7%89%88%E6%96%B9%E5%90%91%E4%B8%8E%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1.html#d9">⑨ 新策略上线配合</a><a href="/pages/advisor-revamp/02-%E6%94%B9%E7%89%88%E6%96%B9%E5%90%91%E4%B8%8E%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1.html#d10">⑩ 待对齐问题</a>
+</div>
+
+<div class="summary">
+  <h2><i class="ri-focus-2-line"></i> 一句话主张</h2>
+  <ul>
+    <li>把投顾页从「静态货架清单」升级为 <b>「推品操作系统」：一条主线（定制优先的推品决策流）× 一张地图（品类矩阵驱动的风险-收益可视化货架）× 一套组件（可编排、可运营、可个性化的服务组件）</b>。</li>
+    <li>推荐路线不是三选一，而是 <b>B为货架内核、C为页面框架、A为过渡骨架</b> 的三阶段融合：先用A的结构承接新策略上线，同步把B做成严选/四笔钱的新货架形态，最终沉淀为C的组件化千人千面页面。</li>
+  </ul>
+</div>
+
+<!-- ① 背景 -->
+<section id="d1">
+  <div class="sec-title"><i class="ri-flag-2-line"></i>① 背景与目标</div>
+  <div class="grid g2">
+    <div class="card"><h3>为什么是现在</h3>
+      <ul style="margin-left:18px;color:var(--t2);font-size:14px">
+        <li><b>策略供给侧升级</b>：研究院品类矩阵迭代，新重点策略筹备中——新四笔钱 + 新严选体系将上线，需要产品页面、陪伴体系等承接。</li>
+        <li><b>商业模式拐点</b>：2025.11起投顾费成为直接收入，推品效率=收入效率。</li>
+        <li><b>唯一未升级的一级页面</b>：投顾页仍是多年前的静态货架结构，与AI小顾、同路人权益、养老专区等新能力脱节。</li>
+        <li><b>生产方式升级契机</b>：借本项目落地AI产品工厂模式，改变「策划→开发→上线」的页面生产方式。</li>
+      </ul></div>
+    <div class="card"><h3>改版目标（建议的北极星与护栏）</h3>
+      <ul style="margin-left:18px;color:var(--t2);font-size:14px">
+        <li><b>北极星：投顾页→签约投顾资产的转化效率</b>（页面UV→方案采纳→签约AUM）。</li>
+        <li>辅助目标：定制方案渗透率、四笔钱人均配置笔数、选品决策时长下降（客服咨询占比下降）。</li>
+        <li><b>护栏（不可破坏）</b>：且慢的「简单感」与信任感——96%盈利占比、772天持有时长是买方投顾人设的资产；改版加能力，不加噪音，不做排行榜、不做爆款导购。</li>
+      </ul></div>
+  </div>
+</section>
+
+<!-- ② 核心设计逻辑 -->
+<section id="d2">
+  <div class="sec-title"><i class="ri-mind-map"></i>② 核心设计逻辑（所有方案的公共底座）</div>
+  <div class="card">
+    <h3>2.1 一条推品主线：定制优先的决策流</h3>
+    <div class="sec-desc">任何入口进来，先识别用户任务，优先导向定制方案；定制不成，按品类矩阵推标准策略；再不成，给工具让用户自助。每一层都是推品，只是自动化程度不同。</div>
+    <div class="flow">
+      <div class="fnode q">用户带着什么来？（四类任务识别：新钱要投 / 有目标要规划 / 有持仓要调优 / 想自己找品）</div>
+      <div class="farrow">↓</div>
+      <div class="fnode hot">第一优先：定制方案（AI小顾秒级方案 / 顾问定制 / 四笔钱规划书）——「先给我一笔钱和一个期限，我给你一套方案」</div>
+      <div class="farrow">↓ 用户不愿给信息 / 金额期限不适配</div>
+      <div class="fnode r">第二优先：标准策略（新四笔钱旗舰 + 严选货架，按品类矩阵与风险分匹配露出）</div>
+      <div class="farrow">↓ 用户想自己挑</div>
+      <div class="fnode r">第三层：工具与DIY（配置地图筛选 / 估值信号 / 自建组合 + 诊断回流：DIY结果可一键「让且慢帮我看看」回到定制）</div>
+    </div>
+    <h3 style="margin-top:18px">2.2 页面公式</h3>
+    <p style="color:var(--t2);font-size:14px"><b>投顾页 = ①规划引导层（识别任务，导流定制） + ②官方推荐层（千人千面推品位） + ③品类货架层（四笔钱×严选，地图+列表双形态） + ④专区层（养老/全球/攒钱统一框架） + ⑤工具层（估值/信号/自建，全部带回流推品钩子）</b>。三个方案的差异只在这五层的「形态」与「生产方式」，主线与分层不变——这保证方案可以渐进演化而不推倒重来。</p>
+    <h3 style="margin-top:18px">2.3 品类矩阵 → 货架的映射（占位，待品类文档解锁后精化）</h3>
+    <p style="color:var(--t2);font-size:14px">以研究院品类为「行」（资产/策略品类），以四笔钱为「列」（资金用途），每个格子= 1个旗舰策略 + N个严选备选。页面不再是「四笔钱一列清单 + 严选另一列清单」的两张平行货架，而是一张矩阵：<b>四笔钱是用户视角的入口，品类是研究院视角的库存，严选是每个格子里的深度</b>。现况盘点已发现风险分20-50断档与短稳区同质化，新策略体系应优先填格。</p>
+  </div>
+</section>
+
+<!-- ③ 方案A -->
+<section id="d3">
+  <div class="sec-title"><i class="ri-layout-top-2-line"></i>③ 方案A 「结构进化版」——传统页面的最优解</div>
+  <div class="card">
+    <div class="plan-head"><div class="plan-badge" style="background:var(--brand)">A</div>
+      <div><div class="nm">结构进化版 <span class="pill a">成本低</span><span class="pill a">2-3个月可上线</span><span class="pill a">兜底方案</span></div>
+      <div class="po">定位：不改变页面范式，把「五层结构」在现有技术栈上重排，保证新策略体系按时上线有承接。</div></div></div>
+    <div class="grid g2">
+      <div class="mock">
+        <div class="mrow hi">① 规划引导条：「你有一笔什么钱？」金额+期限两个输入 → 直接出四笔钱归属与推荐（定制方案入口前置为交互，不再是banner）</div>
+        <div class="mrow">② 官方推荐位：本期主推（运营配置 + 规则化千人千面：新客见旗舰/持仓客见补配/养老人群见专区）</div>
+        <div class="mrow hi">③ 四笔钱×严选融合货架：四笔钱Tab保留，每Tab内=1旗舰置顶+品类分组的严选列表（合并m4/more，消灭二级「更多」页）</div>
+        <div class="mcols"><div class="mrow">④ 专区通道：养老/全球/攒钱统一卡片规格</div><div class="mrow">⑤ 工具区：估值/信号/自建（带推品钩子）</div></div>
+        <div class="mrow">⑥ 陪伴信任区：96%盈利/772天/同路人权益/主理人内容流</div>
+      </div>
+      <div>
+        <h4>关键改动</h4>
+        <ul style="margin-left:18px;color:var(--t2);font-size:13.5px">
+          <li>定制方案从banner改为<b>两问交互条</b>（金额+期限），转化路径缩短为一步。</li>
+          <li>严选货架并入四笔钱Tab，按品类矩阵分组，每组给「品类一句话」（解决同质化不可分辨）。</li>
+          <li>产品卡升级：增加风险分徽章 + 回撤/波动微图 + 「适合谁」标签。</li>
+          <li>工具区每个工具出口带「由此去配置」钩子（估值低估→对应品类策略）。</li>
+        </ul>
+        <h4>局限</h4>
+        <ul style="margin-left:18px;color:var(--t2);font-size:13.5px">
+          <li>个性化靠规则位，天花板低；页面仍是硬编码，运营弹性有限。</li>
+          <li>没有解决「可视化选品」；本质是更好的清单。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ④ 方案B -->
+<section id="d4">
+  <div class="sec-title"><i class="ri-bubble-chart-line"></i>④ 方案B 「配置地图版」——风险-收益可视化货架（含可交互原型）</div>
+  <div class="card">
+    <div class="plan-head"><div class="plan-badge" style="background:var(--ok)">B</div>
+      <div><div class="nm">配置地图版 <span class="pill b">差异化最强</span><span class="pill b">可视化选品</span><span class="pill b">可嵌入A/C</span></div>
+      <div class="po">定位：把「28个策略的列表」变成「一张可滑动探索的风险-收益地图」，以组合风险分数（晨星式1-100）为主轴，回答你提出的「不只是列表」。</div></div></div>
+    <h4>交互设计（四个动作）</h4>
+    <table>
+      <tbody><tr><th>动作</th><th>交互</th><th>推品含义</th></tr>
+      <tr><td><b>滑</b></td><td>风险滑杆从低到高滑动，地图高亮该风险带的策略，下方同步出「本档位推荐」卡（旗舰优先）</td><td>用「我能承受多少」代替「哪个收益高」作为第一问，天然合规且符合买方立场</td></tr>
+      <tr><td><b>切</b></td><td>Y轴指标切换：年化收益 / 最大回撤 / 波动率 / 夏普（你提的「换成或结合不同指标去找」）</td><td>回撤视角给稳健客群、夏普视角给进阶客群，同一货架多种叙事</td></tr>
+      <tr><td><b>叠</b></td><td>登录后叠加「我的持仓」落点与「我的风险测评带」——持仓偏离推荐带即出「调优建议」</td><td>持仓调优推品的入口，接组合诊断能力（MCP已有）</td></tr>
+      <tr><td><b>点</b></td><td>点策略气泡→速览卡（品类/主理人/费率/适合谁）→详情/定投</td><td>缩短决策链</td></tr>
+    </tbody></table>
+    <h4 style="margin-top:14px">可交互原型（真实数据：28个在售策略，风险分2026-06-30，净值2026-07-22）</h4>
+    <div class="proto">
+      <div class="proto-bar">
+        <div class="seg" id="metricSeg">
+          <button data-m="ret" class="on">年化收益</button><button data-m="mdd" class="">最大回撤</button><button data-m="vol" class="">波动率</button><button data-m="sharpe" class="">夏普比率</button>
+        </div>
+        <div class="slider-box"><i class="ri-shield-check-line" style="color:var(--brand)"></i>我能接受的风险
+          <input type="range" id="riskSlider" min="1" max="85" value="15">
+          <span id="riskVal">47 · 进取</span>
+        </div>
+      </div>
+      <div id="protoChart" _echarts_instance_="ec_1784785807690" style="user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"><div style="position: relative; width: 964px; height: 440px; padding: 0px; margin: 0px; border-width: 0px; cursor: default;"><canvas data-zr-dom-id="zr_0" width="1928" height="880" style="position: absolute; left: 0px; top: 0px; width: 964px; height: 440px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas></div><div class=""></div></div>
+      <div style="font-size:13px;color:var(--t2);margin-top:4px"><i class="ri-cursor-line"></i> 本风险档位（±12分带宽）匹配策略，<b style="color:var(--err)">旗舰优先</b>置左：</div>
+      <div class="match-list" id="matchList"><div class="match-card best"><div class="mn">🚩 长赢计划-150份</div><div class="mm">E大 · 主理人计划 · 风险分56</div>
+    <div class="md"><span>年化 <b>4.74%</b></span><span>回撤 19.79%</span><span>夏普 0.29</span></div></div><div class="match-card "><div class="mn">简慢投资组合</div><div class="mm">盈米基金 · 严选-长投 · 风险分49</div>
+    <div class="md"><span>年化 <b>8.98%</b></span><span>回撤 25.48%</span><span>夏普 0.61</span></div></div><div class="match-card "><div class="mn">华夏全自动超级配置</div><div class="mm">华夏财富 · 严选-长投 · 风险分39</div>
+    <div class="md"><span>年化 <b>9.05%</b></span><span>回撤 18.64%</span><span>夏普 0.55</span></div></div><div class="match-card "><div class="mn">价值五剑</div><div class="mm">盈米基金 · 严选-长投 · 风险分57</div>
+    <div class="md"><span>年化 <b>10.07%</b></span><span>回撤 40.87%</span><span>夏普 0.51</span></div></div></div>
+    </div>
+    <div class="callout ok" style="margin-top:12px"><i class="ri-lightbulb-line"></i> <b>形态延伸（比散点更进一步的两个候选，DEMO阶段可AB）</b>：① <b>风险带状通道图</b>——X轴风险分，策略按品类分泳道排列成「通道」，滑杆是一把垂直光标尺，更接近「货架」隐喻、信息密度更低更亲民；② <b>目标反推视图</b>——用户输入目标收益或可接受最大亏损，地图反向高亮可行域并标注「需承担的风险分」，把教育（风险收益对价）做进交互里。</div>
+    <h4>局限</h4>
+    <ul style="margin-left:18px;color:var(--t2);font-size:13.5px">
+      <li>合规敏感：历史收益作轴需明确「不预示未来」的呈现规范，指标口径需与研究院/合规对齐（建议以风险分+回撤为默认轴，收益为可选轴）。</li>
+      <li>对低金融素养用户有学习成本 → 不作为唯一形态，与列表双形态并存，默认视图按客群实验。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ⑤ 方案C -->
+<section id="d5">
+  <div class="sec-title"><i class="ri-puzzle-2-line"></i>⑤ 方案C 「AI服务工厂版」——组件化编排的千人千面页面</div>
+  <div class="card">
+    <div class="plan-head"><div class="plan-badge" style="background:var(--warn)">C</div>
+      <div><div class="nm">AI服务工厂版 <span class="pill c">生产方式变革</span><span class="pill c">运营弹性最大</span><span class="pill c">终局框架</span></div>
+      <div class="po">定位：页面不再是「设计稿」，而是「组件库 × 编排规则 × 用户偏好」的运行时产物——落地你提出的AI产品工厂模式。</div></div></div>
+    <h4>三层架构</h4>
+    <table>
+      <tbody><tr><th>层</th><th>内容</th><th>谁在生产</th></tr>
+      <tr><td><b>服务组件库</b></td><td>每个组件=数据契约+展示模板+适用人群+推品钩子+合规声明（复用微信卡片DEMO的原子组件思路）</td><td>产品定义协议，<b>AI辅助生成组件变体</b>（文案/布局/图表由Agent产出，走审核流）</td></tr>
+      <tr><td><b>编排引擎</b></td><td>人群×场景×位置的规则编排：运营在后台拖拽组件、圈人群、设优先级、灰度发布；默认编排=「②核心设计逻辑」的五层结构</td><td>产品运营（无需开发排期）</td></tr>
+      <tr><td><b>用户自定义层</b></td><td>官方推荐组件锁定在顶部（推品主线不可移除），其余组件用户可添加/移除/排序：如「每日估值」「长赢专区」「养老储蓄罐」可自选常驻</td><td>用户</td></tr>
+    </tbody></table>
+    <h4 style="margin-top:14px">官方组件库首期清单（12个）</h4>
+    <div class="grid g3">
+      <div class="comp official"><div class="cn"><i class="ri-questionnaire-line"></i>规划引导卡</div><div class="cd">两问式（金额+期限）→定制方案；页面推品主入口</div><div class="ct"><span>锁定</span><span>全员</span></div></div>
+      <div class="comp official"><div class="cn"><i class="ri-award-line"></i>官方推荐卡</div><div class="cd">千人千面推品位：新客旗舰/老客补配/事件驱动（发薪日/回款）</div><div class="ct"><span>锁定</span><span>规则+模型</span></div></div>
+      <div class="comp official"><div class="cn"><i class="ri-bubble-chart-line"></i>配置地图卡</div><div class="cd">方案B整体作为一个组件挂载</div><div class="ct"><span>锁定</span><span>可折叠</span></div></div>
+      <div class="comp official"><div class="cn"><i class="ri-wallet-3-line"></i>四笔钱货架卡</div><div class="cd">矩阵化货架（品类×用途），旗舰置顶</div><div class="ct"><span>锁定</span></div></div>
+      <div class="comp official"><div class="cn"><i class="ri-stethoscope-line"></i>持仓调优卡</div><div class="cd">持仓诊断摘要+一键「让且慢帮我调」（接MCP诊断）</div><div class="ct"><span>有持仓者</span></div></div>
+      <div class="comp official"><div class="cn"><i class="ri-robot-2-line"></i>AI小顾入口卡</div><div class="cd">对话式定制的常驻入口，承接一切「不会选」</div><div class="ct"><span>锁定</span></div></div>
+      <div class="comp optional"><div class="cn"><i class="ri-heart-pulse-line"></i>养老专区卡</div><div class="cd">养老储蓄罐+测算摘要</div><div class="ct"><span>可选</span><span>35+默认</span></div></div>
+      <div class="comp optional"><div class="cn"><i class="ri-earth-line"></i>全球专区卡</div><div class="cd">全球丰收+全球优选统一叙事（补上现在缺失的全球框架）</div><div class="ct"><span>可选</span></div></div>
+      <div class="comp optional"><div class="cn"><i class="ri-line-chart-line"></i>每日估值卡</div><div class="cd">估值摘要+「低估品类→对应策略」推品钩子</div><div class="ct"><span>可选</span><span>10.9万订阅迁移</span></div></div>
+      <div class="comp optional"><div class="cn"><i class="ri-coins-line"></i>攒钱计划卡</div><div class="cd">场景化攒钱进度+加购</div><div class="ct"><span>可选</span></div></div>
+      <div class="comp optional"><div class="cn"><i class="ri-team-line"></i>陪伴信任卡</div><div class="cd">96%盈利/772天/主理人周报/同路人权益进度</div><div class="ct"><span>可选</span><span>默认开</span></div></div>
+      <div class="comp optional"><div class="cn"><i class="ri-hammer-line"></i>DIY工具卡</div><div class="cd">自建组合+信号定投+回测，出口带「回流诊断」</div><div class="ct"><span>可选</span><span>进阶用户</span></div></div>
+    </div>
+    <h4 style="margin-top:14px">局限与依赖</h4>
+    <ul style="margin-left:18px;color:var(--t2);font-size:13.5px">
+      <li>需要前端组件运行时 + 编排后台 + 审核流三块基建，首期投入最大；建议以「先内部编排（运营千人千面）、后用户自定义」分两步。</li>
+      <li>合规：组件粒度的披露与风险提示规范需一次性设计好（每组件自带合规声明位）。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ⑥ 方案D -->
+<section id="d6">
+  <div class="sec-title"><i class="ri-chat-voice-line"></i>⑥ 方案D 「对话即页面」——远期实验位（不作为本次主方案）</div>
+  <div class="card">
+    <div class="plan-head"><div class="plan-badge" style="background:var(--err)">D</div>
+      <div><div class="nm">对话即页面 <span class="pill d">激进</span><span class="pill d">远期实验</span></div>
+      <div class="po">AI小顾前置为投顾页主入口：首屏即对话框+动态生成的服务卡片流（生成式UI）。列出以完整光谱，但当前用户结构（稳健客群为主、平均持有772天的信任型关系）不支持把确定性的货架换成不确定性的对话。<b>建议：作为方案C里「AI小顾入口卡」的形态实验，在DIY/新客两个人群灰度。</b></div></div></div>
+  </div>
+</section>
+
+<!-- ⑦ 对比 -->
+<section id="d7">
+  <div class="sec-title"><i class="ri-scales-3-line"></i>⑦ 方案对比矩阵</div>
+  <div class="card" style="overflow-x:auto">
+    <table>
+      <tbody><tr><th>维度</th><th>A 结构进化</th><th>B 配置地图</th><th>C AI服务工厂</th><th>D 对话即页面</th></tr>
+      <tr><td>推品效率提升</td><td class="score s3">★★★</td><td class="score s5">★★★★</td><td class="score s5">★★★★★</td><td class="score s3">不确定（高方差）</td></tr>
+      <tr><td>研发成本/周期</td><td class="score s5">低 · 2-3月</td><td class="score s3">中 · 3-4月（数据管线已验证可行）</td><td class="score s1">高 · 6月+（基建）</td><td class="score s1">高 · 依赖AI质量</td></tr>
+      <tr><td>合规风险</td><td class="score s5">低</td><td class="score s3">中（指标呈现规范）</td><td class="score s3">中（组件级披露设计）</td><td class="score s1">高（生成内容）</td></tr>
+      <tr><td>运营弹性</td><td class="score s1">低（改版即排期）</td><td class="score s3">中（配置指标/品类）</td><td class="score s5">高（编排即上线）</td><td class="score s3">中</td></tr>
+      <tr><td>AI产品工厂契合</td><td class="score s1">弱</td><td class="score s3">中（数据驱动组件）</td><td class="score s5">强（即是其本体）</td><td class="score s5">强</td></tr>
+      <tr><td>用户学习成本</td><td class="score s5">无</td><td class="score s3">中（双形态兜底）</td><td class="score s5">低（默认编排≈A）</td><td class="score s1">高</td></tr>
+      <tr><td>对新策略上线的承接</td><td class="score s5">直接</td><td class="score s5">强（新策略即地图新点位）</td><td class="score s3">依赖基建进度</td><td class="score s1">弱</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<!-- ⑧ 路线 -->
+<section id="d8">
+  <div class="sec-title"><i class="ri-route-line"></i>⑧ 推荐路线：三阶段融合（B为内核，C为框架，A为骨架）</div>
+  <div class="card">
+    <div class="phase">
+      <div class="ph p1"><div class="pt">Phase 1 · 承接新策略上线（~3个月）</div>方案A结构落地：规划引导条+矩阵化货架+专区/工具统一规格；<b>方案B以「配置地图」组件嵌入严选区</b>（先只读版：滑+切，不做持仓叠加）；新四笔钱/严选策略按品类矩阵进场。<br><b>验证</b>：地图使用率、引导条→定制转化、货架CTR结构变化。</div>
+      <div class="ph p2"><div class="pt">Phase 2 · 组件化改造（+3个月）</div>把Phase1的所有区块按方案C协议封装为组件；上线编排后台，运营开始人群×场景编排（新客/持仓客/养老/高净值四套默认编排）；地图升级持仓叠加与调优推品；AI辅助生成组件变体进审核流。<br><b>验证</b>：编排迭代周期（周级→日级）、分人群转化差。</div>
+      <div class="ph p3"><div class="pt">Phase 3 · 千人千面与自定义（+3个月）</div>开放用户自定义布局（可选组件添加/移除/排序）；推荐位从规则升级为模型排序；方案D在新客/DIY人群灰度（对话生成编排）。<br><b>验证</b>：自定义留存提升、北极星（页面→签约AUM）全量归因。</div>
+    </div>
+    <div class="callout warn" style="margin-top:12px"><i class="ri-alert-line"></i> 关键依赖：①品类矩阵文档（映射表输入）；②内部埋点数据（分层与默认编排依据）；③风险分数据管线产品化（本次MCP已验证数据可得性）；④合规对指标呈现的评审前置到Phase1。</div>
+  </div>
+</section>
+
+<!-- ⑨ 新策略配合 -->
+<section id="d9">
+  <div class="sec-title"><i class="ri-rocket-2-line"></i>⑨ 与新策略体系上线的配合清单</div>
+  <div class="card">
+    <table>
+      <tbody><tr><th>事项</th><th>页面侧动作</th><th>备注</th></tr>
+      <tr><td>新四笔钱旗舰策略</td><td>四笔钱各Tab旗舰位 + 官方推荐卡首发位 + 地图「旗舰」标记</td><td>旗舰=每个资金用途格子的默认答案</td></tr>
+      <tr><td>新严选体系</td><td>按品类矩阵重组货架分组与「品类一句话」；填补风险分20-50断档的策略优先曝光</td><td>现况报告④的断档洞察</td></tr>
+      <tr><td>策略产品页</td><td>沿用详情页解剖结论升级：增加风险分徽章、品类归属、「在地图中查看」回链</td><td>信号定投等转化组件保留</td></tr>
+      <tr><td>陪伴体系</td><td>陪伴信任卡组件化：调仓通知/主理人周报/同路人权益进度按持仓关联展示</td><td>与内容团队对齐生产协议</td></tr>
+      <tr><td>下线/迁移策略</td><td>组件化后货架由数据驱动，上下架无需发版</td><td>C方案的直接收益</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<!-- ⑩ 待对齐 -->
+<section id="d10">
+  <div class="sec-title"><i class="ri-discuss-line"></i>⑩ 待对齐问题（请你决策/补充输入）</div>
+  <div class="card">
+    <ol style="margin-left:20px;color:var(--t2);font-size:14px">
+      <li><b>路线取舍</b>：是否认可「A骨架+B内核+C框架」三阶段融合？还是希望直接以C为首发（拉长周期）？</li>
+      <li><b>地图默认轴</b>：默认Y轴用「最大回撤」（合规稳妥、教育性强）还是「年化收益」（转化直觉强）？</li>
+      <li><b>品类矩阵</b>：腾讯文档待扫码解锁；拿到后我补全「品类×四笔钱」映射表与货架分组稿。</li>
+      <li><b>风险分口径</b>：MCP的1-100组合风险分与晨星组合风险分数的关系（授权/换算）需研究院确认，涉及对客展示口径。</li>
+      <li><b>用户自定义边界</b>：官方锁定组件的范围（建议：规划引导+官方推荐+合规声明不可移除）。</li>
+      <li><b>埋点数据</b>：现况报告⑫清单中的内部数据，用于确定四套默认编排的人群划分。</li>
+    </ol>
+    <div class="callout ok"><i class="ri-arrow-right-circle-line"></i> <b>对齐后下一步</b>：①选定方案组合 → ②高保真产品DEMO（投顾页新版全流程，含配置地图与组件编排演示）→ ③产品规划与计划书（排期/资源/指标/风控）。</div>
+  </div>
+</section>
+
+<div class="footer">盈米基金｜且慢投顾页改版方案 V0.9 对齐稿 · 内部讨论文档<br>原型数据来源：盈米MCP实拉28个在售策略（净值2026-07-22 / 风险评分2026-06-30），历史业绩不预示未来表现。</div>
+</div>
+
+<script>
+const STRATS=[
+ {name:"货币三佳",mgr:"盈米基金",shelf:"四笔钱-活钱",flag:1,rs:1,ret:2.66,mdd:0.00,vol:0.15,sharpe:7.78},
+ {name:"花好月圆",mgr:"盈米研究院",shelf:"四笔钱-稳钱",flag:0,rs:3,ret:2.46,mdd:0.29,vol:0.23,sharpe:4.13},
+ {name:"债基优等生",mgr:"中欧财富",shelf:"四笔钱-稳钱",flag:0,rs:6,ret:3.03,mdd:1.04,vol:0.73,sharpe:2.10},
+ {name:"我要稳稳的幸福",mgr:"交银施罗德",shelf:"四笔钱-稳钱",flag:1,rs:11,ret:4.85,mdd:2.79,vol:2.36,sharpe:1.42},
+ {name:"超级理财加",mgr:"广发基金",shelf:"四笔钱-稳钱",flag:0,rs:9,ret:2.50,mdd:3.25,vol:2.25,sharpe:0.44},
+ {name:"全球丰收",mgr:"盈米基金",shelf:"四笔钱-长钱",flag:1,rs:18,ret:5.69,mdd:4.04,vol:3.73,sharpe:1.13},
+ {name:"春华秋实",mgr:"静静聊吧",shelf:"四笔钱-长钱",flag:0,rs:21,ret:5.41,mdd:12.83,vol:5.75,sharpe:0.68},
+ {name:"周周同行",mgr:"盈米基金",shelf:"四笔钱-长钱",flag:0,rs:60,ret:1.49,mdd:34.93,vol:15.10,sharpe:0.00},
+ {name:"进取派优选",mgr:"兴证全球",shelf:"四笔钱-长钱",flag:0,rs:73,ret:4.92,mdd:28.56,vol:17.83,sharpe:0.19},
+ {name:"颐养天年养老计划",mgr:"盈米基金",shelf:"养老专区",flag:1,rs:70,ret:5.99,mdd:15.64,vol:14.90,sharpe:0.30},
+ {name:"长赢计划-150份",mgr:"E大",shelf:"主理人计划",flag:1,rs:56,ret:4.74,mdd:19.79,vol:11.13,sharpe:0.29},
+ {name:"南方梦想佳",mgr:"南方基金",shelf:"严选-短稳",flag:0,rs:3,ret:2.01,mdd:1.24,vol:0.67,sharpe:0.76},
+ {name:"息息相关",mgr:"盈米基金",shelf:"严选-短稳",flag:0,rs:9,ret:3.42,mdd:0.91,vol:1.35,sharpe:1.42},
+ {name:"招商月月佳薪",mgr:"招商基金",shelf:"严选-短稳",flag:0,rs:7,ret:2.40,mdd:1.12,vol:0.74,sharpe:1.22},
+ {name:"风和日丽",mgr:"盈米研究院",shelf:"严选-短稳",flag:0,rs:15,ret:3.63,mdd:4.70,vol:2.77,sharpe:0.77},
+ {name:"求稳派小添财",mgr:"兴证全球",shelf:"严选-短稳",flag:0,rs:8,ret:3.60,mdd:2.36,vol:1.79,sharpe:1.17},
+ {name:"马拉松固收增强",mgr:"华夏财富",shelf:"严选-短稳",flag:0,rs:9,ret:3.11,mdd:6.26,vol:3.13,sharpe:0.51},
+ {name:"小小的太阳",mgr:"广发基金",shelf:"严选-短稳",flag:0,rs:11,ret:2.55,mdd:3.23,vol:2.69,sharpe:0.39},
+ {name:"富国启明星理财升级",mgr:"富国基金",shelf:"严选-短稳",flag:0,rs:13,ret:2.91,mdd:3.51,vol:2.92,sharpe:0.48},
+ {name:"招商固收+星秀",mgr:"招商基金",shelf:"严选-短稳",flag:0,rs:16,ret:2.98,mdd:3.52,vol:3.10,sharpe:0.48},
+ {name:"U定投",mgr:"盈米基金",shelf:"严选-长投",flag:0,rs:74,ret:6.20,mdd:31.35,vol:16.43,sharpe:0.29},
+ {name:"简慢投资组合",mgr:"盈米基金",shelf:"严选-长投",flag:0,rs:49,ret:8.98,mdd:25.48,vol:12.19,sharpe:0.61},
+ {name:"全球优选",mgr:"盈米基金",shelf:"严选-长投",flag:0,rs:61,ret:11.65,mdd:17.27,vol:11.64,sharpe:0.87},
+ {name:"盈米稳健八心八箭",mgr:"盈米基金",shelf:"严选-长投",flag:0,rs:66,ret:6.85,mdd:34.24,vol:13.65,sharpe:0.39},
+ {name:"价值五剑",mgr:"盈米基金",shelf:"严选-长投",flag:0,rs:57,ret:10.07,mdd:40.87,vol:16.96,sharpe:0.51},
+ {name:"华夏全自动超级配置",mgr:"华夏财富",shelf:"严选-长投",flag:0,rs:39,ret:9.05,mdd:18.64,vol:13.69,sharpe:0.55},
+ {name:"添富权益严选",mgr:"汇添富基金",shelf:"严选-长投",flag:0,rs:81,ret:2.22,mdd:40.40,vol:17.18,sharpe:0.04}
+];
+const METRIC={ret:{label:"年化收益率 %",max:13},mdd:{label:"最大回撤 %",max:45},vol:{label:"波动率 %",max:20},sharpe:{label:"夏普比率",max:8}};
+const shelfColor={"四笔钱-活钱":"#7DD4C4","四笔钱-稳钱":"#69B1F4","四笔钱-长钱":"#3A7BB8","严选-短稳":"#FBCA74","严选-长投":"#F88D72","养老专区":"#ADAFE8","主理人计划":"#FA440C"};
+let curM="ret", curR=15;
+const chart=echarts.init(document.getElementById("protoChart"));
+function riskName(v){return v<8?"保守":v<20?"稳健":v<45?"平衡":v<65?"进取":"积极"}
+function render(){
+  const band=12;
+  chart.setOption({
+    tooltip:{formatter:p=>{if(!p.data||!p.data.s)return "";const s=p.data.s;return `<b>${s.name}</b>${s.flag?" 🚩旗舰":""}（${s.shelf}）<br/>主理方：${s.mgr}<br/>风险分：<b>${s.rs}</b> ｜ 年化：${s.ret}%<br/>回撤：${s.mdd}% ｜ 波动：${s.vol}% ｜ 夏普：${s.sharpe}`}},
+    legend:{data:Object.keys(shelfColor),bottom:0,textStyle:{fontSize:11,color:"#606060"}},
+    grid:{left:48,right:24,top:30,bottom:56},
+    xAxis:{name:"组合风险分数",nameLocation:"middle",nameGap:26,min:0,max:90,splitLine:{lineStyle:{type:"dashed",color:"#EEE"}},axisLabel:{color:"#999"}},
+    yAxis:{name:METRIC[curM].label,min:0,max:METRIC[curM].max,splitLine:{lineStyle:{type:"dashed",color:"#EEE"}},axisLabel:{color:"#999"}},
+    series:Object.keys(shelfColor).map(sh=>({
+      name:sh,type:"scatter",
+      symbolSize:(val,params)=>{const s=params.data.s;const inBand=Math.abs(s.rs-curR)<=band;return (s.flag?15:11)*(inBand?1.35:0.75)},
+      itemStyle:{color:shelfColor[sh]},
+      label:{show:true,position:"top",fontSize:10,formatter:p=>Math.abs(p.data.s.rs-curR)<=band?p.data.s.name:"",color:"#333"},
+      data:STRATS.filter(s=>s.shelf===sh).map(s=>({value:[s.rs,s[curM]],s,itemStyle:{opacity:Math.abs(s.rs-curR)<=band?0.95:0.18},
+        ...(s.flag&&Math.abs(s.rs-curR)<=band?{symbol:"pin",symbolSize:26}:{})}))
+    })),
+    graphic:[{type:"rect",id:"band",left:48+(curR-band)/90*(document.getElementById("protoChart").clientWidth-72),top:30,
+      shape:{width:(band*2)/90*(document.getElementById("protoChart").clientWidth-72),height:document.getElementById("protoChart").clientHeight-86},
+      style:{fill:"rgba(27,136,238,.07)",stroke:"rgba(27,136,238,.35)",lineDash:[4,4]},silent:true}]
+  },{notMerge:true});
+  // 匹配列表
+  const list=STRATS.filter(s=>Math.abs(s.rs-curR)<=band).sort((a,b)=>(b.flag-a.flag)||(b.sharpe-a.sharpe)).slice(0,6);
+  document.getElementById("matchList").innerHTML=list.map(s=>
+   `<div class="match-card ${s.flag?"best":""}"><div class="mn">${s.flag?"🚩 ":""}${s.name}</div><div class="mm">${s.mgr} · ${s.shelf} · 风险分${s.rs}</div>
+    <div class="md"><span>年化 <b>${s.ret}%</b></span><span>回撤 ${s.mdd}%</span><span>夏普 ${s.sharpe}</span></div></div>`).join("")
+   || '<div class="match-card">该风险档位暂无策略——正是供给断档区，新策略体系的机会点</div>';
+  document.getElementById("riskVal").textContent=`${curR} · ${riskName(curR)}`;
+}
+document.getElementById("riskSlider").addEventListener("input",e=>{curR=+e.target.value;render()});
+document.querySelectorAll("#metricSeg button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("#metricSeg button").forEach(x=>x.classList.remove("on"));b.classList.add("on");curM=b.dataset.m;render();
+}));
+render();
+window.addEventListener("resize",()=>{chart.resize();render()});
+</script>
+
+
+</body></html>

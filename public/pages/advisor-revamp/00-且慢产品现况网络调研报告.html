@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>且慢产品现况网络调研报告 · 2026年7月</title>
+<style>
+:root{
+  --brand:#1B88EE; --poster-bg:#3180EC; --summary-bg:#DBEBFF; --summary-border:#9CCBF8;
+  --t1:#333; --t2:#606060; --t3:#999; --tinv:#FFF;
+  --err:#FA440C; --warn:#EA9500; --ok:#07AD8F;
+  --bg-page:#F9FAFB; --card:#FFF; --card-deeper:#F7F7F7; --card-pfade:#F0F6FF;
+  --bd:#D8D8D8; --bd-blue:#9CCBF8; --r-s:8px; --r-m:12px; --r-l:24px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-page);color:var(--t1);font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;line-height:1.75;font-size:15px}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px 60px}
+.poster{background:var(--poster-bg);color:var(--tinv);border-radius:0 0 var(--r-l) var(--r-l);padding:52px 40px 40px;margin-bottom:24px}
+.poster h1{font-size:30px;font-weight:700;letter-spacing:1px;margin-bottom:10px}
+.poster .sub{font-size:15px;opacity:.85}
+.poster .tags{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.poster .tag{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:2px 12px;font-size:13px}
+article{background:var(--card);border-radius:var(--r-m);padding:32px 36px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+article h2{font-size:23px;font-weight:700;margin:38px 0 12px;padding-left:12px;border-left:4px solid var(--brand)}
+article h2:first-child{margin-top:0}
+article h3{font-size:18px;margin:26px 0 8px;color:var(--t1)}
+article h4{font-size:15.5px;margin:18px 0 6px}
+article p{margin:8px 0;color:var(--t1)}
+article ul,article ol{margin:8px 0 8px 24px}
+article li{margin-bottom:5px}
+article blockquote{background:var(--summary-bg);border:1px solid var(--summary-border);border-radius:var(--r-s);padding:12px 16px;margin:14px 0;color:var(--t2);font-size:14px}
+article blockquote p{margin:3px 0}
+article table{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0;display:block;overflow-x:auto}
+article th{background:var(--card-deeper);color:var(--t2);font-weight:600;padding:8px 10px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--bd)}
+article td{padding:8px 10px;border-bottom:1px solid #F0F0F0;vertical-align:top}
+article tr:hover td{background:var(--card-pfade)}
+article a{color:var(--brand);text-decoration:none;word-break:break-all}
+article a:hover{text-decoration:underline}
+article hr{border:none;border-top:1px dashed var(--bd);margin:28px 0}
+article code{background:var(--card-deeper);border-radius:4px;padding:1px 6px;font-size:13px;font-family:Menlo,Consolas,monospace}
+article strong{color:var(--t1)}
+.foot{color:var(--t3);font-size:12.5px;text-align:center;margin-top:24px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="poster">
+    <h1>「且慢」APP 产品现况调研报告</h1>
+    <div class="sub">网络公开信息调研 · 覆盖投顾页面结构 / 里程碑 / 用户规模 / 推品逻辑 / 竞品对比 · 2026年7月23日</div>
+    <div class="tags">
+      <span class="tag">来源：官网 / App Store / 官方公告 / 监管与行业报告</span>
+      <span class="tag">关键事实已由本体二次复核</span>
+      <span class="tag">未经证实处均标注「未找到公开信息」</span>
+    </div>
+  </div>
+  <article>
+<blockquote>
+<p>调研对象：且慢（珠海盈米基金销售有限公司旗下基金投顾平台，官网 qieman.com）
+调研方式：网络公开信息搜索与网页抓取（官网、App Store、盈米官网、监管/行业报告、财经媒体）
+调研时间：2026年7月23日
+说明：本报告严格基于可核实的公开信息，凡未能找到公开出处的内容均明确标注「未找到公开信息」，不做推测性填充。</p>
+</blockquote>
+<hr />
+<h2 id="app">一、且慢APP「投顾」一级页面的当前结构与内容模块</h2>
+<p><strong>重要说明</strong>：且慢官网（qieman.com）为前端动态渲染（SPA），无法直接抓取页面内容；APP 一级页面的精确布局截图未能通过公开渠道获取。以下结构基于 App Store 官方应用描述（2026年更新版）、官网 URL 路径、第三方应用情报页与用户评价交叉还原，可信度较高但非逐像素验证。</p>
+<h3 id="11-app-store-2026">1.1 核心信息架构（据 App Store 官方描述，2026年）</h3>
+<p>且慢当前版本（iOS 4.8.109，安卓/鸿蒙 4.8.106+）的产品主线为「四笔钱资产配置 + 严选策略 + 定制方案 + AI小顾」：</p>
+<ul>
+<li><strong>四笔钱</strong>：APP 首页核心框架，将资金按用途分为四个账户入口：</li>
+<li><strong>活钱管理</strong>——日常随时要用的钱，货币基金承接（代表策略「货币三佳」）；</li>
+<li><strong>稳健理财（稳钱）</strong>——半年至三年内有明确用途的钱，债基/固收+策略承接（代表策略「我要稳稳的幸福」「南方梦想佳」「马拉松固收增强」）；</li>
+<li><strong>长期投资（长钱）</strong>——3~5年不用的钱，权益类策略承接（代表策略「长赢指数投资计划」「春华秋实」，官网路径 <code>qieman.com/m4/M4_LONGTERM</code> 即长钱板块）；</li>
+<li><strong>保险保障</strong>——风险托底，由且慢精选合作伙伴提供保险产品。</li>
+<li>官网四笔钱入口路径为 <code>qieman.com/m4</code>。</li>
+<li><strong>严选策略</strong>：官方描述为「帮您过滤噪音，仅展示严格筛选过的优质投资策略，并按风险等级划分投资周期（活钱、稳钱、长钱），方便用户自动匹配适合的策略」。首页只展示精选策略而非爆款产品、不做排行榜，是且慢区别于基金超市类平台的核心设计。</li>
+<li><strong>定制方案服务</strong>：官方描述为「投前基于用户财务现状与目标，定制专属投资计划书；投中结合市场行情变化，动态调整组合配比；投后全程跟踪陪伴」。</li>
+<li><strong>AI小顾</strong>：24小时 AI 投顾，输入投资时长、风险偏好、预期目标即可生成专属方案并实现「全程自动化的账户管理」（2024年5月上线，2025年2月接入 DeepSeek-R1）。</li>
+<li><strong>工具类模块</strong>：每日估值、资产分布分析、回测数据、指数估值（官网路径 <code>qieman.com/idx-eval</code>）、创建组合（自建组合，用户评价显示上限5个）等。</li>
+<li><strong>社区/陪伴</strong>：主理人周报、直播、且慢社区（App Store 截图显示有 Community/Groups 标签页）、调仓通知与「跟车/跟调」交互（消息通知→调仓信息→开始跟调）。</li>
+<li><strong>同路人权益体系</strong>（2025年10月上线）：以「资产规模 + 与且慢同行时长」双维度定级，含投顾服务权益（账户深度分析、家庭财务分析、海外资产规划）与实物权益。</li>
+<li><strong>专区类</strong>：养老专区（个人养老金/1+1+1账户体系）、长赢权益专区（<code>qieman.com/longwin/index</code>，E大持有人专属服务，2025年10月公告上线）。</li>
+</ul>
+<p><strong>信息来源</strong>：
+- App Store 且慢官方页面：https://apps.apple.com/us/app/且慢/id1104871195（描述更新至2026年，含540亿规模数据）
+- 第三方应用情报页（含完整官方描述与截图解说）：https://mwm.ai/apps/qie-man/1104871195
+- CSDN 介绍文章（2026-02-04）：https://www.csdn.net/article/2026-02-04/157723329
+- 且慢官方公告（2025-10-23）：https://content.qieman.com/items/20419</p>
+<h3 id="12-2016-2019">1.2 与孟岩时期（2016-2019）的结构差异</h3>
+<p>孟岩自述文章显示，其在任期间且慢「没有排行榜、不做目标投、坚持只有很少的策略」；当前版本在保留严选、四笔钱骨架的基础上，增加了 AI 定制、权益体系、养老/全球专区、自建组合等更「货架化+账户化」的模块（来源：孟岩《且慢，重新说再见》，2023-04-26，https://finance.sina.cn/2023-04-26/detail-imyrtazq2724890.d.html ）。</p>
+<hr />
+<h2 id="_1">二、核心投顾策略清单与主理人体系</h2>
+<h3 id="21">2.1 策略清单与现状</h3>
+<p><strong>第一批投顾基金组合（2020年10月随投顾业务上线，2025年11月起统一改为按月收取投顾费）</strong>——据且慢官方公告（2025-10-23）：</p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th>主理方</th>
+<th>定位</th>
+<th>现状（2025-10公告口径）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>长赢指数投资计划（150份 + S定投）</td>
+<td>E大（ETF拯救世界）</td>
+<td>长钱/指数择时</td>
+<td>在售，2017-04-01上线，跟投人数超40万；2025-11-03起收投顾费（&lt;100万部分 0.5%/年，100–300万 0.45%/年，规模越大越低，每月封顶2000元）</td>
+</tr>
+<tr>
+<td>春华秋实</td>
+<td>兴证全球基金</td>
+<td>长钱/主动权益</td>
+<td>在售，同批改为按月收投顾费</td>
+</tr>
+<tr>
+<td>周周同行</td>
+<td>（公开信息未见主理方明确披露）</td>
+<td>——</td>
+<td>在售，同批改费</td>
+</tr>
+<tr>
+<td>马拉松固收增强</td>
+<td>华夏基金</td>
+<td>稳钱</td>
+<td>在售，同批改费</td>
+</tr>
+<tr>
+<td>南方梦想佳</td>
+<td>南方基金</td>
+<td>稳钱</td>
+<td>在售，同批改费</td>
+</tr>
+<tr>
+<td>货币三佳</td>
+<td>且慢投研（盈米）</td>
+<td>活钱</td>
+<td>在售，同批改费；100元起投、随买随卖</td>
+</tr>
+</tbody>
+</table>
+<p><strong>其他可查证的且慢投顾组合</strong>（据东方财富证券研报《基金投顾产品月调仓一览》2024-10，https://pdf.dfcfw.com/pdf/H301_AP202410071640177630_1.pdf ）：</p>
+<ul>
+<li>我要稳稳的幸福（交银施罗德基金多元资产管理部独家打造，稳钱旗舰，300元起投；具体上线日期未找到官方披露，据行业资料约2017年）</li>
+<li>超越哥伦布 / 陪伴哥伦布（2020-03-10成立）</li>
+<li>平衡五剑（2017-12成立）</li>
+<li>余余宝-安心卧倒组合（2020-03-16）</li>
+<li>金城汤池（2021-03-08）</li>
+<li>得之坦然（2021-06-28）</li>
+<li>建信梧桐双季红收益增强组合（建信基金，2021-09-23）</li>
+<li>颐养天年养老计划（2023年成立，养老定位）</li>
+<li>全球优选（2023-12-13成立，全球配置定位）</li>
+<li>花好月圆、大航海时代（App Store 用户评价中提及的在售低波动/权益策略，未找到官方成立日期）</li>
+</ul>
+<p><strong>孟岩时期（且慢2.0）核心策略</strong>（来源：孟岩《且慢，重新说再见》）：</p>
+<ul>
+<li>长赢指数投资计划（E大）</li>
+<li>绿巨人（郑志勇/望京博格）</li>
+<li>极简投资（简七）</li>
+<li>价值五剑（二鸟说）</li>
+<li>Earl二八轮动（张翼轸/Earl）</li>
+<li>八心八箭、货币三佳（且慢自营）</li>
+<li>二八轮动（2016年5月推出的量化轮动策略，孟岩自述该尝试「最终也被证明是失败的」——震荡市频繁买卖对用户心理冲击大，多数用户无法坚持；后不再作为主推）</li>
+</ul>
+<p><strong>用户提及但未能找到公开信息的策略</strong>：「盈钱包」「动态平衡」「山楂树」「避险绝尘」「可转债（策略）」「慢慢变富（策略）」「股债平衡（策略）」——在公开网络中<strong>未找到</strong>这些名称作为且慢在售/历史策略的可靠记录（「慢慢变富」更多作为且慢的理念口号出现）。「螺丝钉指数基金组合」公开可查的主阵地是蛋卷基金/雪球基金（银行螺丝钉主理），<strong>未找到</strong>其曾在且慢运作的公开证据。</p>
+<p><strong>组合→投顾策略迁移</strong>：2020年10月22日「四笔钱投顾服务升级计划」上线，且慢「正式从组合时代跨入投顾时代」，实现自动跟车；2021年12月投顾新规（大V组合整改）后，且慢对平台上 8000 多只组合进行严选和升级，保留策略统一纳入持牌投顾框架（来源：且慢官方公告 2025-10-23；盈米官网 https://yingmi.com/archives/171 ，中国日报转载 2020-10-23）。</p>
+<h3 id="22">2.2 主理人体系历史与现状</h3>
+<ul>
+<li><strong>孟岩</strong>：且慢创始人（产品/品牌），2015年11月加入盈米从0打造且慢，2019年11月8日被解除且慢工作、2019年12月28日对外宣布离开；后创办「有知有行」（四笔钱/温度计/长钱账户等理念延续者）。来源：孟岩《且慢，重新说再见》（2023-04-26）。</li>
+<li><strong>E大（ETF拯救世界）</strong>：长赢计划主理人，2017年4月1日上线且慢，至今仍为平台顶流（跟投超40万人）；2021年抱团行情中曾主动建议暂停新人跟投；2025年10月起在且慢社区开设长赢持有人专属权益专区。来源：孟岩文、且慢公告、雪球（https://xueqiu.com/3939439760/358069434 ，2025-10）。</li>
+<li><strong>螺丝钉（银行螺丝钉/钉大）</strong>：其组合主阵地为蛋卷/雪球基金，非且慢主理人（且慢关联<strong>未找到公开信息</strong>）。</li>
+<li><strong>山行</strong>：<strong>未找到公开信息</strong>（未能确认其为且慢主理人）。</li>
+<li><strong>机构主理人（现状主力）</strong>：盈米研究院/且慢投研、交银施罗德基金（我要稳稳的幸福、哥伦布系列）、兴证全球（春华秋实）、南方基金（南方梦想佳）、华夏基金（马拉松固收增强）、建信基金等。App Store 旧版描述还提及简七、刘备教授、月风投资笔记等达人主理人（约2020年口径）。</li>
+<li><strong>趋势</strong>：2021年11月投顾新规要求大V组合整改后，行业「大V主理」模式向「持牌机构主理」收敛；且慢当前对外口径以「主理人实盘策略指导 + 盈米研究院/基金公司专业力量」为主，个人大V中 E大 是最主要的存续者。</li>
+</ul>
+<hr />
+<h2 id="_2">三、关键模块上线里程碑时间线</h2>
+<table>
+<thead>
+<tr>
+<th>时间</th>
+<th>事件</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2015年5月</td>
+<td>盈米基金成立（广州）</td>
+<td>东方财富财富号 2026-06-06</td>
+</tr>
+<tr>
+<td>2015年11月</td>
+<td>孟岩加入盈米，开始孵化 C 端产品</td>
+<td>孟岩《且慢，重新说再见》</td>
+</tr>
+<tr>
+<td>2016年5月</td>
+<td>二八轮动策略推出（与蛋卷基金几乎同期）</td>
+<td>同上</td>
+</tr>
+<tr>
+<td><strong>2016年7月14日</strong></td>
+<td>且慢APP在 App Store 首发（1.0「高手云集的基金组合平台」）</td>
+<td>MWM 应用情报页（First Released Jul 14, 2016）；东方财富文章称「2016年7月上线」</td>
+</tr>
+<tr>
+<td>2017年4月1日</td>
+<td>E大「长赢指数投资计划」上线且慢（转机之作）</td>
+<td>孟岩文</td>
+</tr>
+<tr>
+<td>约2017年</td>
+<td>我要稳稳的幸福、绿巨人、极简投资、价值五剑、Earl二八轮动、八心八箭、货币三佳等构成 2.0「严选策略」时期核心；平衡五剑 2017-12 成立</td>
+<td>孟岩文；东财研报</td>
+</tr>
+<tr>
+<td>2017年9月</td>
+<td>孟岩开始写「孟岩投资实证」周更陪伴</td>
+<td>孟岩文</td>
+</tr>
+<tr>
+<td><strong>2018年</strong></td>
+<td>且慢首创「四笔钱」资产规划框架</td>
+<td>盈米官网 https://yingmi.com/archives/171 ；百度百科且慢词条</td>
+</tr>
+<tr>
+<td>2019年4月</td>
+<td>且慢3.0 发布，Slogan「放下焦虑，全情生活」</td>
+<td>孟岩文</td>
+</tr>
+<tr>
+<td>2019年10月25日</td>
+<td>证监会启动基金投顾试点，首批5家公募获批</td>
+<td>北京日报 https://xinwen.bjd.com.cn/content/s67160136e4b0c25b287d07c1.html</td>
+</tr>
+<tr>
+<td><strong>2019年12月中旬</strong></td>
+<td>盈米获基金投顾试点资格（与蚂蚁、腾安同为首批仅有的3家独立基金销售机构）</td>
+<td>孟岩文；盈米官网 https://yingmi.com/archives/206</td>
+</tr>
+<tr>
+<td>2019年12月28日</td>
+<td>孟岩宣布离开且慢</td>
+<td>孟岩文</td>
+</tr>
+<tr>
+<td>2020年3-4月</td>
+<td>疫情熔断期；2020年4月开发转托管工具帮助客户完成「南方原油大逃亡」</td>
+<td>百度百科且慢词条；且慢公告</td>
+</tr>
+<tr>
+<td><strong>2020年10月22日</strong></td>
+<td>「四笔钱投顾服务升级计划」上线＝投顾业务正式上线（第一批投顾组合、自动跟车、交易费抵扣投顾费模式开始）</td>
+<td>盈米官网/中国日报 2020-10-23；东财研报（盈米且慢投顾上线日 2020/10/22）</td>
+</tr>
+<tr>
+<td>2021年7月</td>
+<td>投顾规模突破100亿元</td>
+<td>且慢 App Store 官方描述</td>
+</tr>
+<tr>
+<td>2021年12月</td>
+<td>投顾规模突破200亿元；投顾新规落地，且慢对 8000+ 组合全面严选升级</td>
+<td>同上；且慢公告 2025-10-23</td>
+</tr>
+<tr>
+<td><strong>2022年12月</strong></td>
+<td>个人养老金业务上线：养老专区、「1+1+1」养老账户体系（个人养老金账户+补充养老投资账户+养老保险账户）、Y份额基金、富达国际养老计算器</td>
+<td>盈米官网 https://yingmi.com/archives/238 ；21财经 2022-12-19</td>
+</tr>
+<tr>
+<td>2023年12月13日</td>
+<td>「全球优选」投顾组合成立（全球配置方向）</td>
+<td>东财研报 2024-10</td>
+</tr>
+<tr>
+<td>2024年初</td>
+<td>《管好四笔钱 财富滚雪球》出版（中信出版社）</td>
+<td>盈米官网 https://yingmi.com/archives/535</td>
+</tr>
+<tr>
+<td>2024年</td>
+<td>且慢投顾「2.0」（以客户财富目标为起点的账户管理模式，即内部所称 4.0 个性化资产配置时代）；<strong>2024年5月 AI小顾上线</strong>（基于大模型的基金投顾AI应用）</td>
+<td>百度百科且慢词条</td>
+</tr>
+<tr>
+<td>2025年2月</td>
+<td>AI小顾接入 DeepSeek-R1；投顾规模突破400亿元</td>
+<td>百度百科；证券时报 https://stcn.com/article/detail/1656111.html</td>
+</tr>
+<tr>
+<td>2025年4月</td>
+<td>发布财富管理领域首个 MCP Server（后接入百度AI搜索、阿里云百炼、火山引擎；累计调用超600万次、服务150家机构）</td>
+<td>百度百科；晨星/新华财经《2025基金投顾案例集》 https://idea-cp.cnfin.com/ice/2025/12/16/df0a166664ef4563ad201aa70ad14b67.pdf</td>
+</tr>
+<tr>
+<td>2025年9月</td>
+<td>投顾规模突破500亿元；投顾用户盈利占比96%、平均持有772天</td>
+<td>App Store 描述；且慢公告</td>
+</tr>
+<tr>
+<td><strong>2025年10月23日</strong></td>
+<td>公告：第一批投顾组合自2025年11月3日起从「手续费抵扣投顾费」改为按月收取投顾费；同步上线「同路人权益体系」（行业首个以投资时长为核心权益维度）</td>
+<td>且慢官方 https://content.qieman.com/items/20419</td>
+</tr>
+<tr>
+<td>2026年3月31日</td>
+<td>投顾规模突破540亿元，基金保有量超2287亿元</td>
+<td>App Store 官方描述（数据来源盈米基金）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>未找到公开上线时间的工具</strong>：且慢「温度计」「每日估值」「行情信号」「额度宝」「自建组合/自助跟车」的具体上线日期均<strong>未找到公开信息</strong>。可确认的现状是：每日估值、指数估值（qieman.com/idx-eval）、资产分布分析、回测数据、创建组合（上限5个，Web端操作）为在用功能（App Store 描述与用户评价）；「额度宝/QDII额度宝」公开可查为腾讯理财通产品、「海外额度宝」为天天基金产品（21经济网 2026-06-02，https://www.21jingji.com/article/20260602/herald/fe2ae4e9656f721d2e5f76f1d4b29a95.html ），未见且慢同名工具；「市场温度计」公开可查为好买基金与有知有行（知行温度计）的工具，且慢温度计未找到独立公开记录。</p>
+<hr />
+<h2 id="_3">四、规划类功能：产品形态与流程</h2>
+<ol>
+<li><strong>四笔钱投资规划</strong>：以「先规划后配置」为主线——用户理清资金用途与期限 → 划分四笔钱 → 每笔钱匹配严选策略。App Store 截图显示存在「My Allocation Analysis（配置分析）」看板、「Asset Class Target Allocation（资产类别目标配置）」饼图与10年期「plan calculation（规划测算）」曲线，即<strong>规划书式</strong>的产品形态（目标配置比例 + 长期收益测算 + 持仓透视）。（来源：App Store 截图解说，mwm.ai 情报页）</li>
+<li><strong>定制方案</strong>：官方描述的三段式流程——投前「基于财务现状与目标定制专属投资计划书」；投中「结合行情动态调整组合配比」；投后「全程跟踪陪伴，根据资金变化灵活调整」。人工侧为「专家顾问团队定制家庭财富蓝图」，含全球风险测评、多元资产配置、现金流动态跟踪与资产全景复盘（部分能力封装在同路人高等级权益中，如家庭财务分析、海外资产规划）。AI 侧为「AI小顾」秒级生成方案并自动化账户管理。（来源：App Store 官方描述，2026）</li>
+<li><strong>养老规划</strong>：2022年12月上线的养老专区提供「养老计算器」（富达国际历时8个月为中国投资者定制的储蓄测算模型，示例：月入1万、55岁退休需每年储蓄2.4万）→「1+1+1」账户落地（个人养老金账户买Y份额享税优 + 补充养老投资账户 + 商业养老保险），产品覆盖目标日期/目标风险FOF、年金险、增额终身寿险。（来源：盈米官网 https://yingmi.com/archives/238 ；21财经 2022-12-19）</li>
+<li><strong>家庭资产配置规划</strong>：官方定位为「全球视野下的家庭财务规划」，由专家顾问定制家庭专属财富蓝图；且慢2024年起的「投顾2.0」模式即「以客户的财富目标为起点」重构服务（来源：App Store 描述；百度百科词条）。方法论沉淀于《管好四笔钱 财富滚雪球》（2024，中信出版社）。</li>
+</ol>
+<hr />
+<h2 id="_4">五、推品逻辑与商业模式</h2>
+<ol>
+<li><strong>买方投顾定位</strong>：收入与客户资产长期增值挂钩（「只有客户赚到钱，我们才能获得收益」）；对外强调不参与基金首发、不卖爆款、不做排行榜——2020年爆款基金潮中「顶住数百亿规模诱惑一款都没卖」（且慢公告 2025-10-23）。</li>
+<li><strong>四笔钱作为承接框架</strong>：规划（资金分层）→ 账户（四个心理账户）→ 推品（每个账户对应一组严选策略）。推品不以收益率排行驱动，而以「资金期限匹配」驱动：活钱→货币三佳；稳钱→我要稳稳的幸福/南方梦想佳/马拉松固收增强；长钱→长赢/春华秋实；保险→合作伙伴产品。（来源：盈米官网 2020-10 新闻稿；东方财富《智能投顾专题报告》2020-12，https://pdf.dfcfw.com/pdf/H3_AP202012041436505280_1.pdf ）</li>
+<li><strong>严选策略与主理人策略的关系</strong>：严选是「准入流程 + 货架呈现」——孟岩时期即建立严格的策略准入流程；2021年12月对8000+组合做严选升级后，留存策略皆纳入持牌投顾框架。主理人策略（E大长赢等外部主理 + 基金公司输出策略）是严选货架上的供给来源，且慢投研自营策略（货币三佳、八心八箭等）为补充。</li>
+<li><strong>投顾费率</strong>：
+   - 2020.10–2025.10 第一批组合采用<strong>全市场独此一家</strong>的「交易费用抵扣投顾费」模式（基金申购费1折、尾佣抵扣，用户不另付投顾费）；
+   - 2025年11月3日起改为按月收取：长赢计划（150份/S定投）&lt;100万部分 0.5%/年、100–300万 0.45%/年、阶梯递减、每月封顶2000元（雪球 2025-10，https://xueqiu.com/3939439760/358069434 ）；
+   - 中基协《国内外基金投顾费率机制研究》（2024-10）记载：且慢对不同投顾组合采用固定年费与按费率两种模式，按费率收取的通常在 0.2%–2.0% 区间；行业内约78%的投顾组合费率≤0.5%（https://www.amac.org.cn/hyyj/sy/202410/P020241015595094832303.pdf ）；
+   - 变更动因：2025年行业第三次费率改革（赎回费归基金资产、销售服务费大幅下调、禁止对同一保有量重复收取客户维护费）使抵扣模式失去基础。</li>
+<li><strong>商业闭环</strong>：投顾费（AUM×费率）+ 基金销售收入（1折申购费、保有尾佣）+ B端能力输出（盈米「啟明」「蜂鸟」，及2025年起的且慢MCP面向机构/AI平台输出）。</li>
+</ol>
+<hr />
+<h2 id="_5">六、用户规模与使用情况（公开数据汇总）</h2>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数据</th>
+<th>截至时间</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>盈米投顾服务资产规模</td>
+<td>突破100亿 / 200亿 / 370亿 / 400亿 / 500亿 / <strong>540亿元</strong></td>
+<td>2021.07 / 2021.12 / 2024.09 / 2025.02 / 2025.09 / <strong>2026.03.31</strong></td>
+<td>App Store 官方描述；北京日报 2024-10；证券时报 2025</td>
+</tr>
+<tr>
+<td>盈米基金保有量</td>
+<td>超2287亿元</td>
+<td>2026-03-31</td>
+<td>App Store 官方描述</td>
+</tr>
+<tr>
+<td>投顾用户盈利占比</td>
+<td>96%（此前口径：2021年初98%+、2025年2月80%+，随市场波动）</td>
+<td>2025-09-30</td>
+<td>且慢公告 2025-10-23；App Store</td>
+</tr>
+<tr>
+<td>投顾用户平均持有时长</td>
+<td>772天（此前披露口径690天，远高于自主交易用户）</td>
+<td>2025-09-30</td>
+<td>且慢公告；证券时报 2025-03（https://stcn.com/article/detail/1656111.html）</td>
+</tr>
+<tr>
+<td>客户资产结构</td>
+<td>新客首季人均约2万元→一年后约10万元；近90%客户资产为签约投顾资产；70%客户资产配置权益类</td>
+<td>2025年初</td>
+<td>证券时报 2025-03</td>
+</tr>
+<tr>
+<td>长赢计划跟投人数</td>
+<td>超40万人</td>
+<td>2025-10</td>
+<td>雪球/东方财富财富号</td>
+</tr>
+<tr>
+<td>帮助用户累计赚取收益</td>
+<td>超26亿元；盈利投资用户占比92%（行业均值41.2%）</td>
+<td>2020-06</td>
+<td>应用宝/旧版 App Store 描述</td>
+</tr>
+<tr>
+<td>服务客户量级口径</td>
+<td>官方描述称96%盈利数据背后是「数十万个家庭」</td>
+<td>2025-09</td>
+<td>App Store 官方描述</td>
+</tr>
+<tr>
+<td>App Store（美区）下载量级</td>
+<td>1M+，评分4.2/5（1.3K评分）</td>
+<td>2026</td>
+<td>mwm.ai 应用情报页</td>
+</tr>
+</tbody>
+</table>
+<p><strong>未找到公开信息</strong>：且慢总注册用户数的准确官方数字；「长钱账户（长钱板块）」单独规模；复购率/留存率的官方披露（仅有「平均持有772天」「老客资产一年从2万升至10万」等替代性指标）。参考行业口径：截至2023年末全行业基金投顾规模约1500亿元、客户524万（36氪 2024，https://m.36kr.com/p/2653362132106369 ）。</p>
+<hr />
+<h2 id="_6">七、竞品对标（简要）：投顾页面组织方式</h2>
+<table>
+<thead>
+<tr>
+<th>平台</th>
+<th>组织模式</th>
+<th>要点</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>雪球基金（蛋卷并入）</strong></td>
+<td>社区+货架（工具+货架型）</td>
+<td>蛋卷基金已并入北京雪球基金销售有限公司统一运营；全品类货架（1万+基金、投顾、私募），主打社区发现（5700万用户）、大V/机构投顾组合自动跟车、指数估值等选基工具；保有规模近500亿</td>
+<td>App Store 雪球基金页；danjuanfunds.com</td>
+</tr>
+<tr>
+<td><strong>天天基金（投顾）</strong></td>
+<td>基金超市+工具矩阵（工具+货架型）</td>
+<td>首页以数据/排行/导购为主，投顾以「投顾管家」栏目嵌入超市货架；工具丰富（活期宝、指数宝、海外额度宝等）</td>
+<td>fund.eastmoney.com</td>
+</tr>
+<tr>
+<td><strong>支付宝 帮你投 / 金选</strong></td>
+<td>场景流量+简化委托（规划轻、推品重）</td>
+<td>帮你投2020-04-02上线（与先锋领航合资），100元起投的全委托智能投顾；「金选」为卖方精选货架逻辑；人均AUM低（招股书口径5000+元），主打长尾</td>
+<td>东方财富研报 2022-07（https://pdf.dfcfw.com/pdf/H301_AP202207081576000906_1.pdf）；36氪 2024</td>
+</tr>
+<tr>
+<td><strong>理财魔方</strong></td>
+<td>智能投顾（规划+推品型）</td>
+<td>独立智能投顾APP，以风险测评→组合配置→自动调仓为主线，强调 AI 个性化与平滑波动</td>
+<td>行业综述（36氪等）；细节未做深入抓取</td>
+</tr>
+<tr>
+<td><strong>Betterment / Wealthfront（美国）</strong></td>
+<td>目标导向规划+自动化账户（规划+推品的成熟范式）</td>
+<td>以人生目标（退休、购房、应急金）设立子账户，先规划测算再落到自动化 ETF 组合，费率约0.25%/年；中基协报告将其作为国内费率机制的对标对象（阶梯费率传统）</td>
+<td>中基协费率研究 2024-10；行业通识（本次未逐页抓取官网）</td>
+</tr>
+<tr>
+<td><strong>且慢（对照）</strong></td>
+<td><strong>规划+推品型的国内代表</strong></td>
+<td>用「四笔钱」把规划前置为账户框架，货架收敛为严选策略；与雪球/天天的「工具+大货架」形成两极；与帮你投相比多了「资金分层规划」这一中间层；与 Betterment 的目标子账户逻辑最接近，但保留了「主理人跟车」这一中国特色形态</td>
+<td>综合上述来源</td>
+</tr>
+</tbody>
+</table>
+<p><strong>对组织模式的观察</strong>：国内投顾页面大体两条路线——①「工具+货架」（雪球、天天：流量入口是行情/估值/排行工具，投顾是货架上的一类商品）；②「规划+推品」（且慢、帮你投、理财魔方：入口是规划问答/账户框架，产品作为规划结论被推出）。且慢是路线②中「账户框架化」最彻底的（四笔钱已成行业事实标准，孟岩语），2024年后又叠加 AI（AI小顾）与权益体系（同路人）来强化留存。</p>
+<hr />
+<h2 id="_7">附：主要信息来源清单</h2>
+<ol>
+<li>且慢官方公告《关于部分且慢组合调整收费方式及全新同路人权益体系上线的通知》，2025-10-23：https://content.qieman.com/items/20419</li>
+<li>App Store「且慢」官方页面（2026年版描述）：https://apps.apple.com/us/app/且慢/id1104871195</li>
+<li>MWM 应用情报页（含首发日期、版本、截图解说）：https://mwm.ai/apps/qie-man/1104871195</li>
+<li>孟岩《且慢，重新说再见》（新浪财经转载），2023-04-26：https://finance.sina.cn/2023-04-26/detail-imyrtazq2724890.d.html</li>
+<li>盈米官网新闻：投顾试点与盈利报告（2021-07）https://yingmi.com/archives/206 ；四笔钱投顾服务升级（2020-10）https://yingmi.com/archives/171 ；养老「1+1+1」体系（2022-12）https://yingmi.com/archives/238 ；《管好四笔钱》https://yingmi.com/archives/535</li>
+<li>证券时报·券商中国《盈利占比超80%！基金投顾业绩出炉》，2025-03：https://stcn.com/article/detail/1656111.html</li>
+<li>北京日报《试点五年，基金投顾规模大涨》，2024-10：https://xinwen.bjd.com.cn/content/s67160136e4b0c25b287d07c1.html</li>
+<li>雪球《且慢突收投顾费！E大40万跟投者卡壳》，2025-10：https://xueqiu.com/3939439760/358069434</li>
+<li>东方财富证券《基金投顾产品月调仓一览》，2024-10：https://pdf.dfcfw.com/pdf/H301_AP202410071640177630_1.pdf</li>
+<li>中基协《国内外基金投顾费率机制研究》，2024-10：https://www.amac.org.cn/hyyj/sy/202410/P020241015595094832303.pdf</li>
+<li>东方财富证券《智能投顾专题报告》，2020-12：https://pdf.dfcfw.com/pdf/H3_AP202012041436505280_1.pdf</li>
+<li>兴业证券《基金投顾2022年中回顾与展望》，2022-07：https://pdf.dfcfw.com/pdf/H301_AP202207081576000906_1.pdf</li>
+<li>36氪《1500亿基金投顾「探路」》，2024：https://m.36kr.com/p/2653362132106369</li>
+<li>晨星/新华财经《2025基金投顾优秀案例集》（且慢MCP案例），2025-12：https://idea-cp.cnfin.com/ice/2025/12/16/df0a166664ef4563ad201aa70ad14b67.pdf</li>
+<li>21经济网《QDII额度告急！招行、理财通等齐推抢额度工具》，2026-06-02：https://www.21jingji.com/article/20260602/herald/fe2ae4e9656f721d2e5f76f1d4b29a95.html</li>
+<li>百度百科「且慢（盈米基金旗下买方投顾品牌）」词条：https://baike.baidu.com/item/且慢/22568757</li>
+<li>东方财富财富号《顶流基金大V劝退粉丝》，2026-06-06：https://caifuhao.eastmoney.com/news/20260606102020678035250</li>
+<li>腾讯应用宝且慢页面：https://sj.qq.com/appdetail/cn.yingmi.qieman.hermione</li>
+</ol>
+<blockquote>
+<p><strong>数据校验说明</strong>：报告中所有规模/比例数字均直接引自上述来源原文并注明截至时间；不同时点口径（如盈利占比 98%→80%→96%）已并列呈现而非取单一值。官网动态页面（qieman.com）无法抓取正文，APP 内实际页面布局建议以真机安装最新版（iOS 4.8.109）复核。</p>
+</blockquote>
+  </article>
+  <div class="foot">配套文档：01-投顾模块现况盘点报告.html（MCP实盘数据+页面实探） · 02-改版方向与方案设计.html<br>本报告由网络调研子代理产出，关键来源（2025-10-23官方公告、App Store官方描述）已由本体于2026-07-23直接访问复核一致。</div>
+</div>
+</body>
+</html>

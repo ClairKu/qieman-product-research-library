@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>且慢投顾页改版DEMO · 方案B编排式产品页（预埋C）</title>
+<style>
+  :root{
+    --brand:#1B88EE; --brand-bg:#F0F6FF;
+    --up:#FA440C; --down:#07AD8F; --warn:#EA9500; --warn-bg:#FFFAEF;
+    --t1:#333; --t2:#606060; --t3:#999;
+    --bg:#EDF1F5; --line:#E8ECF1;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--t1); font-size:14px; line-height:1.6;}
+  .stage{display:flex; gap:28px; justify-content:center; align-items:flex-start; padding:26px 16px 60px; flex-wrap:wrap;}
+  /* control panel */
+  .panel{width:320px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px; position:sticky; top:26px;}
+  .panel h1{font-size:17px; margin-bottom:4px;}
+  .panel .sub{font-size:12px; color:var(--t3); margin-bottom:14px; line-height:1.6;}
+  .panel h5{font-size:12.5px; color:var(--t2); margin:14px 0 8px;}
+  .personas{display:flex; flex-direction:column; gap:8px;}
+  .personas button{text-align:left; border:1.5px solid var(--line); background:#fff; border-radius:10px; padding:9px 12px; font-size:13px; cursor:pointer; font-family:inherit;}
+  .personas button b{display:block; font-size:13.5px;}
+  .personas button span{font-size:11px; color:var(--t3);}
+  .personas button.on{border-color:var(--brand); background:var(--brand-bg);}
+  .personas button.on b{color:var(--brand);}
+  .sw{display:flex; align-items:center; justify-content:space-between; font-size:13px; margin-top:6px;}
+  .toggle{width:40px; height:22px; border-radius:11px; background:#D6DBE1; position:relative; cursor:pointer; transition:.2s;}
+  .toggle::after{content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:.2s;}
+  .toggle.on{background:var(--brand);}
+  .toggle.on::after{left:20px;}
+  .panel .note{font-size:11px; color:var(--t3); margin-top:14px; border-top:1px dashed var(--line); padding-top:10px; line-height:1.7;}
+  .slotlog{font-size:11px; background:#F7F9FC; border-radius:8px; padding:8px 10px; margin-top:8px; color:var(--t2); line-height:1.8; max-height:170px; overflow:auto;}
+  .slotlog b{color:var(--brand);}
+  /* phone */
+  .phone{width:400px; flex-shrink:0; background:#111; border-radius:40px; padding:11px; box-shadow:0 16px 44px rgba(0,0,0,.22); position:relative;}
+  .screen{background:#F5F7FA; border-radius:30px; overflow:hidden; height:780px; display:flex; flex-direction:column; position:relative;}
+  .navbar{background:#fff; padding:14px 16px 10px; flex-shrink:0; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between;}
+  .navbar b{font-size:17px;}
+  .navbar .ai-mini{font-size:11px; color:var(--brand); border:1px solid var(--brand); border-radius:12px; padding:1px 10px;}
+  .feed{flex:1; overflow-y:auto; padding:12px 12px 90px;}
+  .tabbar{position:absolute; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--line); display:flex; padding:8px 0 14px; z-index:5;}
+  .tabbar div{flex:1; text-align:center; font-size:10.5px; color:var(--t3);}
+  .tabbar div.on{color:var(--brand); font-weight:700;}
+  .tabbar div i{display:block; font-style:normal; font-size:17px; line-height:1.2;}
+  /* cards */
+  .c{background:#fff; border-radius:14px; padding:13px 14px; margin-bottom:10px; position:relative; font-size:13px;}
+  .c .slot-tag{display:none; position:absolute; top:-8px; right:10px; background:#123C6B; color:#fff; font-size:9.5px; border-radius:8px; padding:1px 9px; z-index:2;}
+  body.opsview .c .slot-tag{display:block;}
+  body.opsview .c{outline:1.5px dashed #9EC7EF; outline-offset:2px;}
+  .c .ct{font-size:14px; font-weight:700; display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;}
+  .c .ct .more{font-size:11px; color:var(--t3); font-weight:400;}
+  .c.hero{background:linear-gradient(125deg,#E8F3FF,#F4FAFF); border:1px solid #CFE5FB;}
+  .cbtn{display:inline-block; background:var(--brand); color:#fff; border-radius:16px; padding:5px 16px; font-size:12px; margin-top:8px; cursor:pointer; border:none; font-family:inherit;}
+  .cbtn.ghost{background:#fff; color:var(--brand); border:1px solid var(--brand);}
+  .cbtn.sm{padding:2px 11px; font-size:11px; margin-top:0;}
+  .kv3{display:flex; gap:8px; margin-top:8px;}
+  .kv3 .k{flex:1; background:rgba(255,255,255,.7); border-radius:8px; padding:6px 8px; text-align:center;}
+  .kv3 .k b{display:block; font-size:15px;}
+  .kv3 .k span{font-size:10px; color:var(--t3);}
+  .toolrow{display:flex; gap:6px; overflow-x:auto;}
+  .toolrow .tool{flex-shrink:0; background:#F6F9FC; border-radius:10px; padding:7px 11px; text-align:center; font-size:11px; color:var(--t2); cursor:pointer; position:relative;}
+  .toolrow .tool b{display:block; font-size:13px; color:var(--t1);}
+  .toolrow .tool .dot{position:absolute; top:4px; right:6px; width:6px; height:6px; border-radius:50%; background:var(--up);}
+  .ztags{display:flex; gap:8px;}
+  .ztags .z{flex:1; border-radius:10px; padding:9px 10px; font-size:12px; font-weight:600; color:#fff; cursor:pointer;}
+  .ztags .z span{display:block; font-size:10px; font-weight:400; opacity:.9;}
+  /* spectrum */
+  .spec{position:relative; height:54px; margin:14px 2px 4px;}
+  .spec .band{position:absolute; left:0; right:0; top:22px; height:10px; border-radius:5px;
+    background:linear-gradient(90deg,#07AD8F,#8BC34A 22%,#EA9500 45%,#FA440C 72%,#B71C1C);}
+  .spec .pt{position:absolute; top:16px; width:9px; height:9px; border-radius:50%; border:2px solid #fff; box-shadow:0 1px 3px rgba(0,0,0,.3); cursor:pointer; transform:translateX(-50%); transition:.15s;}
+  .spec .pt.dim{opacity:.25;}
+  .spec .lab{position:absolute; top:38px; font-size:9.5px; color:var(--t3); transform:translateX(-50%);}
+  .bandtabs{display:flex; gap:5px; margin:6px 0 8px;}
+  .bandtabs button{flex:1; border:1px solid var(--line); background:#fff; border-radius:14px; font-size:11px; padding:3px 0; cursor:pointer; color:var(--t2); font-family:inherit;}
+  .bandtabs button.on{background:var(--brand); border-color:var(--brand); color:#fff;}
+  .slist .s{display:flex; justify-content:space-between; align-items:center; padding:8px 2px; border-bottom:1px dashed var(--line); cursor:pointer;}
+  .slist .s:last-child{border-bottom:none;}
+  .slist .s .n b{font-size:13px;}
+  .slist .s .n div{font-size:10.5px; color:var(--t3);}
+  .slist .s .v{text-align:right;}
+  .slist .s .v b{font-size:14px; color:var(--up);}
+  .slist .s .v b.neg{color:var(--down);}
+  .slist .s .v div{font-size:10px; color:var(--t3);}
+  .bucket-tabs{display:flex; gap:5px; margin-bottom:8px; flex-wrap:wrap;}
+  .bucket-tabs button{border:none; background:#F0F2F5; border-radius:13px; font-size:11.5px; padding:3px 12px; cursor:pointer; color:var(--t2); font-family:inherit;}
+  .bucket-tabs button.on{background:var(--brand); color:#fff;}
+  .gap-note{background:var(--warn-bg); border-radius:8px; padding:7px 10px; font-size:11px; color:#8A6420; margin-top:8px;}
+  .risk-tip{font-size:9.5px; color:var(--t3); margin-top:8px; line-height:1.5;}
+  /* sheet */
+  .sheet-mask{position:absolute; inset:0; background:rgba(0,0,0,.45); z-index:9; display:none; border-radius:30px;}
+  .sheet{position:absolute; left:0; right:0; bottom:0; background:#fff; border-radius:22px 22px 30px 30px; z-index:10; padding:18px 18px 24px; display:none; max-height:74%; overflow-y:auto;}
+  .sheet .grab{width:36px; height:4px; border-radius:2px; background:#DDE2E8; margin:0 auto 12px;}
+  .sheet h3{font-size:16px;}
+  .sheet .meta{font-size:11px; color:var(--t3); margin-bottom:10px;}
+  .sheet .kv3 .k{background:#F6F9FC;}
+  .sheet .fitbox{background:var(--brand-bg); border-radius:10px; padding:10px 12px; font-size:12px; margin-top:12px; color:#0D5FBF;}
+  .sheet .acts{display:flex; gap:10px; margin-top:14px;}
+  .sheet .acts .cbtn{flex:1.4; text-align:center; margin:0; padding:9px 0; font-size:13.5px;}
+  .sheet .acts .cbtn.ghost{flex:1;}
+  .sheet .risk{font-size:9.5px; color:var(--t3); margin-top:12px;}
+  .toast{position:absolute; left:50%; top:44%; transform:translateX(-50%); background:rgba(20,20,20,.85); color:#fff; font-size:12px; border-radius:10px; padding:10px 18px; z-index:20; display:none; text-align:center; line-height:1.6; max-width:78%;}
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- 控制面板 -->
+  <div class="panel">
+    <h1>投顾页改版DEMO</h1>
+    <div class="sub">方案B「编排式产品页」＋ 预埋方案C（AI看板/AI入口）。右侧手机可直接点击操作。策略数据为盈米MCP实取真实数据（截止2026-07-22）。</div>
+    <h5>① 切换人群，观察千人千面编排</h5>
+    <div class="personas" id="personas"></div>
+    <h5>② 视角开关</h5>
+    <div class="sw">运营视角（显示插槽编排）<div class="toggle" id="opsToggle"></div></div>
+    <div class="sw" style="margin-top:10px">预埋C：AI看板组件<div class="toggle on" id="aiToggle"></div></div>
+    <h5>③ 当前编排（编排引擎输出）</h5>
+    <div class="slotlog" id="slotlog"></div>
+    <div class="note">推品规则内置：任何策略详情页第一行动均为「先看是否适合我」（定制优先），「直接跟投」降为次按钮。<br>DEMO范围＝方案B骨架＋C预埋位；用户自选布局（Phase 3）未含。</div>
+  </div>
+
+  <!-- 手机 -->
+  <div class="phone"><div class="screen">
+    <div class="navbar"><b>投顾</b><span class="ai-mini" onclick="toast('AI小顾对话入口（预埋C）：\n「说说这笔钱的用途，我帮你配」')">AI小顾</span></div>
+    <div class="feed" id="feed"></div>
+    <div class="tabbar">
+      <div><i>⌂</i>首页</div><div class="on"><i>◈</i>投顾</div><div><i>◷</i>资产</div><div><i>♁</i>我的</div>
+    </div>
+    <div class="sheet-mask" id="mask" onclick="closeSheet()"></div>
+    <div class="sheet" id="sheet"></div>
+    <div class="toast" id="toast"></div>
+  </div></div>
+
+</div>
+
+<script>
+/* ================= 数据（盈米MCP实取，截止2026-07-22） ================= */
+const STRATS = [
+  {code:"ZH012636",name:"货币三佳",bucket:"活钱",lv:"低风险",score:1,ann:2.66,dd:0.00,vol:0.15,sharpe:7.78,mgr:"盈米",since:"2017-01",tagline:"随时存取 · 量化优选三只货基"},
+  {code:"ZH045531",name:"南方梦想佳",bucket:"稳钱",lv:"中低风险",score:3,ann:2.01,dd:1.24,vol:0.67,sharpe:0.76,mgr:"南方基金",since:"2020-07",tagline:"债为主货为辅 · 高确定性"},
+  {code:"ZH038532",name:"小确幸计划",bucket:"稳钱",lv:"中低风险",score:8,ann:3.36,dd:2.13,vol:1.99,sharpe:0.93,mgr:"盈米基金",since:"2019-11",tagline:"纯债+固收+ · 控波动"},
+  {code:"SI000210",name:"蛋黄全球债",bucket:"稳钱",lv:"中低风险",score:8,ann:0.81,dd:2.77,vol:1.89,sharpe:-0.37,mgr:"盈米",since:"2024-09",tagline:"全球债类资产配置"},
+  {code:"ZH045075",name:"马拉松固收增强",bucket:"稳钱",lv:"中风险",score:9,ann:3.11,dd:6.26,vol:3.13,sharpe:0.51,mgr:"华夏财富",since:"2020-06",tagline:"资产性价比出发 · 低频调仓"},
+  {code:"ZH013136",name:"我要稳稳的幸福",bucket:"稳钱",lv:"中低风险",score:11,ann:4.85,dd:2.79,vol:2.36,sharpe:1.42,mgr:"交银施罗德",since:"2017-01",tagline:"严控回撤 · 目标年化6-8%"},
+  {code:"ZH045070",name:"添富小确幸",bucket:"稳钱",lv:"中低风险",score:13,ann:2.25,dd:4.39,vol:2.71,sharpe:0.28,mgr:"汇添富基金",since:"2021-12",tagline:"严控回撤 · 稳中求进"},
+  {code:"ZH032680",name:"春华秋实",bucket:"长钱",lv:"中风险",score:21,ann:5.41,dd:12.83,vol:5.75,sharpe:0.68,mgr:"静静聊吧",since:"2019-01",tagline:"全天候股债配置 · 三年一周期"},
+  {code:"SI000164",name:"懒猫全球配置",bucket:"长钱",lv:"中风险",score:42,ann:5.95,dd:9.92,vol:8.10,sharpe:0.55,mgr:"盈米基金",since:"2023-07",tagline:"全球大类资产 · 均衡配置"},
+  {code:"LONG_WIN",name:"长赢指数投资计划",bucket:"长钱",lv:"中高风险",score:56,ann:4.74,dd:19.79,vol:11.13,sharpe:0.29,mgr:"盈米(E大)",since:"2015-07",tagline:"低估买入指数 · 等待开花结果"},
+  {code:"SI000035",name:"周周同行",bucket:"长钱",lv:"中高风险",score:60,ann:1.49,dd:34.93,vol:15.10,sharpe:0.00,mgr:"盈米",since:"2021-05",tagline:"每周二发车 · 长钱周定投"},
+  {code:"SI000153",name:"思远定投全球好资产",bucket:"长钱",lv:"中风险",score:67,ann:14.58,dd:14.01,vol:13.42,sharpe:0.97,mgr:"盈米基金",since:"2023-05",tagline:"好资产+好时机+好组合"},
+  {code:"ZH150669",name:"颐养天年养老计划",bucket:"养老",lv:"中高风险",score:70,ann:5.99,dd:15.64,vol:14.90,sharpe:0.30,mgr:"盈米基金",since:"2023-07",tagline:"养老下滑曲线模型"},
+  {code:"SI000212",name:"蛋黄全球股",bucket:"长钱",lv:"中高风险",score:71,ann:17.64,dd:14.06,vol:15.05,sharpe:1.07,mgr:"盈米",since:"2024-09",tagline:"全球股类资产配置"},
+  {code:"SI000224",name:"道格全球精选",bucket:"长钱",lv:"中高风险",score:75,ann:4.72,dd:15.01,vol:18.71,sharpe:0.17,mgr:"盈米",since:"2025-08",tagline:"股债金多元 · 全球分散"},
+  {code:"ZH045072",name:"添富权益严选",bucket:"长钱",lv:"中高风险",score:81,ann:2.22,dd:40.40,vol:17.18,sharpe:0.04,mgr:"汇添富基金",since:"2021-12",tagline:"核心+卫星 · 主动权益"}
+];
+const BANDS = [
+  {id:"all",label:"全部",test:s=>true},
+  {id:"low",label:"低",test:s=>s.lv==="低风险"},
+  {id:"midlow",label:"中低",test:s=>s.lv==="中低风险"},
+  {id:"mid",label:"中",test:s=>s.lv==="中风险"},
+  {id:"midhigh",label:"中高",test:s=>s.lv==="中高风险"}
+];
+
+/* ================= 组件注册表 ================= */
+const COMP = {
+  aiBoard:{slot:"AI看板（预埋C · 官方常驻）",html:p=>`
+    <div class="c hero"><span class="slot-tag">slot · aiBoard</span>
+      <div class="ct">AI今日看板 <span class="more">合规审核通过 · 10:00</span></div>
+      <div style="font-size:12.5px;color:var(--t2)">${p.aiText}</div>
+      <button class="cbtn" onclick="toast('演示：进入AI定制流程（定制优先）')">${p.aiCta}</button>
+    </div>`},
+  planGuide:{slot:"规划引导卡（主行动 · 定制优先）",html:p=>`
+    <div class="c hero"><span class="slot-tag">slot · planGuide</span>
+      <div class="ct">我的四笔钱规划 <span class="more">未开始</span></div>
+      <div style="font-size:12.5px;color:var(--t2)">把钱按用途分四笔，是提高胜率的第一步。1分钟说清用途与期限，生成你的定制方案。</div>
+      <div class="kv3">
+        <div class="k"><b style="color:#07AD8F">活钱</b><span>随时用</span></div>
+        <div class="k"><b style="color:#1B88EE">稳钱</b><span>半年-3年</span></div>
+        <div class="k"><b style="color:#FA440C">长钱</b><span>3年以上</span></div>
+        <div class="k"><b style="color:#EA9500">保障</b><span>风险托底</span></div>
+      </div>
+      <button class="cbtn" onclick="toast('演示：进入四笔钱规划 → 生成定制方案')">开始规划，生成定制方案</button>
+      <button class="cbtn ghost" onclick="toast('演示：跳过规划，直接逛货架（辅路）')" style="margin-left:8px">先逛逛</button>
+    </div>`},
+  holdingDiag:{slot:"持仓诊断卡（主行动 · 按缺口推品）",html:p=>`
+    <div class="c hero"><span class="slot-tag">slot · holdingDiag</span>
+      <div class="ct">持仓诊断 <span class="more">昨日更新</span></div>
+      <div style="font-size:12.5px;color:var(--t2)">你的持仓集中在<b>长钱（86%）</b>，稳钱占比仅6%——回撤耐受依赖单一桶。当前市场温度32°，适合补配固收+。</div>
+      <div class="kv3">
+        <div class="k"><b>86%</b><span>长钱占比</span></div>
+        <div class="k"><b style="color:#EA9500">6%</b><span>稳钱占比（建议25%+）</span></div>
+        <div class="k"><b>-12.4%</b><span>组合最大回撤</span></div>
+      </div>
+      <button class="cbtn" onclick="toast('演示：生成稳钱补配定制方案（定制优先）')">看我的补配方案（定制）</button>
+    </div>`},
+  planExec:{slot:"方案执行卡（主行动 · 促执行）",html:p=>`
+    <div class="c hero"><span class="slot-tag">slot · planExec</span>
+      <div class="ct">你的定制方案待执行 <span class="more">3天前生成</span></div>
+      <div style="font-size:12.5px;color:var(--t2)">「稳中求进」四笔钱方案已生成：活钱1万 / 稳钱12万 / 长钱8万 / 保障已覆盖。当前仅完成活钱配置。</div>
+      <div class="kv3">
+        <div class="k"><b>1/4</b><span>执行进度</span></div>
+        <div class="k"><b>¥20万</b><span>待配置</span></div>
+        <div class="k"><b>32°</b><span>市场温度（偏低）</span></div>
+      </div>
+      <button class="cbtn" onclick="toast('演示：一键执行剩余配置（稳钱→我要稳稳的幸福等）')">继续执行方案</button>
+      <button class="cbtn ghost" style="margin-left:8px" onclick="toast('演示：重新调整方案偏好')">调整方案</button>
+    </div>`},
+  opsBanner:{slot:"官方主推位（运营后台可配 · 档期化）",html:p=>`
+    <div class="c"><span class="slot-tag">slot · opsBanner（档期：严选升级周）</span>
+      <div class="ct">本季主推 · 严选体系升级 <span class="more">广告位规则可审计</span></div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="flex:1;font-size:12px;color:var(--t2)">新重点策略系列上线：全球股债严选。先做1分钟适配测评，看它适不适合你的长钱。</div>
+        <button class="cbtn sm" style="flex-shrink:0" onclick="toast('演示：适配测评 → 定制建议 → 再到标准策略')">测适配</button>
+      </div>
+    </div>`},
+  tools:{slot:"市场工具条（钩子 · 每个工具带品类出口）",html:p=>`
+    <div class="c"><span class="slot-tag">slot · tools</span>
+      <div class="ct">市场工具</div>
+      <div class="toolrow">
+        <div class="tool" onclick="toast('温度计 32°（偏低）\n→ 品类出口：低估值指数类长钱策略')"><b>32°</b>温度计</div>
+        <div class="tool" onclick="toast('每日估值：8年百分位口径\n→ 品类出口：低估指数对应策略')"><b>估值</b>每日估值<span class="dot"></span></div>
+        <div class="tool" onclick="toast('行情信号：今日2条发车/补仓信号')"><b>2条</b>行情信号<span class="dot"></span></div>
+        <div class="tool" onclick="toast('指数估值表（红黄绿规则待内部确认）')"><b>表</b>指数估值</div>
+        <div class="tool" onclick="toast('额度宝（形态待内部确认，暂以现金管理占位）')"><b>宝</b>额度宝</div>
+      </div>
+    </div>`},
+  spectrum:{slot:"风险光谱带（货架第一入口 · P0可视化）",html:p=>`
+    <div class="c"><span class="slot-tag">slot · spectrum</span>
+      <div class="ct">按风险找策略 <span class="more" onclick="toast('演示：展开二维全景图（P1，见02文档3.1）')">展开全景图 ›</span></div>
+      <div class="bandtabs" id="bandtabs"></div>
+      <div class="spec"><div class="band"></div><div id="specPts"></div>
+        <span class="lab" style="left:4%">低</span><span class="lab" style="left:22%">中低</span><span class="lab" style="left:45%">中</span><span class="lab" style="left:70%">中高</span><span class="lab" style="left:94%">高</span>
+      </div>
+      <div class="slist" id="specList"></div>
+      <div class="risk-tip">横轴为组合风险分数（0-100）。历史业绩不代表未来表现，不构成投资建议。</div>
+    </div>`},
+  shelf:{slot:"四笔钱货架卡（品类矩阵渲染 · 默认桶随人群）",html:p=>`
+    <div class="c"><span class="slot-tag">slot · shelf（默认桶：${p.shelfBucket}）</span>
+      <div class="ct">严选货架 <span class="more" onclick="toast('演示：进入全部策略列表')">全部 ›</span></div>
+      <div class="bucket-tabs" id="bucketTabs"></div>
+      <div class="slist" id="shelfList"></div>
+      <div class="gap-note">配置提醒：中等风险档（风险分20-40）供给较薄，新品类矩阵补位中——运营可在此挂载上新档期。</div>
+    </div>`},
+  zones:{slot:"专区入口（场景聚合）",html:p=>`
+    <div class="c"><span class="slot-tag">slot · zones</span>
+      <div class="ct">专区</div>
+      <div class="ztags">
+        <div class="z" style="background:linear-gradient(120deg,#EA9500,#F5B94A)" onclick="toast('养老专区：1+1+1账户 · 测算工具 · 颐养天年')">养老<span>1+1+1账户</span></div>
+        <div class="z" style="background:linear-gradient(120deg,#1B88EE,#4BA3F5)" onclick="toast('全球专区：入口从资产页迁入投顾页（改版点）')">全球<span>多资产出海</span></div>
+        <div class="z" style="background:linear-gradient(120deg,#123C6B,#2E6DA8)" onclick="toast('长赢权益专区（2025.11）：E大专属服务')">长赢权益<span>持有人专属</span></div>
+      </div>
+    </div>`},
+  companion:{slot:"陪伴卡（内容→策略）",html:p=>`
+    <div class="c"><span class="slot-tag">slot · companion</span>
+      <div class="ct">今日陪伴 <span class="more">主理人观点</span></div>
+      <div style="font-size:12px;color:var(--t2);border-left:3px solid var(--brand-bg);padding-left:10px">「温度回落到32°，我们按计划把本周发车金额上调至1.5倍。低估时多买，是纪律不是勇气。」</div>
+      <div style="font-size:11px;color:var(--t3);margin-top:6px">周周同行 · 发车文 · 昨天 <span style="color:var(--brand);cursor:pointer" onclick="openSheet('SI000035')">查看策略 ›</span></div>
+    </div>`},
+  diyTools:{slot:"DIY工具卡（自主用户 · 不打扰+回流钩子）",html:p=>`
+    <div class="c"><span class="slot-tag">slot · diyTools</span>
+      <div class="ct">自己选</div>
+      <div class="toolrow">
+        <div class="tool" onclick="toast('演示：多指标筛选器（回撤/夏普/波动率/品类）')"><b>筛</b>指标筛选</div>
+        <div class="tool" onclick="toast('演示：自建组合（现状待内部确认）')"><b>建</b>自建组合</div>
+        <div class="tool" onclick="toast('演示：把我的DIY组合与官方方案对比（回流钩子）')"><b>比</b>对比官方方案</div>
+      </div>
+    </div>`}
+};
+
+/* ================= 人群编排规则（编排引擎示意） ================= */
+const PERSONAS = [
+  {id:"new",name:"新客未规划",desc:"无持仓 · 无测评",aiText:"欢迎来到且慢。先弄清「这笔钱什么时候用」，比选品更重要——我可以边聊边帮你把四笔钱分好。",aiCta:"和AI小顾聊聊",shelfBucket:"稳钱",
+   slots:["aiBoard","planGuide","opsBanner","tools","spectrum","shelf","zones","companion"]},
+  {id:"holder",name:"有持仓未签约",desc:"自主交易用户 · 结构失衡",aiText:"你的持仓昨日-0.21%。长钱占比86%偏高，同波动下有更优结构——建议先看补配方案。",aiCta:"让AI帮我调优",shelfBucket:"稳钱",
+   slots:["aiBoard","holdingDiag","opsBanner","spectrum","shelf","tools","companion"]},
+  {id:"planned",name:"已定制未执行",desc:"方案生成3天 · 执行1/4",aiText:"你的方案还有20万待配置。市场温度32°偏低，稳钱部分现在配置正合适，别让方案躺着。",aiCta:"继续执行方案",shelfBucket:"稳钱",
+   slots:["aiBoard","planExec","tools","companion","shelf","zones"]},
+  {id:"diy",name:"高活跃DIY型",desc:"工具重度用户 · 自主选品",aiText:"你上周看了8次估值表。全景图新增「叠加我的组合落点」，可以看到你和官方方案的差距。",aiCta:"看我的落点",shelfBucket:"长钱",
+   slots:["aiBoard","spectrum","diyTools","shelf","tools","opsBanner"]}
+];
+
+/* ================= 渲染 ================= */
+let curPersona = PERSONAS[0], curBand = "all", curBucket = null, aiOn = true;
+
+function renderPersonas(){
+  const el = document.getElementById('personas');
+  el.innerHTML = PERSONAS.map(p=>`<button class="${p.id===curPersona.id?'on':''}" onclick="setPersona('${p.id}')"><b>${p.name}</b><span>${p.desc}</span></button>`).join('');
+}
+function setPersona(id){ curPersona = PERSONAS.find(p=>p.id===id); curBand="all"; curBucket = curPersona.shelfBucket; renderAll(); }
+
+function renderFeed(){
+  const feed = document.getElementById('feed');
+  const slots = curPersona.slots.filter(s=>aiOn || s!=="aiBoard");
+  feed.innerHTML = slots.map(s=>COMP[s].html(curPersona)).join('') +
+    `<div style="font-size:9.5px;color:var(--t3);text-align:center;padding:6px 14px 0">市场有风险，投资需谨慎。投顾服务不保证盈利及最低收益。DEMO数据为真实历史数据（截止2026-07-22），交互为演示。</div>`;
+  if(slots.includes('spectrum')) renderSpectrum();
+  if(slots.includes('shelf')) renderShelf();
+  document.getElementById('slotlog').innerHTML =
+    `<b>人群：${curPersona.name}</b><br>` +
+    slots.map((s,i)=>`slot-${i+1} → <b>${s}</b>｜${COMP[s].slot}`).join('<br>');
+  feed.scrollTop = 0;
+}
+function renderSpectrum(){
+  const tabs = document.getElementById('bandtabs');
+  tabs.innerHTML = BANDS.map(b=>`<button class="${b.id===curBand?'on':''}" onclick="setBand('${b.id}')">${b.label}</button>`).join('');
+  const band = BANDS.find(b=>b.id===curBand);
+  document.getElementById('specPts').innerHTML = STRATS.map(s=>
+    `<div class="pt ${band.test(s)?'':'dim'}" style="left:${s.score}%;background:${bColor(s.bucket)}" title="${s.name}" onclick="openSheet('${s.code}')"></div>`).join('');
+  const list = STRATS.filter(band.test).sort((a,b)=>a.score-b.score).slice(0,4);
+  document.getElementById('specList').innerHTML = list.map(rowHtml).join('');
+}
+function setBand(id){ curBand=id; renderSpectrum(); }
+function renderShelf(){
+  const buckets=["活钱","稳钱","长钱","养老"];
+  if(!curBucket) curBucket=curPersona.shelfBucket;
+  document.getElementById('bucketTabs').innerHTML = buckets.map(b=>`<button class="${b===curBucket?'on':''}" onclick="setBucket('${b}')">${b}</button>`).join('');
+  const list = STRATS.filter(s=>s.bucket===curBucket).sort((a,b)=>a.score-b.score);
+  document.getElementById('shelfList').innerHTML = list.map(rowHtml).join('');
+}
+function setBucket(b){ curBucket=b; renderShelf(); }
+function bColor(b){ return {"活钱":"#07AD8F","稳钱":"#1B88EE","长钱":"#FA440C","养老":"#EA9500"}[b]; }
+function rowHtml(s){
+  return `<div class="s" onclick="openSheet('${s.code}')">
+    <div class="n"><b><span style="color:${bColor(s.bucket)}">●</span> ${s.name}</b><div>${s.tagline} · ${s.lv} · 风险分${s.score}</div></div>
+    <div class="v"><b class="${s.ann<0?'neg':''}">${s.ann>=0?'+':''}${s.ann}%</b><div>年化 · 回撤${s.dd}%</div></div>
+  </div>`;
+}
+
+/* ================= 策略半屏（推品链路核心：定制优先） ================= */
+function openSheet(code){
+  const s = STRATS.find(x=>x.code===code);
+  const sheet = document.getElementById('sheet');
+  sheet.innerHTML = `<div class="grab"></div>
+    <h3><span style="color:${bColor(s.bucket)}">●</span> ${s.name}</h3>
+    <div class="meta">${s.mgr} · 成立${s.since} · ${s.lv}（风险分${s.score}） · ${s.bucket}</div>
+    <div class="kv3">
+      <div class="k"><b style="color:${s.ann>=0?'var(--up)':'var(--down)'}">${s.ann>=0?'+':''}${s.ann}%</b><span>成立以来年化</span></div>
+      <div class="k"><b>${s.dd}%</b><span>最大回撤</span></div>
+      <div class="k"><b>${s.vol}%</b><span>波动率</span></div>
+      <div class="k"><b>${s.sharpe}</b><span>夏普比率</span></div>
+    </div>
+    <div style="font-size:12.5px;color:var(--t2);margin-top:10px">${s.tagline}。</div>
+    <div class="fitbox"><b>它适合你吗？</b>回答两个问题（这笔钱多久不用 / 能接受的最大回撤），先看它与你的匹配度，或获取更适合你的定制方案。</div>
+    <div class="acts">
+      <button class="cbtn" onclick="toast('演示：定制优先——进入适配测评/定制方案流程\n（推品第一行动）')">先看是否适合我</button>
+      <button class="cbtn ghost" onclick="toast('演示：直接跟投（次级行动，需完成签约与风测校验）')">直接跟投</button>
+    </div>
+    <div class="risk">数据来源：盈米MCP，截止2026-07-22。历史业绩不代表未来表现，不构成投资建议。投顾服务遵循买者自负原则。</div>`;
+  document.getElementById('mask').style.display='block';
+  sheet.style.display='block';
+}
+function closeSheet(){ document.getElementById('mask').style.display='none'; document.getElementById('sheet').style.display='none'; }
+function toast(msg){
+  const t=document.getElementById('toast'); t.innerText=msg; t.style.display='block';
+  clearTimeout(t._h); t._h=setTimeout(()=>t.style.display='none',2200);
+}
+
+/* ================= 开关 ================= */
+document.getElementById('opsToggle').onclick = function(){ this.classList.toggle('on'); document.body.classList.toggle('opsview'); };
+document.getElementById('aiToggle').onclick = function(){ this.classList.toggle('on'); aiOn=!aiOn; renderFeed(); };
+
+function renderAll(){ renderPersonas(); renderFeed(); }
+curBucket = curPersona.shelfBucket;
+renderAll();
+</script>
+</body>
+</html>

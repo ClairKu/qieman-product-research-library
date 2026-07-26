@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>且慢投顾页改版 · 产品规划与计划书 v0.1</title>
+<style>
+  :root{
+    --brand:#1B88EE; --brand-bg:#F0F6FF;
+    --up:#FA440C; --down:#07AD8F; --warn:#EA9500; --warn-bg:#FFFAEF;
+    --t1:#333; --t2:#606060; --t3:#999;
+    --bg:#F5F7FA; --card:#fff; --line:#E8ECF1;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--t1); line-height:1.75; font-size:15px;}
+  .wrap{max-width:1200px; margin:0 auto; padding:32px 24px 80px;}
+  header.hero{background:linear-gradient(135deg,#0B4C96,#1B88EE 60%,#3FA2F7); color:#fff; border-radius:16px; padding:40px 44px; margin-bottom:26px;}
+  header.hero h1{font-size:28px; font-weight:700;}
+  header.hero .sub{margin-top:10px; opacity:.92; font-size:14px;}
+  header.hero .tags{margin-top:16px;}
+  header.hero .tags span{display:inline-block; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.35); border-radius:20px; padding:3px 14px; font-size:12.5px; margin:0 8px 8px 0;}
+  h2.sec{font-size:21px; font-weight:700; margin:44px 0 6px; padding-left:14px; border-left:5px solid var(--brand);}
+  h2.sec .no{color:var(--brand); margin-right:8px;}
+  p.secdesc{color:var(--t2); font-size:13.5px; margin-bottom:16px; padding-left:19px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:24px 26px; margin-bottom:18px;}
+  .card h3{font-size:16.5px; margin-bottom:12px;}
+  .card h4{font-size:14.5px; margin:14px 0 8px;}
+  table{width:100%; border-collapse:collapse; font-size:13px; margin:10px 0;}
+  th{background:#F4F8FD; color:var(--t2); font-weight:600; text-align:left;}
+  th,td{border:1px solid var(--line); padding:7px 11px; vertical-align:top;}
+  .tag{display:inline-block; font-size:11px; border-radius:4px; padding:1px 8px; margin-right:5px; white-space:nowrap;}
+  .tag.b{background:var(--brand-bg); color:var(--brand);}
+  .tag.g{background:#EAF7F4; color:var(--down);}
+  .tag.o{background:var(--warn-bg); color:var(--warn);}
+  .tag.r{background:#FEEFE9; color:var(--up);}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media(max-width:900px){.grid2{grid-template-columns:1fr;}}
+  ul.ls{padding-left:20px;} ul.ls li{margin:5px 0;}
+  .hl{color:var(--brand); font-weight:600;}
+  .warnbox{background:var(--warn-bg); border:1px solid #F5DFB8; border-radius:10px; padding:14px 18px; font-size:13px; color:#8A6420; margin:14px 0;}
+  .north{display:flex; gap:14px; flex-wrap:wrap; margin:10px 0;}
+  .north .n{flex:1; min-width:200px; background:#F7FAFE; border:1px solid #D9E8F8; border-radius:12px; padding:14px 18px;}
+  .north .n b{display:block; font-size:16px; color:var(--brand);}
+  .north .n span{font-size:12px; color:var(--t2);}
+  /* gantt */
+  .gantt{font-size:12.5px;}
+  .gantt .grow{display:grid; grid-template-columns:190px repeat(20,1fr); align-items:center; border-bottom:1px solid var(--line);}
+  .gantt .grow.h{color:var(--t3); font-size:11px; border-bottom:2px solid var(--line);}
+  .gantt .grow > div{padding:6px 4px;}
+  .gantt .bar{height:16px; border-radius:8px; margin:5px 0;}
+  .gantt .m0{background:#9EC7EF;} .gantt .m1{background:var(--brand);} .gantt .m2{background:#0D5FBF;} .gantt .m3{background:var(--warn);} .gantt .m4{background:#7E57C2;}
+  .flowline{display:flex; align-items:stretch; gap:0; flex-wrap:wrap; margin:12px 0;}
+  .flowline .n{background:#F4F8FD; border:1px solid #CFE5FB; border-radius:8px; padding:8px 14px; font-size:12.5px; text-align:center; align-self:center;}
+  .flowline .a{align-self:center; color:var(--brand); padding:0 8px; font-weight:700;}
+  footer{color:var(--t3); font-size:12px; text-align:center; margin-top:56px; line-height:1.8;}
+  a{color:var(--brand); text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>且慢「投顾」一级页面改版 · 产品规划与计划书</h1>
+  <div class="sub">v0.1 ｜ 2026-07-23 ｜ 选型结论：<b>方案B「编排式产品页」起步，预埋方案C「AI可组装」</b> ｜ 配套：《01-现况报告》《02-方案设计》《03-交互DEMO》</div>
+  <div class="tags">
+    <span>核心KPI：推品转化</span><span>铁律：定制方案优先，标准策略兜底</span><span>配合四笔钱+严选体系升级节奏</span><span>AI产品工厂生产方式落地</span>
+  </div>
+</header>
+
+<!-- 1 目标 -->
+<h2 class="sec"><span class="no">1</span>目标与北极星</h2>
+<div class="card">
+  <div class="north">
+    <div class="n"><b>北极星：投顾服务渗透率</b><span>签约投顾服务的资产/用户占比。公开锚点：投顾用户盈利占比96%、平均持有772天，均显著优于自主交易用户——迁移本身即用户价值。</span></div>
+    <div class="n"><b>一级KPI：推品转化</b><span>投顾页→定制方案生成率、定制→签约率、货架→跟投率；定制路径转化占比（验证“定制优先”成立）。</span></div>
+    <div class="n"><b>二级KPI：页面健康度</b><span>投顾页周复访率、工具→品类出口导流率、新策略上线到首次转化的时间（衡量编排式上新的效率）。</span></div>
+  </div>
+  <h4>版本使命（一句话）</h4>
+  <p>把投顾页从「静态货架」升级为「按用户状态编排的推品门户」：定制方案是第一动线，风险光谱让货架被看见，新策略上线从“排期开发”变成“后台挂载”。</p>
+</div>
+
+<!-- 2 范围 -->
+<h2 class="sec"><span class="no">2</span>版本范围（Phase 1 = 方案B骨架 + C预埋位）</h2>
+<div class="card">
+  <table>
+    <tr><th style="width:22%">范围内（P0/P1）</th><th style="width:44%">说明</th><th>不做（明确排除）</th></tr>
+    <tr>
+      <td><b>P0 组件底座</b></td>
+      <td>组件契约（数据接口+埋点+降级态+合规位）；首批10个组件（见第3节注册表）</td>
+      <td rowspan="5">用户自选布局/组件市场（Phase 3）；AI自动生成编排规则（Phase 2试验后评估）；保险保障桶的深度改造（依赖保险业务线）；启明星侧形态</td>
+    </tr>
+    <tr><td><b>P0 编排引擎v1</b></td><td>4类人群×插槽序列的规则编排（规则可审计），运营后台可配主推位与档期</td></tr>
+    <tr><td><b>P0 风险光谱带</b></td><td>货架第一入口：0-100风险分数色带+档位筛选+策略卡联动（DEMO已验证交互）</td></tr>
+    <tr><td><b>P0 定制优先链路</b></td><td>策略详情第一行动=「先看是否适合我」；规划/诊断/主推位全部先导向定制</td></tr>
+    <tr><td><b>P1 二维全景图 + 我的坐标叠加；AI今日看板组件（预埋C，灰度）；全球专区入口迁入投顾页</b></td><td>全景图从光谱带「展开」进入；AI看板文案走合规审核链路后灰度10%</td></tr>
+  </table>
+</div>
+
+<!-- 3 组件注册表 -->
+<h2 class="sec"><span class="no">3</span>组件注册表（首批10个）</h2>
+<p class="secdesc">每个组件统一契约：数据源（MCP/内部接口）、推品出口、降级态、合规位。这既是本次开发清单，也是未来AI产品工厂的组件资产。</p>
+<div class="card">
+  <table>
+    <tr><th style="width:14%">组件</th><th style="width:10%">优先级</th><th style="width:24%">数据源</th><th style="width:26%">推品出口</th><th>降级态</th></tr>
+    <tr><td><b>规划引导卡</b> planGuide</td><td><span class="tag r">P0</span></td><td>用户规划状态、测评状态</td><td>四笔钱规划→定制方案（主路）</td><td>静态引导文案</td></tr>
+    <tr><td><b>持仓诊断卡</b> holdingDiag</td><td><span class="tag r">P0</span></td><td>持仓结构、四笔钱缺口、市场温度</td><td>缺口桶→补配定制方案</td><td>隐藏（无持仓）</td></tr>
+    <tr><td><b>方案执行卡</b> planExec</td><td><span class="tag r">P0</span></td><td>定制方案状态、执行进度</td><td>一键执行/调整方案</td><td>隐藏（无方案）</td></tr>
+    <tr><td><b>官方主推卡</b> opsBanner</td><td><span class="tag r">P0</span></td><td>运营后台配置（档期/素材/人群）</td><td>适配测评→定制建议→标准策略</td><td>隐藏（无档期）</td></tr>
+    <tr><td><b>市场工具条</b> tools</td><td><span class="tag r">P0</span></td><td>温度计、估值、信号（现有工具聚合）</td><td>每个工具带品类出口（温度低→低估品类）</td><td>仅展示不联动</td></tr>
+    <tr><td><b>风险光谱带</b> spectrum</td><td><span class="tag r">P0</span></td><td>全量策略风险分数+核心指标（需数据工程）</td><td>策略半屏→「先看是否适合我」</td><td>退回分桶列表</td></tr>
+    <tr><td><b>货架卡</b> shelf</td><td><span class="tag r">P0</span></td><td>品类矩阵标签+策略指标</td><td>策略半屏（定制优先行动）</td><td>现有货架样式</td></tr>
+    <tr><td><b>专区卡</b> zones</td><td><span class="tag o">P1</span></td><td>养老/全球/长赢权益专区元数据</td><td>专区内策略与账户开通</td><td>静态入口</td></tr>
+    <tr><td><b>陪伴卡</b> companion</td><td><span class="tag o">P1</span></td><td>主理人内容流、调仓通知</td><td>内容→策略半屏→定制钩子</td><td>隐藏</td></tr>
+    <tr><td><b>AI今日看板</b> aiBoard</td><td><span class="tag o">P1灰度</span></td><td>行情+持仓+规划缺口合成（AI生成+合规审核）</td><td>AI对话→定制方案（预埋C）</td><td>隐藏（审核不通过/未灰度）</td></tr>
+  </table>
+  <div class="warnbox"><b>组件契约即合规单元</b>：每个组件声明「是否构成投顾建议」；构成建议的组件（诊断卡、AI看板）必须绑定适当性校验与留痕，编排规则变更走合规审批。</div>
+</div>
+
+<!-- 4 编排引擎 -->
+<h2 class="sec"><span class="no">4</span>编排引擎与人群规则 v1</h2>
+<div class="card">
+  <div class="flowline">
+    <div class="n">用户进入投顾页</div><div class="a">→</div>
+    <div class="n">状态识别<br><span style="font-size:11px;color:var(--t3)">规划状态×持仓状态×活跃度</span></div><div class="a">→</div>
+    <div class="n">规则匹配（可审计）<br><span style="font-size:11px;color:var(--t3)">人群包×档期×行为</span></div><div class="a">→</div>
+    <div class="n">插槽序列渲染<br><span style="font-size:11px;color:var(--t3)">slot-1主行动…slot-n</span></div><div class="a">→</div>
+    <div class="n">埋点回流<br><span style="font-size:11px;color:var(--t3)">转化归因到组件与规则版本</span></div>
+  </div>
+  <table>
+    <tr><th style="width:16%">人群（v1四类）</th><th style="width:30%">判定条件（示意，待数据侧核）</th><th>插槽序列（slot-1为主行动）</th></tr>
+    <tr><td>新客未规划</td><td>无持仓 且 无规划记录</td><td>AI看板 → <b>规划引导</b> → 主推位 → 工具条 → 光谱带 → 货架 → 专区 → 陪伴</td></tr>
+    <tr><td>有持仓未签约</td><td>有持仓 且 未签约投顾 且 结构偏离阈值</td><td>AI看板 → <b>持仓诊断</b> → 主推位 → 光谱带 → 货架（缺口桶） → 工具条 → 陪伴</td></tr>
+    <tr><td>已定制未执行</td><td>有定制方案 且 执行进度&lt;100%</td><td>AI看板 → <b>方案执行</b> → 工具条 → 陪伴 → 货架 → 专区</td></tr>
+    <tr><td>高活跃DIY型</td><td>工具周使用≥N次 且 自主交易为主</td><td>AI看板 → <b>光谱带/全景图</b> → DIY工具 → 货架（全部） → 工具条 → 主推位</td></tr>
+  </table>
+  <p style="font-size:13px;color:var(--t2)">v1用规则引擎而非模型：规则显式、可合规审计、可A/B。Phase 2引入AI辅助生成编排候选（人审后生效）。默认兜底序列=新客序列（识别失败时）。</p>
+</div>
+
+<!-- 5 数据工程 -->
+<h2 class="sec"><span class="no">5</span>数据工程前置（P0依赖）</h2>
+<div class="card">
+  <table>
+    <tr><th style="width:22%">任务</th><th style="width:42%">内容</th><th>验收口径</th></tr>
+    <tr><td><b>品类打标</b></td><td>研究院品类矩阵接入（<span class="hl">待品类表提供</span>），全量在售策略打上品类×桶×风险档标签</td><td>在售策略品类标签覆盖率100%</td></tr>
+    <tr><td><b>风险分数补全</b></td><td>组合风险分数全量覆盖与更新机制（抽样17只中1只缺失）；确认晨星口径为最终口径</td><td>覆盖率≥99%，月度更新</td></tr>
+    <tr><td><b>人群标签</b></td><td>规划状态、持仓结构缺口、签约状态、工具活跃度四组标签上线</td><td>四类人群可实时判定，识别准确率抽检</td></tr>
+    <tr><td><b>埋点体系</b></td><td>组件级曝光/点击/转化埋点，归因到组件ID+规则版本+档期ID</td><td>推品漏斗全链路可归因</td></tr>
+  </table>
+</div>
+
+<!-- 6 排期 -->
+<h2 class="sec"><span class="no">6</span>里程碑排期（建议20周，随内部资源校准）</h2>
+<div class="card">
+  <div class="gantt">
+    <div class="grow h"><div>里程碑</div><div style="grid-column:span 2">W1-2</div><div style="grid-column:span 2">W3-4</div><div style="grid-column:span 2">W5-6</div><div style="grid-column:span 2">W7-8</div><div style="grid-column:span 2">W9-10</div><div style="grid-column:span 2">W11-12</div><div style="grid-column:span 2">W13-14</div><div style="grid-column:span 2">W15-16</div><div style="grid-column:span 2">W17-18</div><div style="grid-column:span 2">W19-20</div></div>
+    <div class="grow"><div><b>M0 对齐与数据准备</b></div><div style="grid-column:2/span 4"><div class="bar m0"></div></div><div style="grid-column:6/span 16;font-size:11px;color:var(--t3)">品类表接入、内部数据补齐11项、风险分数补全、人群标签</div></div>
+    <div class="grow"><div><b>M1 组件底座+编排引擎</b></div><div style="grid-column:4/span 8"><div class="bar m1"></div></div><div style="grid-column:12/span 10;font-size:11px;color:var(--t3)">10组件开发、编排引擎v1、运营后台、合规评审</div></div>
+    <div class="grow"><div><b>M2 灰度上线+首个档期</b></div><div style="grid-column:12/span 4"><div class="bar m2"></div></div><div style="grid-column:16/span 6;font-size:11px;color:var(--t3)">10%→50%→全量；配合新重点策略上线档期</div></div>
+    <div class="grow"><div><b>M3 全景图+AI看板灰度</b></div><div style="grid-column:14/span 6"><div class="bar m3"></div></div><div style="grid-column:20/span 2;font-size:11px;color:var(--t3)">P1项</div></div>
+    <div class="grow"><div><b>M4 Phase2/3规划评审</b></div><div style="grid-column:19/span 2"><div class="bar m4"></div></div><div></div></div>
+  </div>
+  <h4>关键节点与出口条件</h4>
+  <table>
+    <tr><th style="width:12%">节点</th><th style="width:44%">交付</th><th>出口条件（Go/No-Go）</th></tr>
+    <tr><td>M0（W1-4）</td><td>品类映射规则、数据补齐、PRD终稿、合规预审</td><td>品类标签覆盖率达标；11项待补数据到位；合规预审通过</td></tr>
+    <tr><td>M1（W5-12）</td><td>组件+引擎+后台联调完成，UAT通过</td><td>组件降级态全验证；编排规则审计日志可用</td></tr>
+    <tr><td>M2（W12-15）</td><td>灰度→全量；首个「严选升级」档期上线</td><td>灰度期推品转化不低于老页面；崩溃率/性能达标</td></tr>
+    <tr><td>M3（W14-19）</td><td>二维全景图、我的坐标叠加、AI看板10%灰度</td><td>AI看板合规拦截率100%；全景图→详情转化率验证</td></tr>
+    <tr><td>M4（W19-20）</td><td>数据复盘+Phase2/3立项建议书</td><td>北极星与一级KPI基线对比结论</td></tr>
+  </table>
+  <div class="warnbox"><b>与策略上线节奏的耦合</b>：若新重点策略上线时间早于M2，先用现有页面+运营位承接，改版页在M2档期二次引爆；避免把策略上线作为改版的强依赖。</div>
+</div>
+
+<!-- 7 资源 -->
+<h2 class="sec"><span class="no">7</span>资源与分工（估算，待校准）</h2>
+<div class="card">
+  <table>
+    <tr><th style="width:18%">角色</th><th style="width:14%">投入</th><th>职责</th></tr>
+    <tr><td>产品</td><td>1.5 HC</td><td>PRD、组件契约定义、编排规则设计、验收</td></tr>
+    <tr><td>设计</td><td>1 HC</td><td>组件视觉体系（沿用现有Design Token）、光谱带/全景图交互</td></tr>
+    <tr><td>客户端/前端</td><td>3 HC</td><td>组件框架、插槽渲染、光谱带/全景图、半屏链路</td></tr>
+    <tr><td>服务端</td><td>2 HC</td><td>编排引擎、组件数据BFF、运营后台</td></tr>
+    <tr><td>数据</td><td>1 HC</td><td>品类打标、人群标签、埋点与归因看板</td></tr>
+    <tr><td>研究院/投研</td><td>接口人</td><td>品类矩阵、风险分数口径、严选清单</td></tr>
+    <tr><td>合规/法务</td><td>接口人</td><td>组件建议属性认定、编排规则审批、AI内容审核链路</td></tr>
+    <tr><td>运营</td><td>1 HC</td><td>档期规划、主推位素材、权益体系联动</td></tr>
+  </table>
+</div>
+
+<!-- 8 实验与指标 -->
+<h2 class="sec"><span class="no">8</span>实验设计与指标看板</h2>
+<div class="card">
+  <div class="grid2">
+    <div>
+      <h4>灰度实验（M2）</h4>
+      <ul class="ls">
+        <li><b>E1 新旧页对照</b>：10%新页 vs 老页，主指标=推品转化（定制生成率+签约率），护栏=复访率、客诉率。</li>
+        <li><b>E2 定制优先验证</b>：策略详情「先看是否适合我」置顶 vs 传统「跟投」置顶，看总转化与定制占比。</li>
+        <li><b>E3 光谱带 vs 分桶列表</b>：货架第一入口两种形态，看详情到达率与转化质量（签约后30天留存）。</li>
+        <li><b>E4 AI看板灰度</b>（M3）：有无AI看板对复访率与定制入口点击的影响。</li>
+      </ul>
+    </div>
+    <div>
+      <h4>指标看板（上线即有）</h4>
+      <table>
+        <tr><th>层级</th><th>指标</th></tr>
+        <tr><td>北极星</td><td>投顾服务渗透率（资产/用户口径各一）</td></tr>
+        <tr><td>漏斗</td><td>页UV→组件点击→定制生成→签约/跟投→30天留存</td></tr>
+        <tr><td>组件</td><td>各组件曝光/CTR/转化贡献（归因到规则版本）</td></tr>
+        <tr><td>运营</td><td>档期上新：配置到上线时长、新策略首转化时间</td></tr>
+        <tr><td>合规</td><td>建议类组件适当性校验通过率100%、AI内容拦截率</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 9 风险 -->
+<h2 class="sec"><span class="no">9</span>风险与对策</h2>
+<div class="card">
+  <table>
+    <tr><th style="width:26%">风险</th><th style="width:12%">等级</th><th>对策</th></tr>
+    <tr><td>品类表/内部数据延迟，M0卡壳</td><td><span class="tag r">高</span></td><td>M0第一周锁定数据责任人；品类映射先用「四笔钱桶×风险档」最小口径兜底，品类细分标签后补</td></tr>
+    <tr><td>千人千面编排被认定为差异化投顾建议，合规周期拉长</td><td><span class="tag r">高</span></td><td>合规前置参与组件契约设计；v1规则全部显式可审计；建议类组件绑定适当性校验</td></tr>
+    <tr><td>灰度期推品转化不升反降（用户不适应新结构）</td><td><span class="tag o">中</span></td><td>E1对照+快速回滚开关；老页保留为降级形态（即方案A作兜底）</td></tr>
+    <tr><td>AI看板内容质量/合规事故</td><td><span class="tag o">中</span></td><td>模板化生成+审核链路（智审类）+10%小流量；出问题组件级下线不影响页面</td></tr>
+    <tr><td>组件框架过度设计拖慢工期</td><td><span class="tag o">中</span></td><td>首批仅10组件、契约字段最小集；Phase 3需求不提前实现</td></tr>
+    <tr><td>风险分数口径争议（晨星 vs 自研）</td><td><span class="tag g">低</span></td><td>M0确认唯一口径并在页面注明；口径切换预留字段</td></tr>
+  </table>
+</div>
+
+<!-- 10 依赖与下一步 -->
+<h2 class="sec"><span class="no">10</span>依赖清单与立即行动</h2>
+<div class="card">
+  <div class="grid2">
+    <div>
+      <h4>对外依赖（需要你/团队提供）</h4>
+      <ul class="ls">
+        <li><b>研究院品类矩阵表</b>（xlsx/csv）＋品类→桶→严选系列映射规则（D2）</li>
+        <li><b>新重点策略清单与上线节奏</b>（D3）</li>
+        <li><b>定制方案承接口径</b>：AI小顾/人工/模板组合的分工（D4）</li>
+        <li><b>内部数据11项</b>（01报告8.2节清单，含额度宝定义、投顾页现状截图、使用数据）（D5）</li>
+        <li>合规接口人与AI内容审核链路确认（D7）</li>
+      </ul>
+    </div>
+    <div>
+      <h4>立即行动（本周可启动）</h4>
+      <ul class="ls">
+        <li>用《03-交互DEMO》向业务方/研究院/合规做一轮走查，收敛组件清单与人群规则</li>
+        <li>发起M0数据任务：品类打标、风险分数补全、人群标签的可行性评估</li>
+        <li>确认排期资源（第7节HC估算）与合规预审排期</li>
+        <li>把「严选升级」首个运营档期定到M2窗口</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<footer>
+  且慢投顾页改版 · 产品规划与计划书 v0.1 ｜ 2026-07-23 ｜ 配套文档：01现况报告 / 02方案设计 / 03交互DEMO（同目录）<br>
+  本文档为内部产品规划材料，所涉数据见各文档来源标注，不构成投资建议。
+</footer>
+</div>
+</body>
+</html>

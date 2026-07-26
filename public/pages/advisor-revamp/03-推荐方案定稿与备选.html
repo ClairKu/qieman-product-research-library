@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>且慢投顾页改版 · 推荐方案定稿与备选 · 2026年7月</title>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+:root{
+  --brand:#1B88EE; --poster-bg:#3180EC; --summary-bg:#DBEBFF; --summary-border:#9CCBF8;
+  --t1:#333; --t2:#606060; --t3:#999; --tinv:#FFF;
+  --err:#FA440C; --warn:#EA9500; --ok:#07AD8F;
+  --bg-page:#F9FAFB; --card:#FFF; --card-deep:#F9FAFB; --card-deeper:#F7F7F7;
+  --card-pfade:#F0F6FF; --card-wfade:#FFFAEF; --card-efade:#FEEDE9; --card-gfade:#E6F7F3;
+  --bd:#D8D8D8; --bd-blue:#9CCBF8; --bd-yellow:#FFDC9E; --bd-red:#FAB6A5;
+  --r-s:8px; --r-m:12px; --r-l:24px; --gap:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-page);color:var(--t1);font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;line-height:1.65;font-size:15px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px 60px}
+.poster{background:var(--poster-bg);color:var(--tinv);border-radius:0 0 var(--r-l) var(--r-l);padding:52px 40px 40px;margin-bottom:20px}
+.poster h1{font-size:30px;font-weight:700;letter-spacing:1px;margin-bottom:10px}
+.poster .sub{font-size:15px;opacity:.88}
+.poster .tags{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.poster .tag{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:2px 12px;font-size:13px}
+.summary{background:var(--summary-bg);border:1px solid var(--summary-border);border-radius:var(--r-m);padding:18px 22px;margin-bottom:var(--gap)}
+.summary h2{font-size:18px;margin-bottom:8px}
+.summary li{margin-left:20px;margin-bottom:5px;color:var(--t2)}
+.summary b{color:var(--t1)}
+section{margin-bottom:30px}
+.sec-title{font-size:24px;font-weight:700;margin:36px 0 6px;display:flex;align-items:center;gap:10px}
+.sec-title i{color:var(--brand);font-size:26px}
+.sec-title .badge{font-size:13px;font-weight:600;border-radius:999px;padding:3px 14px;letter-spacing:0}
+.badge.rec{background:var(--err);color:#fff}
+.badge.alt{background:var(--card-deeper);color:var(--t2);border:1px solid var(--bd)}
+.sec-desc{color:var(--t3);font-size:14px;margin-bottom:14px}
+.card{background:var(--card);border-radius:var(--r-s);padding:20px 22px;margin-bottom:var(--gap);box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card h3{font-size:18px;margin-bottom:10px}
+.card h4{font-size:15px;margin:16px 0 6px}
+.grid{display:grid;gap:var(--gap)}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:900px){.g2,.g3{grid-template-columns:1fr}.layout{flex-direction:column}.phone{margin:0 auto}}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:var(--card-deeper);color:var(--t2);font-weight:600;padding:8px 10px;text-align:left;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #F0F0F0;vertical-align:top}
+tr:hover td{background:var(--card-pfade)}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:12px;white-space:nowrap}
+.pill.lock{background:var(--card-efade);color:var(--err)}
+.pill.opt{background:var(--card-gfade);color:var(--ok)}
+.pill.p1{background:var(--card-pfade);color:var(--brand)}
+.pill.p2{background:var(--card-wfade);color:var(--warn)}
+.callout{border-radius:var(--r-s);padding:12px 16px;margin:12px 0;font-size:14px}
+.callout.ok{background:var(--card-gfade);border:1px solid #9BE3D2;color:#05745F}
+.callout.warn{background:var(--card-wfade);border:1px solid var(--bd-yellow);color:#9A6603}
+.callout.err{background:var(--card-efade);border:1px solid var(--bd-red);color:#B23310}
+.callout.info{background:var(--card-pfade);border:1px solid var(--bd-blue);color:#0E5FB0}
+/* 手机模拟 */
+.layout{display:flex;gap:24px;align-items:flex-start}
+.phone{width:340px;flex-shrink:0;background:#111;border-radius:36px;padding:10px;box-shadow:0 8px 30px rgba(0,0,0,.18)}
+.screen{background:var(--bg-page);border-radius:28px;overflow:hidden;font-size:11.5px}
+.p-nav{background:linear-gradient(160deg,#3180EC,#1B88EE);color:#fff;padding:14px 14px 12px}
+.p-nav .t{font-size:15px;font-weight:700}
+.p-nav .s{font-size:10.5px;opacity:.85;margin-top:1px}
+.blk{margin:8px 10px;background:#fff;border-radius:10px;padding:10px 12px;box-shadow:0 1px 2px rgba(0,0,0,.05);position:relative}
+.blk .bt{font-weight:700;font-size:12px;display:flex;align-items:center;gap:5px}
+.blk .bt i{color:var(--brand)}
+.blk .bd2{color:var(--t2);font-size:10.5px;margin-top:3px;line-height:1.5}
+.blk .anno{position:absolute;right:-10px;top:-8px;background:var(--err);color:#fff;font-size:9.5px;border-radius:999px;padding:1px 8px}
+.blk .anno.b{background:var(--brand)} .blk .anno.g{background:var(--ok)} .blk .anno.y{background:var(--warn)}
+.qrow{display:flex;gap:6px;margin-top:7px}
+.qrow .qin{flex:1;background:var(--card-pfade);border:1px solid var(--bd-blue);border-radius:7px;padding:5px 8px;color:var(--brand);font-size:10.5px}
+.qrow .qbtn{background:var(--brand);color:#fff;border-radius:7px;padding:5px 12px;font-weight:600;font-size:10.5px;white-space:nowrap}
+.reco{display:flex;gap:8px;margin-top:7px}
+.reco .rc{flex:1;border-radius:8px;padding:7px 9px;font-size:10px}
+.reco .rc .rn{font-weight:700;font-size:11px}
+.reco .rc .rr{font-size:9.5px;margin-top:2px;opacity:.8}
+.rc.hot{background:linear-gradient(135deg,#FFF3EC,#FFE9DC);border:1px solid var(--bd-red);color:#B23310}
+.rc.cool{background:var(--card-pfade);border:1px solid var(--bd-blue);color:#0E5FB0}
+.tabs4{display:flex;gap:4px;margin-top:8px}
+.tabs4 span{flex:1;text-align:center;border-radius:6px;padding:4px 0;font-size:10px;background:var(--card-deeper);color:var(--t2)}
+.tabs4 span.on{background:var(--brand);color:#fff;font-weight:600}
+.mapmini{margin-top:8px;height:88px;border-radius:8px;background:linear-gradient(180deg,#F0F6FF,#FAFCFF);border:1px solid var(--bd-blue);position:relative}
+.dot{position:absolute;border-radius:50%;background:var(--brand);opacity:.75}
+.dot.f{background:var(--err);opacity:1;box-shadow:0 0 0 3px rgba(250,68,12,.18)}
+.slider{margin-top:6px;height:14px;border-radius:999px;background:linear-gradient(90deg,#07AD8F,#EA9500,#FA440C);position:relative;opacity:.85}
+.slider .kn{position:absolute;left:34%;top:-3px;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--brand);box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed #EEE;font-size:10.5px}
+.srow:last-child{border-bottom:none}
+.srow .sn{font-weight:600}
+.srow .sn .fl{background:var(--card-efade);color:var(--err);border-radius:4px;font-size:8.5px;padding:0 4px;margin-left:4px}
+.srow .sv{color:var(--err);font-weight:700;font-family:Poppins,Arial}
+.zones{display:flex;gap:6px;margin-top:7px}
+.zones span{flex:1;text-align:center;background:var(--card-pfade);border-radius:7px;padding:7px 0;color:#0E5FB0;font-size:10px;font-weight:600}
+.tools{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.tools span{background:var(--card-deeper);border-radius:6px;padding:4px 9px;color:var(--t2);font-size:9.5px}
+.legend{flex:1;min-width:0}
+.lg-item{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start}
+.lg-item .no{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:var(--brand);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.lg-item.hot .no{background:var(--err)}
+.lg-item b{font-size:14px}
+.lg-item .d{color:var(--t2);font-size:13px;margin-top:1px}
+.phase{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
+@media(max-width:900px){.phase{grid-template-columns:1fr}}
+.ph{border-radius:var(--r-s);padding:14px 16px;font-size:13.5px;color:var(--t2)}
+.ph .pt{font-weight:700;font-size:14.5px;margin-bottom:6px;color:var(--t1)}
+.ph.p1{background:var(--card-pfade);border:1px solid var(--bd-blue)}
+.ph.p2{background:var(--card-wfade);border:1px solid var(--bd-yellow)}
+.ph.p3{background:var(--card-efade);border:1px solid var(--bd-red)}
+.score{font-family:Poppins,Arial;white-space:nowrap}
+.s5{color:var(--ok)} .s3{color:var(--warn)} .s1{color:var(--err)}
+.altcard{border-top:4px solid var(--bd);}
+.altcard.a1{border-top-color:var(--ok)} .altcard.a2{border-top-color:var(--warn)}
+.when{background:var(--card-deeper);border-radius:var(--r-s);padding:10px 14px;font-size:13.5px;color:var(--t2);margin-top:10px}
+.when b{color:var(--t1)}
+.foot{color:var(--t3);font-size:12.5px;text-align:center;margin-top:28px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="poster">
+  <h1>且慢投顾页改版 · 推荐方案定稿与备选</h1>
+  <div class="sub">V1.0 决策稿 · 一个推荐方案（含页面结构与落地节奏）+ 两个可选方案 + 选择条件</div>
+  <div class="sub" style="margin-top:6px;font-size:13px">2026年7月23日 ｜ 输入：00网络调研 + 01现况盘点 + 02方案设计（品类矩阵已纳入）｜ 通过后进入DEMO与产品规划书</div>
+  <div class="tags">
+    <span class="tag">推荐：智能配置投顾页（地图内核×组件架构×分期落地）</span>
+    <span class="tag">备选一：轻改版（稳妥）</span>
+    <span class="tag">备选二：AI原生页（进取）</span>
+  </div>
+</div>
+
+<div class="summary">
+  <h2><i class="ri-focus-2-line"></i> 我的决定与理由（TL;DR）</h2>
+  <ul>
+    <li><b>推荐「智能配置投顾页」</b>：页面 = 规划引导条（定制优先）＋千人千面推荐位＋配置地图×四笔钱矩阵货架＋专区/工具/陪伴，全部按组件协议开发，但首发用固定编排——<b>一次开发同时兑现「推品主线、品类矩阵承接、AI产品工厂」三个目标，且不赌任何未验证的交互范式</b>。</li>
+    <li>拍板依据三条硬事实：①2025.11起投顾费是直接收入，推品效率必须升级，纯轻改版天花板太低；②品类矩阵显示<b>货架换血约1/3、3070/5050新策略填断档</b>，静态货架承接不动这个换血节奏，组件化上下架是刚需而非情怀；③02文档的可交互原型已验证<b>风险-收益地图的数据管线可行</b>（28策略实时数据），技术风险已消除。</li>
+    <li>两个备选是「资源约束版」和「战略押注版」：新策略上线时间硬、资源紧 → 备选一；公司决心把AI对话作为一级交互 → 备选二。<b>不满足这两个条件，就选推荐方案。</b></li>
+  </ul>
+</div>
+
+<!-- ================= 推荐方案 ================= -->
+<section id="rec">
+  <div class="sec-title"><span class="badge rec">推荐</span><i class="ri-star-fill" style="color:var(--err)"></i>方案一：智能配置投顾页</div>
+  <div class="sec-desc">定位：把投顾页从「静态货架」升级为「推品操作系统」——用户视角是一个更聪明的投顾页，工程视角是且慢第一个组件化编排页面，运营视角是可以周级迭代的推品阵地。</div>
+
+  <div class="card">
+    <h3>1.1 页面结构（首发默认编排）</h3>
+    <div class="layout">
+      <div class="phone"><div class="screen">
+        <div class="p-nav"><div class="t">投顾</div><div class="s">让每一笔钱都有它的方案</div></div>
+        <div class="blk"><span class="anno">① 推品主入口</span>
+          <div class="bt"><i class="ri-questionnaire-line"></i>你有一笔什么钱？</div>
+          <div class="qrow"><span class="qin">金额：5万</span><span class="qin">期限：2年左右</span><span class="qbtn">给我方案</span></div>
+          <div class="bd2">→ 定制方案 / 四笔钱归属 / AI小顾追问兜底</div>
+        </div>
+        <div class="blk"><span class="anno b">② 千人千面</span>
+          <div class="bt"><i class="ri-award-line"></i>为你推荐</div>
+          <div class="reco">
+            <div class="rc hot"><div class="rn">稳健(3070) 首发</div><div class="rr">高波固收+30% · 填补你风险带的新选择</div></div>
+            <div class="rc cool"><div class="rn">持仓体检</div><div class="rr">稳钱占比偏高，看看长钱补配建议</div></div>
+          </div>
+        </div>
+        <div class="blk"><span class="anno g">③ 地图+货架</span>
+          <div class="bt"><i class="ri-bubble-chart-line"></i>配置地图 · 四笔钱×严选</div>
+          <div class="tabs4"><span>活钱</span><span>稳钱</span><span class="on">长钱</span><span>保险</span></div>
+          <div class="mapmini">
+            <div class="dot" style="left:12%;bottom:12px;width:7px;height:7px"></div>
+            <div class="dot" style="left:22%;bottom:20px;width:8px;height:8px"></div>
+            <div class="dot f" style="left:38%;bottom:30px;width:11px;height:11px"></div>
+            <div class="dot" style="left:47%;bottom:26px;width:8px;height:8px"></div>
+            <div class="dot f" style="left:58%;bottom:44px;width:12px;height:12px"></div>
+            <div class="dot" style="left:70%;bottom:52px;width:9px;height:9px"></div>
+            <div class="dot" style="left:83%;bottom:62px;width:10px;height:10px"></div>
+            <div style="position:absolute;right:8px;top:6px;font-size:9px;color:#0E5FB0">Y轴：最大回撤 ▾</div>
+          </div>
+          <div class="slider"><div class="kn"></div></div>
+          <div style="font-size:9.5px;color:var(--t3);margin-top:4px;text-align:center">← 滑动选择你能承受的风险 →</div>
+          <div class="srow"><span class="sn">中西合璧<span class="fl">旗舰</span></span><span style="color:var(--t3)">评分86 · R4 · 全球</span><span class="sv">看方案</span></div>
+          <div class="srow"><span class="sn">思远定投全球好资产</span><span style="color:var(--t3)">评分84 · R3 · 陪伴</span><span class="sv">看方案</span></div>
+          <div class="srow"><span class="sn">天颐五剑</span><span style="color:var(--t3)">评分72 · R2</span><span class="sv">看方案</span></div>
+        </div>
+        <div class="blk"><span class="anno y">④ 专区</span>
+          <div class="bt"><i class="ri-heart-pulse-line"></i>目标专区</div>
+          <div class="zones"><span>养老规划</span><span>教育金</span><span>全球配置</span></div>
+        </div>
+        <div class="blk">
+          <div class="bt"><i class="ri-tools-line"></i>工具 <span style="font-weight:400;color:var(--t3);font-size:9.5px">每个出口都接「由此去配置」</span></div>
+          <div class="tools"><span>每日估值</span><span>指数温度</span><span>行情信号</span><span>自建组合</span><span>回测</span></div>
+        </div>
+        <div class="blk">
+          <div class="bt"><i class="ri-team-line"></i>同路人陪伴</div>
+          <div class="bd2">96%投顾用户盈利 · 平均持有772天 ｜ 主理人周报 · 我的权益进度</div>
+        </div>
+        <div style="text-align:center;color:var(--t3);font-size:9px;padding:6px 0 12px">＋ 自定义我的页面（Phase 3 开放）</div>
+      </div></div>
+
+      <div class="legend">
+        <div class="lg-item hot"><div class="no">①</div><div><b>规划引导条（锁定组件）</b><div class="d">「金额+期限」两问替代banner，是<b>定制优先原则的页面化</b>：答完两问→AI小顾出定制方案；不答→往下看标准货架。北极星入口，全员一致。</div></div></div>
+        <div class="lg-item"><div class="no">②</div><div><b>官方推荐位（锁定组件·规则驱动）</b><div class="d">用品类矩阵「适配客群/适配场景」标签做规则匹配：新客见旗舰、持仓客见补配/调优、35+见养老、事件（发薪/回款/低估）触发。运营在后台配规则，无需发版。</div></div></div>
+        <div class="lg-item"><div class="no">③</div><div><b>配置地图×矩阵货架（锁定组件·本方案灵魂）</b><div class="d">四笔钱Tab内=旗舰置顶+品类分组列表，头部嵌配置地图：X轴风险分、Y轴默认<b>最大回撤</b>（合规稳）、可切年化/波动/夏普；滑杆选风险档→下方列表联动。地图和列表是同一份数据的两种视图，双形态兜底学习成本。02文档已有可交互原型。</div></div></div>
+        <div class="lg-item"><div class="no">④</div><div><b>专区层（可选组件）</b><div class="d">按品类文档「教育、养老先做」：养老（颐养天年+计算器）、教育金（计算器+千人千面多资产）、全球（全球丰收+全球优选+中西合璧统一叙事）。统一卡片规格，成熟一个挂一个。</div></div></div>
+        <div class="lg-item"><div class="no">⑤</div><div><b>工具层（可选组件·带回流钩子）</b><div class="d">估值/温度/信号/自建/回测全部保留，但每个工具的结果页都带推品出口：低估→对应品类策略；自建组合→「让且慢帮我看看」回定制。工具是流量，钩子是转化。</div></div></div>
+        <div class="lg-item"><div class="no">⑥</div><div><b>陪伴信任层（可选组件·默认开）</b><div class="d">96%盈利/772天/同路人权益进度/主理人内容流，按持仓关联展示。信任是买方投顾的转化前提。</div></div></div>
+      </div>
+    </div>
+    <div class="callout info"><i class="ri-information-line"></i> <b>组件协议从第一天生效</b>：以上六层全部按「组件（数据契约+人群规则+埋点规范+合规披露位）」开发，首发用固定编排。这就是AI产品工厂的落地方式——不是先建平台再搬页面，而是<b>第一个页面就用工厂的方式生产</b>，平台能力（编排后台、AI生成组件变体）在Phase 2随需求长出来。</div>
+  </div>
+
+  <div class="card">
+    <h3>1.2 三阶段落地与验收</h3>
+    <div class="phase">
+      <div class="ph p1"><div class="pt">Phase 1 · 首发（~3个月）</div>①②③⑤⑥固定编排上线；地图先做只读版（滑+切）；新策略（3070/5050/锦上添花/月月分红/中西合璧等）按品类矩阵进场；养老专区先行。<br><b>验收</b>：引导条→定制转化率、地图使用率&gt;20%、货架CTR结构、新策略首发签约。</div>
+      <div class="ph p2"><div class="pt">Phase 2 · 编排化（+3个月）</div>编排后台上线，运营配置四套默认编排（新客/持仓客/养老/高净值-VIP含私募入口）；地图加持仓叠加与调优推品；教育专区上线；AI生成组件文案变体进审核流。<br><b>验收</b>：编排迭代周期到周级、分人群转化差、调优推品贡献AUM。</div>
+      <div class="ph p3"><div class="pt">Phase 3 · 千人千面（+3个月）</div>开放用户自定义（添加/移除/排序可选组件，锁定组件不可动）；推荐位从规则升级为模型排序；AI对话式编排在新客灰度。<br><b>验收</b>：自定义用户留存差、北极星「页面→签约AUM」全量归因。</div>
+    </div>
+    <h4>1.3 为什么这版最优（对齐四个发起目标）</h4>
+    <table>
+      <tr><th>发起目标</th><th>本方案如何命中</th></tr>
+      <tr><td>核心目的：推品（定制优先）</td><td>①引导条把定制做成页面第一交互；②推荐位规则化千人千面；③工具全部带回流钩子——三层漏斗都是推品位</td></tr>
+      <tr><td>品类矩阵与新策略承接</td><td>货架=品类矩阵的直接渲染；换血1/3靠数据驱动上下架承接；3070/5050上线即地图「新点位」运营事件</td></tr>
+      <tr><td>可视化选品（晨星风险分）</td><td>地图组件：风险分X轴+回撤默认Y轴+多指标切换+滑杆，02文档原型已验证数据与交互可行</td></tr>
+      <tr><td>AI产品工厂实践</td><td>组件协议Day 1生效，编排后台Phase 2上线，生产方式从「排期发版」变为「配置上线」</td></tr>
+    </table>
+    <h4>1.4 主要风险与对策</h4>
+    <table>
+      <tr><th>风险</th><th>对策</th></tr>
+      <tr><td>组件化基建拖累首发时间</td><td>协议轻量化：首发只锁「数据契约+埋点」两项，编排后台推迟到Phase 2；首发范围与备选一相当</td></tr>
+      <tr><td>地图的合规呈现（历史指标展示）</td><td>默认轴用风险分×最大回撤（不承诺收益）；收益轴为用户主动切换+披露脚注；Phase 1前置合规评审</td></tr>
+      <tr><td>老用户不适应</td><td>默认编排的信息架构与现页面兼容（四笔钱Tab保留）；地图可折叠；灰度放量</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= 备选一 ================= -->
+<section id="alt1">
+  <div class="sec-title"><span class="badge alt">备选一</span><i class="ri-shield-check-line" style="color:var(--ok)"></i>轻改版：传统页面强化（稳妥）</div>
+  <div class="card altcard a1">
+    <p style="color:var(--t2);font-size:14px"><b>一句话</b>：不动架构，只做四件事——规划引导条替换banner、严选货架并入四笔钱Tab并按品类分组、产品卡升级（风险分徽章+回撤微图+适合谁）、工具出口加推品钩子。<b>周期2-3个月，纯前端改版，无新基建。</b></p>
+    <h4>保留 vs 放弃</h4>
+    <table>
+      <tr><th>拿到的</th><th>放弃的</th></tr>
+      <tr><td>定制优先主线（引导条）✓<br>品类矩阵分组货架 ✓<br>新策略如期上架 ✓<br>最低合规风险、最短周期 ✓</td><td>配置地图（可视化选品）✗<br>组件化/编排能力（AI产品工厂）✗<br>千人千面（只有固定推荐位）✗<br>换血1/3仍需发版承接 ✗</td></tr>
+    </table>
+    <div class="when"><b>什么时候选它</b>：新策略上线档期硬（如3070/5050必须在3个月内带页面上线）且研发资源被其他项目占用；或希望先用最小代价验证「引导条→定制」这一条转化链，再决定是否投入地图与组件化。<b>代价</b>：AI产品工厂落地推迟至少半年，且二次改版会重复今天的成本。</div>
+  </div>
+</section>
+
+<!-- ================= 备选二 ================= -->
+<section id="alt2">
+  <div class="sec-title"><span class="badge alt">备选二</span><i class="ri-robot-2-line" style="color:var(--warn)"></i>AI原生页：对话即页面（进取）</div>
+  <div class="card altcard a2">
+    <p style="color:var(--t2);font-size:14px"><b>一句话</b>：投顾页首屏即AI小顾对话（「你有一笔什么钱？」由AI开场追问），页面内容由对话结果动态生成——AI根据用户回答实时编排出「你的投顾页」：定制方案卡+匹配的地图切片+相关专区。传统货架降级为「浏览全部」的二级入口。</p>
+    <h4>拿到的 vs 赌上的</h4>
+    <table>
+      <tr><th>拿到的</th><th>赌上的</th></tr>
+      <tr><td>定制优先做到极致（对话即定制）✓<br>差异化：业内没有AI原生投顾一级页 ✓<br>AI产品工厂的最彻底形态 ✓</td><td>浏览型用户（占大盘多数）体验降级风险 ✗<br>生成内容合规审核链路需全新建设 ✗<br>转化不确定性高：无行业先例可参照 ✗<br>周期6个月+，且强依赖AI小顾方案质量 ✗</td></tr>
+    </table>
+    <div class="when"><b>什么时候选它</b>：公司层面决定把「AI对话」定为下一代交互范式并接受6个月+验证期；或AI小顾当前的方案生成质量与使用数据已足够好（见01报告⑫待确认清单——需先拿到AI小顾的内部使用数据再判断）。<b>建议的稳妥姿势</b>：不做首发形态，而是作为推荐方案Phase 3的灰度实验（新客10%流量），用数据决定是否升级为主形态。</div>
+  </div>
+</section>
+
+<!-- ================= 对比与决策 ================= -->
+<section id="decide">
+  <div class="sec-title"><i class="ri-scales-3-line"></i>三案对比与决策建议</div>
+  <div class="card">
+    <table>
+      <tr><th>维度</th><th style="color:var(--err)">推荐 · 智能配置投顾页</th><th>备选一 · 轻改版</th><th>备选二 · AI原生页</th></tr>
+      <tr><td>推品效率</td><td class="score s5">★★★★★（三层推品位+千人千面）</td><td class="score s3">★★★（引导条+固定推荐）</td><td class="score s3">高方差（上限最高，下限最低）</td></tr>
+      <tr><td>新策略/换血承接</td><td class="score s5">数据驱动上下架，无需发版</td><td class="score s1">每次换血需发版</td><td class="score s3">依赖AI知识更新链路</td></tr>
+      <tr><td>可视化选品</td><td class="score s5">地图组件（已验证）</td><td class="score s1">无</td><td class="score s3">对话内嵌地图切片</td></tr>
+      <tr><td>AI产品工厂</td><td class="score s5">Day 1协议 + Phase 2平台</td><td class="score s1">无</td><td class="score s5">最彻底</td></tr>
+      <tr><td>首发周期</td><td class="score s3">~3个月（首发范围≈备选一）</td><td class="score s5">2-3个月</td><td class="score s1">6个月+</td></tr>
+      <tr><td>合规风险</td><td class="score s3">中（指标呈现规范，可前置）</td><td class="score s5">低</td><td class="score s1">高（生成内容审核）</td></tr>
+      <tr><td>老用户冲击</td><td class="score s3">低-中（架构兼容+灰度）</td><td class="score s5">低</td><td class="score s1">高</td></tr>
+    </table>
+    <div class="callout ok" style="margin-top:14px"><i class="ri-check-double-line"></i> <b>决策建议</b>：默认选<b>推荐方案</b>——它的Phase 1首发范围与备选一的成本几乎相同（差异只在地图只读版+组件协议），但保留了全部演化空间；备选二不建议作为首发形态，建议收编为推荐方案Phase 3的灰度实验。<b>只有「档期硬+资源紧」同时成立时，降级为备选一。</b></div>
+    <h4>你确认后我立即启动的三件事</h4>
+    <table>
+      <tr><th>#</th><th>动作</th><th>产出</th></tr>
+      <tr><td>1</td><td>推荐方案高保真DEMO（首发默认编排，含地图交互完整版，真实策略数据）</td><td>可点击的HTML原型</td></tr>
+      <tr><td>2</td><td>产品规划书（范围/里程碑/资源估算/埋点方案/合规评审清单）</td><td>规划书文档</td></tr>
+      <tr><td>3</td><td>组件协议初稿（数据契约+人群规则字段——直接采用品类矩阵「适配客群/适配场景」标签）</td><td>协议文档，供技术评审</td></tr>
+    </table>
+  </div>
+</section>
+
+<div class="foot">配套：00-网络调研报告 · 01-现况盘点报告 · 02-方向与方案设计（含配置地图可交互原型）<br>本决策稿数据来源：盈米MCP实盘数据（2026-07-22净值）、且慢业务场景.xlsx（2026-06-15）、官方公告与App Store（本体复核）</div>
+</div>
+</body>
+</html>

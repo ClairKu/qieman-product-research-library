@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>且慢 APP 投顾模块｜现况盘点与改版方向</title>
+  <style>
+    :root{
+      --brand:#1B88EE;--brand-dark:#086AC7;--brand-soft:#EAF5FF;
+      --ink:#17324D;--muted:#64788B;--line:#DDE7F0;--bg:#F4F8FB;--card:#FFF;
+      --green:#1E9E76;--green-soft:#E9F8F2;--amber:#F3A83B;--amber-soft:#FFF5DF;
+      --red:#DF665A;--red-soft:#FFF0EE;--violet:#6B68D8;--violet-soft:#F0EFFE;
+      --shadow:0 14px 38px rgba(33,75,112,.10);--radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+    a{color:var(--brand-dark);text-decoration:none}
+    a:hover{text-decoration:underline}
+    button,input{font:inherit}
+    .shell{max-width:1440px;margin:0 auto;padding:0 32px}
+    .topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(221,231,240,.86)}
+    .topbar-inner{height:64px;display:flex;align-items:center;gap:20px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;white-space:nowrap}
+    .brand-mark{width:30px;height:30px;border-radius:11px;background:linear-gradient(145deg,var(--brand),#55B7FF);display:grid;place-items:center;color:#fff;box-shadow:0 8px 18px rgba(27,136,238,.24)}
+    .nav{display:flex;gap:5px;overflow:auto;margin-left:auto;scrollbar-width:none}
+    .nav::-webkit-scrollbar{display:none}
+    .nav a{padding:8px 11px;border-radius:10px;color:#4F6578;white-space:nowrap;font-size:13px}
+    .nav a:hover{background:var(--brand-soft);color:var(--brand-dark);text-decoration:none}
+    .hero{padding:68px 0 42px;background:
+      radial-gradient(circle at 83% 10%,rgba(88,184,255,.23),transparent 25%),
+      radial-gradient(circle at 15% 85%,rgba(32,164,123,.12),transparent 22%),
+      linear-gradient(155deg,#F7FCFF 0%,#EDF7FF 56%,#F9FBFD 100%);border-bottom:1px solid var(--line)}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;padding:6px 10px;border:1px solid #B9DCF9;background:rgba(255,255,255,.78);border-radius:99px;color:var(--brand-dark);font-size:12px;font-weight:700}
+    h1{font-size:44px;line-height:1.16;letter-spacing:-1.5px;margin:20px 0 16px;max-width:920px}
+    .hero p{font-size:17px;color:#526B80;max-width:900px;margin:0}
+    .hero-grid{display:grid;grid-template-columns:1.5fr .9fr;gap:34px;align-items:end}
+    .hero-side{background:rgba(255,255,255,.82);border:1px solid rgba(195,220,239,.9);border-radius:20px;padding:20px;box-shadow:var(--shadow)}
+    .hero-side strong{display:block;font-size:18px;margin-bottom:7px}
+    .hero-side .big{font-size:28px;line-height:1.2;color:var(--brand-dark);font-weight:850;margin:6px 0}
+    .meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+    .pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:6px 10px;background:#fff;border:1px solid var(--line);font-size:12px;color:#536B80}
+    .pill i{width:7px;height:7px;border-radius:50%;background:var(--brand)}
+    main{padding:34px 0 88px}
+    section{scroll-margin-top:82px;margin-top:30px}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin:58px 0 18px}
+    .section-head:first-child{margin-top:0}
+    .kicker{color:var(--brand-dark);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+    h2{font-size:28px;line-height:1.25;margin:5px 0 0;letter-spacing:-.5px}
+    h3{font-size:19px;line-height:1.35;margin:0 0 10px}
+    h4{margin:0 0 8px;font-size:15px}
+    .sub{color:var(--muted);max-width:760px}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 8px 26px rgba(44,85,119,.05)}
+    .card.flat{box-shadow:none}
+    .metric .label{color:var(--muted);font-size:12px}
+    .metric .value{font-size:30px;line-height:1.15;font-weight:850;margin:8px 0 4px;letter-spacing:-.5px}
+    .metric .note{font-size:12px;color:#718395}
+    .metric.primary{background:linear-gradient(145deg,#0D73D2,#269AF1);border-color:transparent;color:#fff}
+    .metric.primary .label,.metric.primary .note{color:rgba(255,255,255,.78)}
+    .callout{border-radius:16px;padding:18px 20px;border:1px solid}
+    .callout strong{font-size:16px}
+    .callout.blue{background:var(--brand-soft);border-color:#BBDDFB}
+    .callout.green{background:var(--green-soft);border-color:#B7E8D7}
+    .callout.amber{background:var(--amber-soft);border-color:#F3D99F}
+    .callout.red{background:var(--red-soft);border-color:#F4CBC6}
+    .tag{display:inline-flex;align-items:center;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700}
+    .tag.confirmed{background:var(--green-soft);color:#14795C}
+    .tag.history{background:var(--amber-soft);color:#93620E}
+    .tag.infer{background:var(--violet-soft);color:#5551BC}
+    .tag.gap{background:var(--red-soft);color:#AC3D34}
+    .tag.keep{background:#E9F8F2;color:#14795C}
+    .tag.merge{background:#EAF5FF;color:#096CBF}
+    .tag.move{background:#FFF5DF;color:#93620E}
+    .tag.reduce{background:#F1F3F5;color:#63717D}
+    .big-idea{display:grid;grid-template-columns:84px 1fr;gap:18px;align-items:start}
+    .big-num{width:68px;height:68px;display:grid;place-items:center;border-radius:20px;background:linear-gradient(145deg,var(--brand),#64BEFF);color:#fff;font-weight:900;font-size:25px;box-shadow:0 10px 20px rgba(27,136,238,.22)}
+    .problem-list{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+    .problem{border:1px solid var(--line);border-radius:14px;padding:16px;background:#FBFDFE}
+    .problem b{display:block;color:#263F55;margin-bottom:5px}
+    .problem span{color:var(--muted);font-size:13px}
+    .flow{display:grid;grid-template-columns:repeat(9,minmax(82px,1fr));align-items:stretch;gap:8px}
+    .flow-node{padding:14px 10px;border:1px solid var(--line);background:#fff;border-radius:13px;text-align:center;min-height:94px;display:flex;flex-direction:column;justify-content:center}
+    .flow-node strong{font-size:13px}
+    .flow-node small{color:var(--muted);line-height:1.4;margin-top:5px}
+    .flow-node.main{background:var(--brand-soft);border-color:#A9D5F9}
+    .arrow{display:grid;place-items:center;color:#93A7B8;font-size:20px}
+    .three-layer{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:12px}
+    .layer{border-radius:16px;padding:20px;border:1px solid}
+    .layer:nth-child(1){background:#F0F8FF;border-color:#BEDDF7}
+    .layer:nth-child(2){background:#EEF9F4;border-color:#BDE5D6}
+    .layer:nth-child(3){background:#FFF7E8;border-color:#F0D8A7}
+    .layer .num{font-size:12px;font-weight:800;opacity:.7}
+    .layer p{margin:6px 0 0;color:#607486;font-size:13px}
+    .table-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:16px}
+    table{border-collapse:collapse;width:100%;min-width:980px}
+    th{position:sticky;top:0;background:#F5F9FC;color:#4E667A;font-size:12px;text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);z-index:1}
+    td{padding:13px 14px;border-bottom:1px solid #E9EFF4;vertical-align:top;font-size:13px}
+    tr:last-child td{border-bottom:0}
+    tbody tr:hover{background:#FAFCFE}
+    td small{display:block;color:var(--muted);margin-top:3px;line-height:1.45}
+    .filter-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .filter-btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 11px;color:#597083;cursor:pointer}
+    .filter-btn.active{border-color:var(--brand);color:var(--brand-dark);background:var(--brand-soft);font-weight:700}
+    .timeline{position:relative;padding-left:26px}
+    .timeline:before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:#C8D9E7}
+    .event{position:relative;display:grid;grid-template-columns:118px 1fr;gap:16px;padding:0 0 22px}
+    .event:before{content:"";position:absolute;left:-24px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--brand);border:3px solid #EAF5FF}
+    .event time{font-weight:800;color:var(--brand-dark)}
+    .event p{margin:3px 0 0;color:var(--muted)}
+    .journey{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    .journey .step{position:relative;padding:18px;border-radius:15px;border:1px solid var(--line);background:#fff;min-height:150px}
+    .journey .step:after{content:"→";position:absolute;right:-10px;top:46%;z-index:2;color:#8EA3B5;font-size:18px}
+    .journey .step:last-child:after{display:none}
+    .journey .step .sno{color:var(--brand);font-weight:850;font-size:12px}
+    .journey .step p{font-size:13px;color:var(--muted);margin:8px 0 0}
+    .viz-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(310px,.75fr);gap:18px}
+    .chart-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;min-height:480px}
+    .chart-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:2px 0 14px}
+    .risk-control{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}
+    .risk-control input{accent-color:var(--brand)}
+    #riskValue{min-width:28px;font-weight:850;color:var(--brand-dark)}
+    .chart-wrap{position:relative;height:380px}
+    #riskChart{width:100%;height:100%;overflow:visible}
+    .chart-tooltip{position:absolute;display:none;pointer-events:none;background:#15334C;color:#fff;padding:10px 12px;border-radius:10px;box-shadow:0 12px 24px rgba(20,48,72,.22);font-size:12px;max-width:230px;z-index:5}
+    .legend{display:flex;gap:10px;flex-wrap:wrap}
+    .legend span{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:11px}
+    .dot{width:8px;height:8px;border-radius:50%}
+    .ladder{display:grid;gap:9px;margin-top:14px}
+    .ladder-row{display:grid;grid-template-columns:46px 1fr 72px;align-items:center;gap:10px}
+    .ladder-bar{height:30px;border-radius:8px;padding:5px 9px;color:#fff;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap}
+    .ladder-row:nth-child(1) .ladder-bar{background:#4B9FEA;width:38%}
+    .ladder-row:nth-child(2) .ladder-bar{background:#35A77D;width:58%}
+    .ladder-row:nth-child(3) .ladder-bar{background:#F0A844;width:76%}
+    .ladder-row:nth-child(4) .ladder-bar{background:#DE665A;width:100%}
+    .matrix{display:grid;grid-template-columns:120px repeat(4,1fr);gap:6px;margin-top:14px;font-size:12px}
+    .matrix > div{border-radius:9px;padding:9px;background:#F7FAFC;min-height:50px}
+    .matrix .head{font-weight:800;background:#EDF5FB;min-height:auto}
+    .matrix .match{background:#EAF5FF;border:1px solid #BEDCF6;color:#165F9F}
+    .matrix .scene{background:#EEF9F4;border:1px solid #C2E5D8;color:#14795C}
+    .matrix .warn{background:#FFF6E3;border:1px solid #F2D9A3;color:#8A5B08}
+    .logic{display:grid;grid-template-columns:1.1fr 42px 1.25fr 42px 1fr;align-items:center;gap:8px}
+    .logic-block{border-radius:16px;padding:18px;border:1px solid var(--line);background:#fff;min-height:156px}
+    .logic-block.main{background:var(--brand-soft);border-color:#B3D9F8}
+    .logic-block ul{margin:9px 0 0;padding-left:18px;color:var(--muted);font-size:13px}
+    .logic-arrow{font-size:26px;color:#90A4B5;text-align:center}
+    .principles{counter-reset:p;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    .principle{counter-increment:p;padding:17px;border-radius:15px;border:1px solid var(--line);background:#fff}
+    .principle:before{content:"0" counter(p);display:block;color:var(--brand);font-weight:900;font-size:12px}
+    .principle b{display:block;margin:6px 0 5px}
+    .principle span{color:var(--muted);font-size:12px}
+    .option{position:relative;overflow:hidden;padding-top:26px}
+    .option .badge{position:absolute;top:0;right:0;border-radius:0 16px 0 12px;padding:7px 11px;font-size:11px;font-weight:850}
+    .option.recommended{border:2px solid var(--brand);box-shadow:0 16px 34px rgba(27,136,238,.13)}
+    .option.recommended .badge{background:var(--brand);color:#fff}
+    .option .screen{margin:15px 0;background:#F4F8FB;border:1px solid var(--line);border-radius:13px;padding:10px;display:grid;gap:7px}
+    .wire{height:34px;border-radius:8px;background:#fff;border:1px solid #DCE7F0}
+    .wire.hero-wire{height:62px;background:linear-gradient(135deg,#DFF0FF,#F3FAFF);border-color:#B8DAF7}
+    .wire-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .option ul{padding-left:18px;margin:10px 0 0;color:var(--muted);font-size:13px}
+    .score{display:flex;justify-content:space-between;border-top:1px solid var(--line);margin-top:16px;padding-top:13px;color:var(--muted);font-size:12px}
+    .score strong{color:var(--ink)}
+    .compare{min-width:1080px}
+    .compare td:first-child{font-weight:800}
+    .decision{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .decision .card{padding:18px}
+    .decision .card strong{display:block;color:var(--brand-dark);margin-bottom:5px}
+    .factory{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;align-items:stretch}
+    .factory .unit{border-radius:14px;padding:15px 12px;text-align:center;border:1px solid var(--line);background:#fff}
+    .factory .unit.core{background:#123A5B;color:#fff;border-color:#123A5B}
+    .factory .unit b{display:block;font-size:13px}
+    .factory .unit small{display:block;margin-top:5px;line-height:1.4;color:var(--muted)}
+    .factory .core small{color:#BCD0DF}
+    .roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .phase{border-radius:16px;border:1px solid var(--line);background:#fff;padding:20px}
+    .phase .phase-no{color:var(--brand);font-weight:900}
+    .phase .duration{display:inline-block;margin:8px 0;padding:3px 8px;border-radius:99px;background:#F0F5F9;color:#5C7184;font-size:11px}
+    .phase ul{margin:7px 0 0;padding-left:18px;color:var(--muted);font-size:12px}
+    .evidence{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .source-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px}
+    .source-card b{display:block;margin-bottom:5px}
+    .source-card p{margin:0;color:var(--muted);font-size:12px}
+    .source-card code{display:block;margin-top:8px;padding:8px;border-radius:8px;background:#F4F7F9;color:#536778;overflow-wrap:anywhere;font-size:10px}
+    .footnote{margin-top:18px;border-top:1px solid var(--line);padding-top:14px;color:#748697;font-size:11px}
+    .footer{padding:28px 0;background:#15334C;color:#DDE8F0}
+    .footer .shell{display:flex;justify-content:space-between;gap:20px;align-items:center}
+    .footer small{color:#9FB4C4}
+    .mobile-only{display:none}
+    @media (max-width:1100px){
+      .grid-4,.principles{grid-template-columns:repeat(2,1fr)}
+      .grid-3{grid-template-columns:1fr}
+      .hero-grid,.viz-grid{grid-template-columns:1fr}
+      .flow{grid-template-columns:1fr 28px 1fr 28px 1fr}.flow .hide-mid{display:none}
+      .factory{grid-template-columns:repeat(3,1fr)}
+      .roadmap{grid-template-columns:repeat(2,1fr)}
+      .problem-list{grid-template-columns:1fr}
+      .logic{grid-template-columns:1fr}.logic-arrow{transform:rotate(90deg)}
+    }
+    @media (max-width:760px){
+      .shell{padding:0 16px}.topbar-inner{height:56px}.nav{display:none}.hero{padding:42px 0 30px}
+      h1{font-size:31px;letter-spacing:-.7px}.hero p{font-size:15px}
+      .grid-4,.grid-2,.principles,.decision,.roadmap,.evidence,.factory,.three-layer{grid-template-columns:1fr}
+      .section-head{align-items:flex-start;flex-direction:column;margin-top:44px}
+      h2{font-size:23px}.card{padding:17px}
+      .big-idea{grid-template-columns:54px 1fr}.big-num{width:48px;height:48px;border-radius:14px;font-size:19px}
+      .flow{grid-template-columns:1fr}.flow .arrow{transform:rotate(90deg)}
+      .journey{grid-template-columns:1fr}.journey .step:after{content:"↓";right:auto;left:50%;top:auto;bottom:-19px}
+      .event{grid-template-columns:1fr;gap:2px}
+      .matrix{grid-template-columns:88px repeat(4,110px);overflow:auto}
+      .chart-card{padding:14px}.chart-wrap{height:330px}
+      .footer .shell{align-items:flex-start;flex-direction:column}
+      .mobile-only{display:block}
+    }
+    @media print{
+      .topbar{display:none}body{background:#fff}.shell{max-width:none;padding:0 18px}.hero{padding:26px 0}.card,.chart-card{box-shadow:none;break-inside:avoid}section{break-before:auto}.filter-bar{display:none}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand"><span class="brand-mark">且</span><span>投顾模块升级研究</span></div>
+      <nav class="nav">
+        <a href="#summary">结论</a><a href="#current">现况</a><a href="#inventory">模块盘点</a>
+        <a href="#usage">使用数据</a><a href="#matrix">策略矩阵</a><a href="#logic">推品逻辑</a>
+        <a href="#options">方案</a><a href="#factory">AI 工厂</a><a href="#roadmap">路径</a>
+      </nav>
+    </div>
+  </header>
+
+  <header class="hero">
+    <div class="shell hero-grid">
+      <div>
+        <span class="eyebrow">且慢 APP · 投顾一级页 · 现况审计 / 方向方案 V0.9</span>
+        <h1>从“工具＋货架”升级为<br>会判断、会解释、会跟进的投顾服务首页</h1>
+        <p>本次不是给旧页面增加几个策略入口，而是围绕新“四笔钱＋严选＋定制账户”品类矩阵，重建用户、场景、规划、策略与投后的统一推荐关系。页面的核心业务目的仍是推品，但用户先得到的是一个清晰、可解释、适合自己的行动方案。</p>
+        <div class="meta-row">
+          <span class="pill"><i></i>研究日期 2026-07-23</span>
+          <span class="pill"><i></i>策略数据截止 2026-06-15</span>
+          <span class="pill"><i></i>公开页面现场核验</span>
+          <span class="pill"><i></i>内部 Wiki / 飞书 / 两份业务矩阵交叉验证</span>
+        </div>
+      </div>
+      <aside class="hero-side">
+        <span class="tag confirmed">推荐结论</span>
+        <strong>采用“方案 A 为目标、方案 B 为首期、方案 C 为能力储备”的组合路线</strong>
+        <div class="big">先统一决策，再智能编排</div>
+        <p>首屏永远先回答“我现在最该做什么”；定制方案优先，标准策略兜底；风险收益图是解释与比较层，不应成为冷启动主入口。</p>
+      </aside>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section id="summary">
+      <div class="section-head">
+        <div><div class="kicker">Executive summary</div><h2>先说结论：问题不在供给少，而在缺少统一判断</h2></div>
+        <div class="sub">现有能力覆盖“听—规—投—伴”的多数环节；真正断裂的是：每个入口都在独立推荐，没有同一个方案状态、同一个优先级和同一个投后回路。</div>
+      </div>
+      <div class="grid-4">
+        <article class="card metric primary"><div class="label">研究矩阵中的公募策略/规划位</div><div class="value">25</div><div class="note">含新上、待定、待替换项；不是当前已售策略总数</div></article>
+        <article class="card metric"><div class="label">内部主动货架草案口径</div><div class="value">303</div><div class="note">自营 37 / 机构 109 / 大 V 157，需再与系统数据核验</div></article>
+        <article class="card metric"><div class="label">可匹配的标准方案</div><div class="value">33</div><div class="note">内部现况文档口径；定制方案是账户规划的落地形态</div></article>
+        <article class="card metric"><div class="label">每日估值当前订阅</div><div class="value">109,759</div><div class="note">公开页 2026-07-22 20:00 数据，代表强工具心智</div></article>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <div class="big-idea">
+          <div class="big-num">01</div>
+          <div>
+            <h3>产品定义：投顾首页不是“全部服务目录”，而是“下一最佳行动的决策与分发层”</h3>
+            <p class="sub">用户进来后只需要看到一项主建议、为什么适合、可选替代和后续动作；所有规划、工具、专区、货架都作为同一决策层的输入或承接组件。运营可以编排服务，但不能绕过适当性、主策略字典和推荐优先级。</p>
+            <div class="problem-list">
+              <div class="problem"><b>当前结构</b><span>顶部两个运营 banner，下面是四笔钱策略卡，再下沉到攒钱、严选、估值；“定制”只是入口，不是默认推荐结果。</span></div>
+              <div class="problem"><b>核心冲突</b><span>四笔钱、目标规划、定制账户、养老规划、账户诊断都可能给建议，但用户看不到谁是最终判断者。</span></div>
+              <div class="problem"><b>升级抓手</b><span>统一主策略字典＋账户方案状态＋场景意图＋适当性底线，再由 AI/规则编排页面组件与主动触达。</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-top:16px">
+        <div class="callout blue"><strong>必须坚持</strong><br>定制方案优先；用户不具备足够信息或不愿补充时，再推荐标准策略。</div>
+        <div class="callout green"><strong>推荐体验</strong><br>“先可买、再补准、不硬挡”：先给可解释的临时建议，随着资产、目标和行为信息增加动态收敛。</div>
+        <div class="callout amber"><strong>不要误判</strong><br>二维风险收益图适合比较，不适合替代规划；晨星组合风险分数尚未在附件中提供，不能伪造成现况数据。</div>
+      </div>
+    </section>
+
+    <section id="current">
+      <div class="section-head">
+        <div><div class="kicker">As-is experience</div><h2>现况体验：能力很多，但像一组各自营业的“门店”</h2></div>
+        <div class="sub"><span class="tag confirmed">现场核验</span> 2026-07-23 访问 qieman.com 对应页面；原生 App 壳层、个别登录态与埋点后台未直接核验。</div>
+      </div>
+      <div class="grid-2">
+        <article class="card">
+          <h3>投顾一级页 /m4</h3>
+          <p>顶部是“投资规划”“养老专区”两个常驻运营位；主体是四笔钱 tab（活钱、短期稳健、长期投资、保险保障）和策略卡；底部还有“攒钱计划、严选策略、每日估值”。</p>
+          <div class="callout red"><b>主要体验问题</b><br>标准策略货架占据主体，规划只在 banner；不同卡片用七日年化、历史年化、策略目标、适合人群等不同指标，无法横向比较。</div>
+        </article>
+        <article class="card">
+          <h3>严选策略 /m4/more</h3>
+          <p>按“短期稳健 / 长期投资”展示策略列表，信息核心是名称、简介、建议持有时间与产品数据。用户需自己理解差异，页面没有统一风险坐标、对比器或“为何适合我”。</p>
+          <div class="callout amber"><b>主要体验问题</b><br>严选回答“我们选了什么”，没有回答“你现在应该选哪一个、为什么、是否需先定制”。</div>
+        </article>
+        <article class="card">
+          <h3>投资规划 / 小顾</h3>
+          <p>当前入口能识别已有规划，展示建议书、执行完成度，并支持更新方案。2022 年设计就已实现基于四笔钱的千人千面规划、账户资产读取和产品匹配。</p>
+          <div class="callout green"><b>可复用资产</b><br>规划状态、执行完成度、更新入口正是新版首屏最有价值的“个人任务”，不应继续藏在 banner 后。</div>
+        </article>
+        <article class="card">
+          <h3>养老专区</h3>
+          <p>当前页面已经整合养老资产、养老测算、投资方案、个人养老金、内容、基金/保险/投顾货架；“颐养天年”用需求定制和下滑曲线承接。</p>
+          <div class="callout green"><b>成熟范式</b><br>养老已接近“目标—测算—方案—购买—账户—投后”的场景闭环，可抽象为平台级服务组件，而非复制一套新的推荐逻辑。</div>
+        </article>
+      </div>
+
+      <div class="section-head">
+        <div><div class="kicker">Target service flow</div><h2>把现有入口重组为一条服务主线</h2></div>
+      </div>
+      <div class="flow">
+        <div class="flow-node"><strong>识别我</strong><small>持仓 / KYC / 行为 / 目标</small></div><div class="arrow">→</div>
+        <div class="flow-node main"><strong>判断下一件事</strong><small>缺规划、需优化、可直接买</small></div><div class="arrow">→</div>
+        <div class="flow-node"><strong>给方案</strong><small>定制优先 / 标准兜底</small></div><div class="arrow hide-mid">→</div>
+        <div class="flow-node hide-mid"><strong>解释与比较</strong><small>风险 / 回撤 / 期限 / 场景</small></div><div class="arrow hide-mid">→</div>
+        <div class="flow-node hide-mid"><strong>执行与跟进</strong><small>买入 / 定投 / 诊断 / 再平衡</small></div>
+      </div>
+
+      <div class="section-head">
+        <div><div class="kicker">Three-layer architecture</div><h2>四笔钱、规划、诊断不是三个入口，而是三层判断</h2></div>
+      </div>
+      <div class="three-layer">
+        <div class="layer"><span class="num">L1 结构层</span><h3>四笔钱怎么分</h3><p>决定资金用途、流动性与期限边界。是所有用户都能理解的底层心智，不直接等于产品货架。</p></div>
+        <div class="layer"><span class="num">L2 方案层 · 主结论</span><h3>这个账户怎么投</h3><p>结合目标、期限、风险与持仓，形成一个可确认、可更新、可执行的定制账户方案；标准策略只在无法定制时兜底。</p></div>
+        <div class="layer"><span class="num">L3 校正层</span><h3>现在要不要调</h3><p>账户诊断、多资产分析、市场信号、估值工具负责解释偏离、触发复查与优化，而不是各自重新推荐一套货。</p></div>
+      </div>
+    </section>
+
+    <section id="inventory">
+      <div class="section-head">
+        <div><div class="kicker">Capability inventory</div><h2>全模块盘点：保留能力，重做关系</h2></div>
+        <div class="sub">“动作”不是删功能，而是决定它在新版中的角色：主链、合并承接、场景触发或降级到工具箱。</div>
+      </div>
+      <div class="filter-bar" id="inventoryFilters">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="主链">进入主链</button>
+        <button class="filter-btn" data-filter="合并">合并承接</button>
+        <button class="filter-btn" data-filter="场景">场景触发</button>
+        <button class="filter-btn" data-filter="工具">工具箱</button>
+      </div>
+      <div class="table-wrap">
+        <table id="inventoryTable">
+          <thead><tr><th>模块</th><th>当前入口 / 状态</th><th>当前推品逻辑</th><th>体验与复用判断</th><th>使用证据</th><th>新版动作</th></tr></thead>
+          <tbody>
+            <tr data-action="主链"><td>投顾一级页 / 四笔钱货架</td><td>一级页主体；2023-02-21 上线现框架<small>运营位＋四笔钱 tab＋更多投资选择</small></td><td>按资金期限分组，用户自行挑策略</td><td>心智清晰，但把“资金结构”误当成“选品终点”；同屏数据口径不一</td><td><span class="tag gap">缺新版全链路看板</span><small>2023 文档曾记录整体埋点不足，今天是否补齐待验证</small></td><td><span class="tag keep">主链</span><small>改成个人任务＋四笔钱结构，不再以大货架为主体</small></td></tr>
+            <tr data-action="合并"><td>严选策略</td><td>投顾页底部独立列表页<small>短期稳健 / 长期投资</small></td><td>平台精选后按期限陈列</td><td>适合“比较与探索”，不适合做所有人的默认决策</td><td><span class="tag confirmed">公开页仍在线</span><small>无个性化选择理由与对比视图</small></td><td><span class="tag merge">合并承接</span><small>成为方案备选库＋风险地图，不单独承担主推荐</small></td></tr>
+            <tr data-action="主链"><td>四笔钱投资规划 / 小顾</td><td>一级页顶部 banner；已有方案可查看、更新、看执行度</td><td>回答基础问题→配置建议→产品匹配→建议书</td><td>已经拥有“定制优先”的核心能力，但入口权重低、与货架割裂</td><td><span class="tag history">2022 历史验证</span><small>两周 4,288 人生成建议；推广口径显示转化提升</small></td><td><span class="tag keep">主链首屏</span><small>个人建议卡、执行进度、补资料/更新方案</small></td></tr>
+            <tr data-action="主链"><td>定制方案 / 定制账户</td><td>首页宫格、资产侧边、AI/活动入口；内部口径可匹配 33 套标准方案</td><td>目标、期限、收益、回撤、偏好→资配→产品方案</td><td>最接近“账户级最终结论”；应统一其他入口的裁决结果</td><td><span class="tag infer">内部草案</span><small>真实创建、买入、复投需拉数</small></td><td><span class="tag keep">唯一默认落地</span><small>定制方案优先；标准策略是信息不足/轻量需求的 fallback</small></td></tr>
+            <tr data-action="场景"><td>养老规划 / 养老专区</td><td>一级页顶部、资产侧边；测算、方案、个养、产品、资产、内容齐全</td><td>养老目标→测算→月存→权益比例→颐养天年/基金/保险</td><td>场景闭环最完整；独有年龄、下滑曲线与个养规则</td><td><span class="tag history">历史高意向</span><small>2023 内容到专区转化 44.23%；当前页仍完整运行</small></td><td><span class="tag move">意图后触发</span><small>选择养老后加载专用组件，共用主策略与适当性</small></td></tr>
+            <tr data-action="场景"><td>教育规划</td><td>资产侧边专区；费用参考、目标测算、储蓄框架、讨论</td><td>目标金额 / 期限→储蓄与投资建议</td><td>业务矩阵明确建议教育与养老“成熟一个做一个”；场景特征强</td><td><span class="tag gap">缺行为数据</span></td><td><span class="tag move">场景二期</span><small>先做目标模板，不复制独立货架与决策规则</small></td></tr>
+            <tr data-action="合并"><td>心愿攒钱 / 攒钱挑战</td><td>投顾底部、首页、搜索；2024-03-20 全量</td><td>选目标→花好月圆/货币三佳→进度与定投</td><td>目标感强、策略过窄；一个目标一个账户，为目标账户体系打了基础</td><td><span class="tag history">2024-05</span><small>总开启 291；运营带来 173；入金 155</small></td><td><span class="tag merge">并入目标账户</span><small>复用心愿进度，不再固定只有两只底层策略</small></td></tr>
+            <tr data-action="主链"><td>账户诊断 / 持仓优化</td><td>资产页、报告、小顾/AI；含账户分析、投资规划综合报告</td><td>识别配置问题、持仓偏离，给优化建议</td><td>是老客主动推品最自然的触发器，但必须回到原方案而非另起一套建议</td><td><span class="tag gap">缺复用率</span><small>需看诊断→方案更新→成交→90 日复查</small></td><td><span class="tag keep">主链触发</span><small>首屏显示“你的方案需要优化”及差异解释</small></td></tr>
+            <tr data-action="合并"><td>多资产配置 / 全球专区</td><td>专区与规划能力；全球产品和全球丰收等策略承接</td><td>按资产地域或配置观点找产品</td><td>用户概念门槛高，更适合作为方案解释维度而非一级入口</td><td><span class="tag gap">缺专区漏斗</span></td><td><span class="tag merge">方案维度</span><small>在“为何这样配”中展示国内/全球比例，可展开专区</small></td></tr>
+            <tr data-action="工具"><td>每日估值 / 市场温度 / 行情信号</td><td>首页“今日关注”、投顾页底部、独立工具页</td><td>看估值或信号后，用户自行找产品/交易</td><td>高频心智强，但决策与交易断裂；最适合做时点解释与复查触发</td><td><span class="tag confirmed">估值订阅 109,759</span><small>公开页 2026-07-22；2017 召回也证明强吸引力</small></td><td><span class="tag reduce">工具＋触发器</span><small>有明确影响才提示“这对你的方案意味着什么”</small></td></tr>
+            <tr data-action="工具"><td>额度管理 / 纳指管理</td><td>快捷工具，后续流向 DIY 组合</td><td>用户表达想配某资产→自己搭组合</td><td>是很好的偏好信号，但缺投后管理与投顾方案关系</td><td><span class="tag gap">缺 DIY 到成交/留存</span></td><td><span class="tag reduce">偏好入口</span><small>生成“加入现方案会怎样”的模拟，不直接另建孤立组合</small></td></tr>
+            <tr data-action="工具"><td>自建 / 自助 / DIY 组合</td><td>独立账户与自建流程；历史上有较多业务规则</td><td>用户完全自主选基金、配比例</td><td>满足专家型用户控制感；不应和默认投顾路径抢主位</td><td><span class="tag gap">缺活跃与复投</span></td><td><span class="tag reduce">高级工具箱</span><small>允许“从推荐方案复制后微调”，明确偏离风险</small></td></tr>
+            <tr data-action="工具"><td>关注产品 / 提醒 / 收益日历</td><td>分散在产品、资产与工具入口</td><td>围绕用户主动关注的产品发送提醒</td><td>复用潜力高，但应转为“方案事件”而非产品消息堆叠</td><td><span class="tag gap">缺事件→行动数据</span></td><td><span class="tag reduce">伴随组件</span><small>只推影响目标、风险或执行进度的事件</small></td></tr>
+            <tr data-action="场景"><td>保险保障 / 资产保全传承</td><td>四笔钱保险 tab、保险服务；高客 1v1 场景</td><td>保障缺口/家庭责任→顾问服务或产品</td><td>和基金投顾适当性、交易主体不同，不能混成统一收益货架</td><td><span class="tag gap">缺跨服务漏斗</span></td><td><span class="tag move">独立场景承接</span><small>在资金结构/财务规划发现缺口后触发</small></td></tr>
+            <tr data-action="主链"><td>主动运营 / 智能广告位 / 搜索</td><td>首页、资产页、投顾页、消息与搜索多入口</td><td>各业务按标签和运营位分别推内容/产品</td><td>多入口不是问题，多套结论才是问题</td><td><span class="tag infer">现况草案</span><small>已有配置与智能分层能力，但缺统一裁决</small></td><td><span class="tag keep">统一调用决策层</span><small>每个入口携带场景，最终只返回同一主建议及备选</small></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="milestone">
+      <div class="section-head">
+        <div><div class="kicker">Milestones</div><h2>上线里程碑：持续加能力，但一级页框架停在 2023</h2></div>
+      </div>
+      <div class="card timeline">
+        <div class="event"><time>2017-10</time><div><h4>每日估值已形成订阅与召回能力</h4><p>早期活动累计订阅 1,539，验证工具有拉新/召回价值；今天公开页订阅已达 109,759。</p></div></div>
+        <div class="event"><time>2022-08-15</time><div><h4>四笔钱投资规划灰度</h4><p>8/3–8/9 内测，8/15 灰度；目标是千人千面的资金规划、资产配置、策略匹配与建议书。</p></div></div>
+        <div class="event"><time>2022-12</time><div><h4>养老专区 1.0 形成测算、规划、账户雏形</h4><p>历史内容数据出现数千 UV，证明养老是可被内容唤起的强目标场景。</p></div></div>
+        <div class="event"><time>2023-02-21</time><div><h4>当前投顾一级页框架上线</h4><p>两个常驻运营位、四笔钱 tab、严选与估值入口；本质仍是配置化货架。</p></div></div>
+        <div class="event"><time>2023-07 / 08</time><div><h4>养老专区 2.0 与颐养天年</h4><p>7/19 第一版、7/25 策略上架、8 月首周计划全量；建立“倾听—计划—执行—跟踪”闭环。</p></div></div>
+        <div class="event"><time>2024-03-20</time><div><h4>心愿攒钱全量</h4><p>3/6 灰度；7/10 支持开启时攒入第一笔，把目标进度与投资账户连接。</p></div></div>
+        <div class="event"><time>2024-04</time><div><h4>投顾 2.0 提出“财富目标＋定制账户”</h4><p>目标、期限、收益、最大回撤、资产比例、产品方案与账户确认形成完整设计；但不是一级页已经整体落地的证据。</p></div></div>
+        <div class="event"><time>2025–2026</time><div><h4>账户诊断、投资规划、AI 小顾和策略矩阵继续升级</h4><p>能力已经越过“单货架”阶段；本次一级页升级需要承担统一入口与服务编排职责。</p></div></div>
+      </div>
+    </section>
+
+    <section id="usage">
+      <div class="section-head">
+        <div><div class="kicker">Usage &amp; reuse</div><h2>使用与复用：有局部正向证据，没有一张可回答全局的漏斗</h2></div>
+        <div class="sub">以下把当前值、历史活动、业务目标和待拉取数据分开；活动转化不能直接等同自然流长期转化。</div>
+      </div>
+      <div class="grid-4">
+        <article class="card metric"><div class="label">投资规划建议生成</div><div class="value">4,288</div><div class="note"><span class="tag history">2022 历史</span> 正式推广两周</div></article>
+        <article class="card metric"><div class="label">新年投资规划浏览→订单</div><div class="value">7.33%</div><div class="note"><span class="tag history">2023-03</span> 21,214 浏览 / 1,555 人生成委托订单</div></article>
+        <article class="card metric"><div class="label">心愿攒钱开启</div><div class="value">291</div><div class="note"><span class="tag history">2024-05-12</span> 运营带来 173 次开启</div></article>
+        <article class="card metric"><div class="label">内容→养老专区</div><div class="value">44.23%</div><div class="note"><span class="tag history">2023-09</span> 2,209 点击 / 977 进专区</div></article>
+      </div>
+      <div class="grid-2" style="margin-top:16px">
+        <article class="card">
+          <h3>能确认什么</h3>
+          <ul>
+            <li>规划式承接优于纯列表：2023 新用户活动中，普通注册用户 7 日交易率 17%，浏览规划活动的人群为 42%（相关性与活动选择偏差需注意）。</li>
+            <li>精准人群优于广撒：心愿攒钱中，“攒钱偏好”老客推送点击近 13%；低风险人群点击后开启率更高。</li>
+            <li>工具有复用心智：每日估值公开订阅超过 10 万，但工具查看之后是否回到合适方案，当前证据不足。</li>
+            <li>养老具备完整服务链与内容转化能力，可作为场景化服务组件的参考样板。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>现在仍不能回答什么</h3>
+          <ul>
+            <li>一级投顾页的 DAU/MAU、首屏模块曝光、点击、跳失与 7/30 天复访。</li>
+            <li>“先定制、后标准”各自的曝光、生成、确认、买入、复投和增量规模。</li>
+            <li>诊断后修改方案的比例、标准策略切换到定制账户的增益、AI 推荐解释对转化的真实贡献。</li>
+            <li>跨入口是否给出冲突建议，以及用户在搜索、专区、主动推送之间的重复曝光与疲劳。</li>
+          </ul>
+        </article>
+      </div>
+      <div class="section-head">
+        <div><div class="kicker">Measurement contract</div><h2>新版必须先定义一套“服务漏斗”</h2></div>
+      </div>
+      <div class="journey">
+        <div class="step"><span class="sno">01 识别</span><h4>有效识别率</h4><p>进入页后可确定“无规划 / 有方案待执行 / 持仓需优化 / 仅探索”的用户占比。</p></div>
+        <div class="step"><span class="sno">02 建议</span><h4>主建议覆盖率</h4><p>展示唯一主建议的 UV / 投顾页 UV；同时记录理由、信息完整度与 fallback 原因。</p></div>
+        <div class="step"><span class="sno">03 方案</span><h4>定制优先率</h4><p>可生成定制的用户中，定制方案曝光 / 全部策略曝光；防止运营位绕开原则。</p></div>
+        <div class="step"><span class="sno">04 执行</span><h4>建议采纳率</h4><p>7 日内确认方案、创建账户或下单 UV / 主建议曝光 UV；拆分定制与标准。</p></div>
+        <div class="step"><span class="sno">05 复用</span><h4>30/90 日持续服务率</h4><p>复访、定投、复投、诊断、更新方案或完成建议中的任一行为；衡量“顾”而非单次成交。</p></div>
+      </div>
+      <div class="callout amber" style="margin-top:14px"><strong>数据前置条件</strong><br>建立 user × account × goal × plan_version × recommendation_id × entry_scene 的统一事件主键；否则无法判断一个用户从养老、估值或搜索进入后，是否采纳了同一份建议。</div>
+    </section>
+
+    <section id="matrix">
+      <div class="section-head">
+        <div><div class="kicker">Supply matrix</div><h2>新策略矩阵：供给更完整，也更需要可解释的导航</h2></div>
+        <div class="sub"><span class="tag confirmed">附件数据</span> 截止 2026-06-15。图中只纳入同时有近 1 年收益和成立以来最大回撤的策略；两项窗口不同，只用于体验探索，不构成严格绩效比较。</div>
+      </div>
+      <div class="viz-grid">
+        <div class="chart-card">
+          <div class="chart-controls">
+            <div>
+              <h3>策略风险—收益分布</h3>
+              <div class="legend">
+                <span><i class="dot" style="background:#4B9FEA"></i>R1</span>
+                <span><i class="dot" style="background:#35A77D"></i>R2</span>
+                <span><i class="dot" style="background:#F0A844"></i>R3</span>
+                <span><i class="dot" style="background:#DE665A"></i>R4</span>
+              </div>
+            </div>
+            <label class="risk-control">最高风险等级
+              <input id="riskRange" type="range" min="1" max="4" value="4" step="1">
+              <span id="riskValue">R4</span>
+            </label>
+          </div>
+          <div class="chart-wrap">
+            <svg id="riskChart" role="img" aria-label="策略最大回撤与近一年收益散点图"></svg>
+            <div class="chart-tooltip" id="chartTooltip"></div>
+          </div>
+        </div>
+        <aside class="chart-card">
+          <h3>推荐的展示组合</h3>
+          <p class="sub">不要只给用户一张“点点图”。推荐用三层信息逐步展开：</p>
+          <div class="ladder">
+            <div class="ladder-row"><b>R1</b><div class="ladder-bar">随取 / 1 年内</div><small>低波动</small></div>
+            <div class="ladder-row"><b>R2</b><div class="ladder-bar">1–3 年稳钱</div><small>可控回撤</small></div>
+            <div class="ladder-row"><b>R3</b><div class="ladder-bar">3 年以上均衡</div><small>中等波动</small></div>
+            <div class="ladder-row"><b>R4</b><div class="ladder-bar">5 年以上进取</div><small>高波动</small></div>
+          </div>
+          <ol>
+            <li><b>默认：</b>期限 × 可承受损失的风险阶梯，先排除不合适的策略。</li>
+            <li><b>解释：</b>展示建议方案在“较差情况 / 典型回撤 / 目标收益”中的位置。</li>
+            <li><b>探索：</b>用户再进入二维散点图，按最大回撤、地域、买入方式、场景切换。</li>
+          </ol>
+          <div class="callout blue"><b>晨星风险分数怎么用</b><br>可作为统一 x 轴候选，但需先取得每个组合的同口径分数、日期、映射规则和缺失处理。未具备前，不应用 R1–R4 或最大回撤“仿造”晨星分数。</div>
+        </aside>
+      </div>
+
+      <div class="section-head">
+        <div><div class="kicker">Goal × risk</div><h2>二维图之外，更重要的是“目标 × 期限 × 风险”的可选路径</h2></div>
+      </div>
+      <div class="card">
+        <div class="matrix">
+          <div class="head">用户意图</div><div class="head">随取 / &lt;1 年</div><div class="head">1–3 年</div><div class="head">3–5 年</div><div class="head">5 年以上</div>
+          <div class="head">日常 / 应急</div><div class="match">盈米宝<br>花好月圆</div><div>—</div><div>—</div><div>—</div>
+          <div class="head">攒钱 / 明确目标</div><div class="match">短期攒钱方案</div><div class="match">息息相关 / 风和日丽<br>先算月投缺口</div><div class="scene">目标账户定制</div><div class="scene">目标账户定制</div>
+          <div class="head">养老 / 教育</div><div class="warn">期限冲突提示</div><div class="scene">规划后保守方案</div><div class="scene">养老/教育专属规划</div><div class="scene">颐养天年或定制账户</div>
+          <div class="head">积极 / 择时 / 主题</div><div class="warn">不匹配</div><div class="warn">谨慎，需解释回撤</div><div class="match">均衡/轮动备选</div><div class="match">陪伴 / 全球 / 进取</div>
+        </div>
+        <p class="footnote">上表是信息架构示意，不是最终产品推荐表。最终结果仍需适当性、账户整体风险、产品可售状态与策略主表共同裁决。</p>
+      </div>
+
+      <div class="section-head">
+        <div><div class="kicker">Supply risks</div><h2>策略矩阵进入产品前，需要先补 5 个数据合同</h2></div>
+      </div>
+      <div class="principles">
+        <div class="principle"><b>统一时点</b><span>收益、回撤、评分、费率、可售状态使用同一 as-of-date，并保留历史版本。</span></div>
+        <div class="principle"><b>统一窗口</b><span>近 1 年收益不能直接对“成立以来回撤”；至少同时给 1Y/3Y 与同窗回撤。</span></div>
+        <div class="principle"><b>统一风险</b><span>R1–R4、晨星组合风险分数、可承受损失、权益中枢的映射要可解释。</span></div>
+        <div class="principle"><b>统一主身份</b><span>策略名称、主理人、替换关系、相似策略、场景标签进入唯一主策略字典。</span></div>
+        <div class="principle"><b>统一推荐理由</b><span>每次推荐记录命中规则、排除项、信息缺失与替代方案，支持客服追溯。</span></div>
+      </div>
+    </section>
+
+    <section id="logic">
+      <div class="section-head">
+        <div><div class="kicker">Recommendation logic</div><h2>推品逻辑：多入口、单裁决、一个主建议</h2></div>
+        <div class="sub">用户新补充的“场景领投人”表，正好可以成为意图与服务映射；但“领投人观点”应是解释层和陪伴层，不可覆盖适当性与账户方案。</div>
+      </div>
+      <div class="logic">
+        <div class="logic-block">
+          <h3>入口携带场景</h3>
+          <ul><li>高客 1v1：财务规划、诊断、保全传承</li><li>明确目标：教育、养老、攒钱</li><li>市场敏感：择时、行业、量化、特定资产</li><li>市场不敏感：稳健、均衡、积极</li><li>投资小白：四笔钱与风险收益教育</li></ul>
+        </div>
+        <div class="logic-arrow">→</div>
+        <div class="logic-block main">
+          <h3>统一决策引擎</h3>
+          <ul><li>资格 / 可售 / 适当性底线</li><li>是否已有有效账户方案</li><li>资金用途、期限、目标缺口与可承受回撤</li><li>当前持仓偏离、重复暴露与现金流</li><li>定制可用性与信息完整度</li></ul>
+        </div>
+        <div class="logic-arrow">→</div>
+        <div class="logic-block">
+          <h3>唯一返回合同</h3>
+          <ul><li>1 个主建议：下一最佳行动</li><li>0–2 个可解释备选</li><li>为什么适合 / 为什么排除</li><li>下一步：补资料、确认、买入、优化</li><li>复查时间与触发条件</li></ul>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <div><div class="kicker">Decision order</div><h2>推荐顺序必须写进产品合同</h2></div>
+      </div>
+      <div class="card">
+        <div class="journey">
+          <div class="step"><span class="sno">门槛</span><h4>先判断“能不能”</h4><p>登录、开户、风险测评、可售、金额、地域、适当性；失败时给补齐动作。</p></div>
+          <div class="step"><span class="sno">状态</span><h4>再判断“是不是已有方案”</h4><p>有方案先执行/复查；持仓偏离先诊断；不重复推荐第二套相冲突方案。</p></div>
+          <div class="step"><span class="sno">首选</span><h4>定制方案优先</h4><p>信息足够则生成/更新账户方案，把新策略矩阵作为底层供给。</p></div>
+          <div class="step"><span class="sno">兜底</span><h4>标准策略其次</h4><p>轻量需求、信息不足或用户明确只想探索时，推荐 1 个标准策略＋补充问题。</p></div>
+          <div class="step"><span class="sno">伴随</span><h4>工具与主理人解释</h4><p>估值、信号、观点只解释“为何现在做/不做”，并回写同一方案状态。</p></div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <div><div class="kicker">Conflict handling</div><h2>四类冲突的处理规则</h2></div>
+      </div>
+      <div class="grid-4">
+        <div class="card flat"><h4>用户目标 vs 市场热点</h4><p class="sub">先守目标期限与亏损边界。热点只可作为小比例偏好，不改变主方案。</p></div>
+        <div class="card flat"><h4>现持仓 vs 新推荐</h4><p class="sub">先算增量调优、赎回成本和重复暴露；不能把“新货”默认当“换货”。</p></div>
+        <div class="card flat"><h4>主理人观点 vs 量化规则</h4><p class="sub">观点可以决定陪伴内容与时点解释；最终产品范围与比例由决策合同约束。</p></div>
+        <div class="card flat"><h4>运营目标 vs 适合用户</h4><p class="sub">运营可配置人群、文案、组件顺序和实验；不可指定绕过规则的必推产品。</p></div>
+      </div>
+    </section>
+
+    <section id="options">
+      <div class="section-head">
+        <div><div class="kicker">Design options</div><h2>三个方向方案：不是三选一，而是目标、首期与远期</h2></div>
+        <div class="sub">建议对齐的是：最终要成为哪一种产品，以及首期用多大范围验证，而不是一次性把所有 AI 与自定义能力做完。</div>
+      </div>
+      <div class="grid-3">
+        <article class="card option recommended">
+          <span class="badge">推荐目标态</span>
+          <h3>A｜AI 投顾服务首页</h3>
+          <p>首屏是一张动态“下一最佳行动”卡；页面根据用户状态编排规划、优化、场景与工具组件。</p>
+          <div class="screen"><div class="wire hero-wire"></div><div class="wire-grid"><div class="wire"></div><div class="wire"></div></div><div class="wire"></div><div class="wire-grid"><div class="wire"></div><div class="wire"></div></div></div>
+          <ul><li>定制方案天然成为默认主路径</li><li>对新客、空仓、持仓、目标客展示不同首屏</li><li>风险地图、严选库和工具按需展开</li><li>需要统一决策层、方案状态与全链路埋点</li></ul>
+          <div class="score"><span>业务效果 <strong>高</strong></span><span>实现复杂度 <strong>中高</strong></span><span>适合 <strong>目标态</strong></span></div>
+        </article>
+        <article class="card option">
+          <h3>B｜规划优先的工具＋货架</h3>
+          <p>保留传统页面结构，但把投资规划/方案状态放首屏，四笔钱货架改为更少、更可比的策略组。</p>
+          <div class="screen"><div class="wire hero-wire"></div><div class="wire"></div><div class="wire"></div><div class="wire-grid"><div class="wire"></div><div class="wire"></div></div></div>
+          <ul><li>对现有页面、运营后台和研发改动更小</li><li>可先上线主策略表、风险阶梯、定制优先</li><li>千人千面主要体现在排序和内容，不是完整编排</li><li>仍可能保留“页面很长、模块各自为政”的惯性</li></ul>
+          <div class="score"><span>业务效果 <strong>中</strong></span><span>实现复杂度 <strong>中</strong></span><span>适合 <strong>首期</strong></span></div>
+        </article>
+        <article class="card option">
+          <h3>C｜可自定义财富工作台</h3>
+          <p>用户可添加、移除和排序估值、目标、持仓、关注、信号等模块；AI 根据使用情况建议布局。</p>
+          <div class="screen"><div class="wire-grid"><div class="wire hero-wire"></div><div class="wire"></div></div><div class="wire-grid"><div class="wire"></div><div class="wire"></div></div><div class="wire-grid"><div class="wire"></div><div class="wire"></div></div></div>
+          <ul><li>高控制感，适合资深、高频用户</li><li>运营组件可复用，形成 AI 产品工厂</li><li>冷启动用户并不想“装修页面”</li><li>主建议、风险提示与适当性组件不可被移除</li></ul>
+          <div class="score"><span>业务效果 <strong>分人群</strong></span><span>实现复杂度 <strong>高</strong></span><span>适合 <strong>远期</strong></span></div>
+        </article>
+      </div>
+
+      <div class="section-head">
+        <div><div class="kicker">Option comparison</div><h2>方案权衡</h2></div>
+      </div>
+      <div class="table-wrap">
+        <table class="compare">
+          <thead><tr><th>维度</th><th>A｜AI 服务首页</th><th>B｜规划优先货架</th><th>C｜自定义工作台</th><th>建议</th></tr></thead>
+          <tbody>
+            <tr><td>定制优先</td><td>原生支持，首屏即方案状态</td><td>可通过固定首屏实现</td><td>容易被用户布局稀释</td><td>A/B 必须共同遵守</td></tr>
+            <tr><td>推品效率</td><td>基于状态主动推“下一件事”</td><td>缩短选择、提升可比性</td><td>依赖高频使用后才有效</td><td>A 的上限最高</td></tr>
+            <tr><td>运营弹性</td><td>配置组件与人群，但受决策合同约束</td><td>配置固定楼层、排序、文案</td><td>平台和用户双重编排</td><td>先 B 的配置能力，再演进 A</td></tr>
+            <tr><td>研发依赖</td><td>策略字典、决策层、方案状态、编排器</td><td>策略字典、页面改版、部分规则</td><td>再加布局系统、组件 SDK、同步</td><td>不要首期直接做 C</td></tr>
+            <tr><td>合规/解释</td><td>统一记录推荐理由，最好</td><td>规则较固定，较容易落地</td><td>个性化组合更复杂</td><td>A 建议以规则优先、AI 解释</td></tr>
+            <tr><td>用户学习成本</td><td>低：只看一项主建议</td><td>中：仍需浏览策略</td><td>高：需要管理页面</td><td>新手默认 A，专家可进入 C</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-head">
+        <div><div class="kicker">Recommended page anatomy</div><h2>建议版页面主次</h2></div>
+      </div>
+      <div class="decision">
+        <div class="card"><strong>首屏 · 必须完成</strong><h4>我的下一最佳行动</h4><p class="sub">方案状态、推荐原因、行动按钮。无规划→开始/补齐；有方案→执行；偏离→优化；已稳定→查看进度。</p></div>
+        <div class="card"><strong>第二屏 · 建立理解</strong><h4>我的四笔钱与目标</h4><p class="sub">展示结构缺口与目标账户，不直接铺满产品。养老/教育只在用户表达意图后出现。</p></div>
+        <div class="card"><strong>第三屏 · 解释与比较</strong><h4>推荐方案＋严选备选</h4><p class="sub">风险阶梯、期限、最大回撤、地域、买入方式；支持“为什么不是另一个”。</p></div>
+        <div class="card"><strong>第四屏 · 持续服务</strong><h4>工具、观点与投后</h4><p class="sub">只展示影响现方案的估值/信号/提醒；其余收进可添加工具箱。</p></div>
+      </div>
+    </section>
+
+    <section id="factory">
+      <div class="section-head">
+        <div><div class="kicker">AI product factory</div><h2>AI 产品工厂：把“做页面”变成“生产和编排服务组件”</h2></div>
+        <div class="sub">AI 不应凭空选品。它负责理解意图、调用受控能力、解释结果和编排页面；确定性的适当性、策略匹配和交易规则仍由版本化服务执行。</div>
+      </div>
+      <div class="factory">
+        <div class="unit"><b>01 主策略字典</b><small>唯一 ID、品类、风险、期限、地域、费率、可售、替换</small></div>
+        <div class="unit"><b>02 服务组件库</b><small>规划卡、诊断卡、目标卡、风险图、策略卡、工具卡</small></div>
+        <div class="unit core"><b>03 决策与编排</b><small>规则先裁决，AI 理解意图、选组件、生成解释</small></div>
+        <div class="unit"><b>04 运营控制台</b><small>人群、场景、槽位、文案、实验、频控、不可越权</small></div>
+        <div class="unit"><b>05 全链路测量</b><small>推荐 ID、方案版本、入口、采纳、复用、规模</small></div>
+        <div class="unit"><b>06 治理与审计</b><small>适当性、合规文案、数据时点、回放、人工接管</small></div>
+      </div>
+      <div class="grid-2" style="margin-top:16px">
+        <article class="card">
+          <h3>运营可以灵活调整什么</h3>
+          <ul><li>可运营模块的上线/下线、顺序、目标人群、场景文案和频率</li><li>同一推荐结果的不同内容表达、主理人观点与陪伴材料</li><li>风险地图默认指标、策略对比模板、教育内容与实验分桶</li><li>成熟场景组件（养老、教育、保全）的发布节奏</li></ul>
+        </article>
+        <article class="card">
+          <h3>运营和 AI 都不能越过什么</h3>
+          <ul><li>产品可售状态、适当性、风险越级和账户整体风险上限</li><li>“定制优先、标准兜底”的决策顺序</li><li>同一个用户/账户只能有一个有效主方案和可追溯版本</li><li>风险、收益、回撤、评分的真实口径与必要披露</li></ul>
+        </article>
+      </div>
+      <div class="callout blue" style="margin-top:14px"><strong>用户自定义页面的边界</strong><br>默认不要求用户装修。新手只看到 AI 编排的简洁页面；当用户多次使用某工具后，提示“添加到我的投顾页”。主建议、风险提示、方案进度不可删除；可移动的只是工具与内容组件。</div>
+    </section>
+
+    <section id="roadmap">
+      <div class="section-head">
+        <div><div class="kicker">Rollout</div><h2>建议推进路径：先把地基做对，再做千人千面</h2></div>
+        <div class="sub">这是方向级里程碑，不是研发排期承诺。需在确认方案后，与策略上线节奏、数据团队和 App 迭代容量一起倒排。</div>
+      </div>
+      <div class="roadmap">
+        <article class="phase"><span class="phase-no">Phase 0</span><h3>统一数据与规则</h3><span class="duration">建议 2–3 周</span><ul><li>主策略字典 / 替换关系 / 可售状态</li><li>同窗风险收益与晨星分数可用性</li><li>定制优先的决策合同</li><li>现有全链路数据拉数</li></ul></article>
+        <article class="phase"><span class="phase-no">Phase 1</span><h3>规划优先页（方案 B）</h3><span class="duration">建议 4–6 周</span><ul><li>首屏个人建议卡</li><li>四笔钱结构＋精选策略缩编</li><li>风险阶梯与对比</li><li>统一 recommendation_id</li></ul></article>
+        <article class="phase"><span class="phase-no">Phase 2</span><h3>AI 服务编排（方案 A）</h3><span class="duration">建议 6–10 周</span><ul><li>四类用户状态页面</li><li>养老/攒钱/诊断组件化</li><li>多入口单裁决</li><li>推荐解释与客服回放</li></ul></article>
+        <article class="phase"><span class="phase-no">Phase 3</span><h3>工作台与主动服务</h3><span class="duration">验证后推进</span><ul><li>工具组件可添加/排序</li><li>方案事件驱动提醒</li><li>场景领投人陪伴组件</li><li>持续实验与自动复查</li></ul></article>
+      </div>
+      <div class="section-head">
+        <div><div class="kicker">Alignment checklist</div><h2>下一轮对齐只需要先定 6 件事</h2></div>
+      </div>
+      <div class="grid-3">
+        <div class="card"><h4>1. 页面定位</h4><p class="sub">确认“下一最佳行动的投顾服务首页”，而非“全部工具＋策略目录”。</p></div>
+        <div class="card"><h4>2. 首屏规则</h4><p class="sub">四类状态的唯一主建议：无规划、待执行、需优化、稳定陪伴。</p></div>
+        <div class="card"><h4>3. 供给范围</h4><p class="sub">首期哪些新/替换策略必须同步；哪些只进严选备选库。</p></div>
+        <div class="card"><h4>4. 可视化口径</h4><p class="sub">先用同窗最大回撤，还是等待晨星组合风险分数；默认风险阶梯的阈值。</p></div>
+        <div class="card"><h4>5. AI 边界</h4><p class="sub">AI 负责意图、解释、编排；规则服务负责产品范围、比例、适当性和交易。</p></div>
+        <div class="card"><h4>6. 成功标准</h4><p class="sub">定制优先率、建议采纳、7 日成交、30/90 日持续服务、增量规模。</p></div>
+      </div>
+      <div class="callout green" style="margin-top:16px"><strong>建议立即进入下一步的选择</strong><br>以 A 为共同目标态，选择 B 作为首期 DEMO 范围；首屏做 4 个用户状态，策略探索做“风险阶梯＋二维散点＋列表”三视图，养老与账户诊断各挑一个场景组件验证编排。对齐后再输出高保真 DEMO、产品规划和实施计划书。</div>
+    </section>
+
+    <section id="evidence">
+      <div class="section-head">
+        <div><div class="kicker">Evidence &amp; limits</div><h2>证据、口径与限制</h2></div>
+      </div>
+      <div class="evidence">
+        <div class="source-card"><b>公开页面现场核验</b><p>投顾页、严选策略、每日估值、投资规划入口、养老专区；核验日期 2026-07-23。</p><code>https://qieman.com/m4 · /m4/more · /idx-eval</code></div>
+        <div class="source-card"><b>研究院策略矩阵附件</b><p>公募/私募/特殊策略；含期限、风险、近 1 年收益、成立以来回撤、场景和替换建议；截止 2026-06-15。</p><code>附件 pasted-text.txt（策略矩阵）</code></div>
+        <div class="source-card"><b>场景领投人附件</b><p>高客、目标型、市场敏感/不敏感、小白的营销场景、需求与服务线索。</p><code>附件 pasted-text.txt（客群场景矩阵）</code></div>
+        <div class="source-card"><b>内部飞书现况草案</b><p>《换货同时换卖法：主动匹配的货架》与《2026 下半年计划》；用于能力盘点和方向交叉验证。</p><code>内部文档现场只读核验，2026-07-23</code></div>
+        <div class="source-card"><b>内部 Wiki / SOUL 镜像</b><p>投资规划、四笔钱投顾页、养老 2.0、心愿攒钱、投顾 2.0、运营数据与客服知识库。</p><code>SoulVault/40-Sources/yingmi-wiki-*</code></div>
+        <div class="source-card"><b>未取得的数据</b><p>最新神策全链路看板、策略实时 API、原生 App 所有登录态、当前策略成交/复投/保有、晨星组合风险分数。</p><code>报告中均标注为“待拉数/待核验”，未作推断填充</code></div>
+      </div>
+      <div class="grid-2" style="margin-top:14px">
+        <div class="callout red"><strong>实时投研接口限制</strong><br>本次环境中的且慢 MCP 尚未完成手机号短信初始化，因此没有调用实时基金/策略接口。策略供给以用户提供的 2026-06-15 矩阵为准。</div>
+        <div class="callout amber"><strong>数据解释限制</strong><br>历史活动数据证明“可能有效”，不代表今天自然流效果；303 个策略、33 套标准方案来自内部现况草案，需与线上主数据表复核。</div>
+      </div>
+      <p class="footnote">
+        关键内部来源包括：《✅20220515-且慢投资规划（四笔钱资产配置/小顾咨询2.0）》《✅20230203-且慢四笔钱投顾页、严选策略页优化》《20230614-且慢养老专区2.0》《20240126心愿攒钱》《20240402-且慢投顾2.0产品方案》《攒钱计划-持续运营推广》《新年投资规划活动数据追踪》《盘口推估值召回数据总结》。<br>
+        注：2023 新年活动原表的“浏览-生成订单转化率”和“委托订单生成金额”两行标题与数据疑似对调；本报告按 1,555 / 21,214 = 7.33% 还原，金额为 7,960 万，并保留待源表确认标记。
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <div><strong>且慢 APP 投顾模块现况与改版方向</strong><br><small>V0.9 · 用于方案对齐，不作为投资建议、上线承诺或最终 PRD</small></div>
+      <small>生成日期 2026-07-23 · 单文件 HTML</small>
+    </div>
+  </footer>
+
+  <script>
+    const inventoryButtons = document.querySelectorAll('#inventoryFilters .filter-btn');
+    const inventoryRows = document.querySelectorAll('#inventoryTable tbody tr');
+    inventoryButtons.forEach(btn => btn.addEventListener('click', () => {
+      inventoryButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      inventoryRows.forEach(row => row.style.display = (f === 'all' || row.dataset.action === f) ? '' : 'none');
+    }));
+
+    const strategies = [
+      {n:'花好月圆',r:1,ret:1.63,dd:.29,t:'0–6月 · 货币+'},
+      {n:'债基优等生',r:1,ret:1.19,dd:1.04,t:'6月–1年 · 建议替换'},
+      {n:'息息相关',r:2,ret:3.44,dd:.91,t:'1–2年 · 微量固收+'},
+      {n:'我要稳稳的幸福',r:2,ret:6.08,dd:2.79,t:'1–2年 · 低波固收+'},
+      {n:'风和日丽',r:2,ret:7.91,dd:4.21,t:'2–3年 · 中高波固收+'},
+      {n:'全球丰收',r:2,ret:6.35,dd:4.04,t:'2–3年 · 全球配置'},
+      {n:'天颐五剑',r:2,ret:13.11,dd:12.77,t:'3–4年 · 30/70'},
+      {n:'春华秋实',r:3,ret:7.70,dd:12.83,t:'3–4年 · 30/70'},
+      {n:'全天候-永久',r:2,ret:9.94,dd:9.16,t:'3–4年 · 多资产'},
+      {n:'周周同行',r:4,ret:27.80,dd:34.93,t:'5年以上 · 国内陪伴'},
+      {n:'简慢',r:3,ret:24.11,dd:25.48,t:'5年以上 · 全球配置'},
+      {n:'思远定投全球好资产',r:3,ret:29.01,dd:10.55,t:'5年以上 · 全球陪伴'},
+      {n:'中西合璧',r:4,ret:30.53,dd:12.79,t:'5年以上 · 中外双护航'},
+      {n:'U定投',r:4,ret:26.19,dd:31.35,t:'5年以上 · 行业左侧'},
+      {n:'进取派优选',r:4,ret:36.68,dd:28.56,t:'5年以上 · 国内权益'},
+      {n:'全球优选',r:4,ret:16.86,dd:17.27,t:'5年以上 · 待换'}
+    ];
+    const colors = {1:'#4B9FEA',2:'#35A77D',3:'#F0A844',4:'#DE665A'};
+    const svg = document.getElementById('riskChart');
+    const tooltip = document.getElementById('chartTooltip');
+    const riskRange = document.getElementById('riskRange');
+    const riskValue = document.getElementById('riskValue');
+    const ns = 'http://www.w3.org/2000/svg';
+    function el(name, attrs={}, text=''){
+      const e=document.createElementNS(ns,name);
+      Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
+      if(text)e.textContent=text; return e;
+    }
+    function drawChart(){
+      const maxRisk=+riskRange.value; riskValue.textContent='R'+maxRisk;
+      svg.innerHTML='';
+      const box=svg.getBoundingClientRect(), w=Math.max(560,box.width||720), h=Math.max(330,box.height||380);
+      svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+      const m={l:54,r:18,t:14,b:48}, iw=w-m.l-m.r, ih=h-m.t-m.b;
+      const x=v=>m.l+(v/40)*iw, y=v=>m.t+ih-(v/40)*ih;
+      [0,10,20,30,40].forEach(v=>{
+        svg.append(el('line',{x1:m.l,y1:y(v),x2:w-m.r,y2:y(v),stroke:'#E1EAF1','stroke-width':1}));
+        svg.append(el('text',{x:m.l-9,y:y(v)+4,'text-anchor':'end',fill:'#7A8E9F','font-size':10},v+'%'));
+        svg.append(el('line',{x1:x(v),y1:m.t,x2:x(v),y2:h-m.b,stroke:'#EEF3F7','stroke-width':1}));
+        svg.append(el('text',{x:x(v),y:h-m.b+19,'text-anchor':'middle',fill:'#7A8E9F','font-size':10},v+'%'));
+      });
+      svg.append(el('text',{x:m.l+iw/2,y:h-6,'text-anchor':'middle',fill:'#5E7385','font-size':11},'成立以来最大回撤（绝对值，越右风险越高）'));
+      const yTitle=el('text',{x:12,y:m.t+ih/2,fill:'#5E7385','font-size':11,transform:`rotate(-90 12 ${m.t+ih/2})`},'近 1 年收益率');
+      svg.append(yTitle);
+      strategies.filter(d=>d.r<=maxRisk).forEach((d,i)=>{
+        const g=el('g',{'data-i':i,tabindex:'0',role:'button','aria-label':`${d.n}，近一年收益${d.ret}%，最大回撤${d.dd}%`});
+        const c=el('circle',{cx:x(d.dd),cy:y(d.ret),r:7+d.r*1.3,fill:colors[d.r],opacity:.88,stroke:'#fff','stroke-width':2});
+        g.append(c);
+        const showLabel = d.ret>8;
+        if(showLabel) g.append(el('text',{x:x(d.dd)+10,y:y(d.ret)-9,fill:'#3E566A','font-size':10,'font-weight':650},d.n.length>9?d.n.slice(0,9)+'…':d.n));
+        const showTip=(evt)=>{
+          tooltip.innerHTML=`<b>${d.n}</b><br>${d.t}<br>风险 R${d.r} · 近1年 ${d.ret}%<br>成立以来最大回撤 -${d.dd}%`;
+          tooltip.style.display='block';
+          const rect=svg.getBoundingClientRect(), px=(evt.clientX||rect.left+x(d.dd))-rect.left, py=(evt.clientY||rect.top+y(d.ret))-rect.top;
+          tooltip.style.left=Math.min(px+12,rect.width-220)+'px'; tooltip.style.top=Math.max(py-32,4)+'px';
+        };
+        g.addEventListener('mousemove',showTip); g.addEventListener('focus',showTip);
+        g.addEventListener('mouseleave',()=>tooltip.style.display='none');g.addEventListener('blur',()=>tooltip.style.display='none');
+        svg.append(g);
+      });
+    }
+    riskRange.addEventListener('input',drawChart);
+    window.addEventListener('resize',drawChart);
+    drawChart();
+  </script>
+</body>
+</html>

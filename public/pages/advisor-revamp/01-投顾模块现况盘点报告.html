@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>且慢投顾模块现况盘点报告 · 2026年7月</title>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<script src="assets/echarts.min.js"></script>
+<script>if(typeof echarts==="undefined")document.write('<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"><\/script>')</script>
+<style>
+:root{
+  --brand:#1B88EE; --poster-bg:#3180EC; --summary-bg:#DBEBFF; --summary-border:#9CCBF8;
+  --t1:#333333; --t2:#606060; --t3:#999999; --t4:#CCCCCC; --tinv:#FFFFFF;
+  --err:#FA440C; --warn:#EA9500; --ok:#07AD8F;
+  --bg-page:#F9FAFB; --card:#FFFFFF; --card-deep:#F9FAFB; --card-deeper:#F7F7F7;
+  --card-pfade:#F0F6FF; --card-wfade:#FFFAEF; --card-efade:#FEEDE9;
+  --bd:#D8D8D8; --bd-blue:#9CCBF8; --bd-yellow:#FFDC9E; --bd-red:#FAB6A5;
+  --r-s:8px; --r-m:12px; --r-l:24px; --gap:16px; --pad:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-page);color:var(--t1);font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;line-height:1.65;font-size:15px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 40px}
+/* 页头海报 */
+.poster{background:var(--poster-bg);color:var(--tinv);border-radius:0 0 var(--r-l) var(--r-l);padding:56px 40px 44px;display:flex;justify-content:space-between;align-items:center;gap:32px;margin-bottom:var(--gap)}
+.poster h1{font-size:32px;font-weight:700;letter-spacing:1px;margin-bottom:12px}
+.poster .sub{font-size:16px;opacity:.85}
+.poster .tags{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}
+.poster .tag{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:2px 12px;font-size:13px}
+.poster-chart{width:340px;height:190px;flex-shrink:0}
+/* 摘要 */
+.summary{background:var(--summary-bg);border:1px solid var(--summary-border);border-radius:var(--r-m);padding:18px 20px;margin-bottom:var(--gap)}
+.summary h2{font-size:18px;margin-bottom:8px;color:var(--t1)}
+.summary li{margin-left:20px;margin-bottom:4px;color:var(--t2)}
+.summary b{color:var(--t1)}
+/* 章节与卡片 */
+section{margin-bottom:28px}
+.sec-title{font-size:24px;font-weight:700;margin:34px 0 6px;display:flex;align-items:center;gap:10px}
+.sec-title i{color:var(--brand);font-size:26px}
+.sec-desc{color:var(--t3);font-size:14px;margin-bottom:14px}
+.card{background:var(--card);border-radius:var(--r-s);padding:18px 20px;margin-bottom:var(--gap);box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card h3{font-size:18px;margin-bottom:10px;color:var(--t1)}
+.card h4{font-size:15px;margin:14px 0 6px;color:var(--t1)}
+.grid{display:grid;gap:var(--gap)}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:860px){.g2,.g3,.g4{grid-template-columns:1fr}.poster{flex-direction:column;text-align:center}.poster-chart{width:100%}}
+/* KPI */
+.kpi{background:var(--card);border-radius:var(--r-s);padding:16px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.kpi .v{font-size:26px;font-weight:700;color:var(--brand);font-family:Poppins,Arial,sans-serif}
+.kpi .l{font-size:13px;color:var(--t2);margin-top:2px}
+.kpi .s{font-size:11px;color:var(--t3);margin-top:2px}
+/* 表格 */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:var(--card-deeper);color:var(--t2);font-weight:600;padding:8px 10px;text-align:left;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #F0F0F0;color:var(--t1)}
+tr:hover td{background:var(--card-pfade)}
+.num{font-family:Poppins,Arial,sans-serif}
+.pos{color:var(--err)} .neg{color:var(--ok)}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:12px;white-space:nowrap}
+.pill.low{background:#E6F7F3;color:var(--ok)} .pill.mlow{background:#F0F6FF;color:var(--brand)}
+.pill.mid{background:var(--card-wfade);color:var(--warn)} .pill.mhigh{background:var(--card-efade);color:var(--err)}
+.pill.shelf{background:var(--card-deeper);color:var(--t2)}
+/* 结构图 */
+.ia-block{border:1px solid var(--bd-blue);border-radius:var(--r-s);padding:12px 14px;margin-bottom:10px;background:var(--card-pfade)}
+.ia-block .no{display:inline-block;background:var(--brand);color:#fff;border-radius:6px;font-size:12px;padding:0 8px;margin-right:8px}
+.ia-block b{color:var(--t1)}
+.ia-block .d{color:var(--t2);font-size:13.5px;margin-top:4px}
+.ia-sub{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ia-sub span{background:#fff;border:1px solid var(--bd);border-radius:6px;padding:2px 10px;font-size:12.5px;color:var(--t2)}
+/* 时间线 */
+.tl{position:relative;padding-left:26px}
+.tl:before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--bd-blue)}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-item:before{content:"";position:absolute;left:-24px;top:7px;width:10px;height:10px;border-radius:50%;background:var(--brand);border:2px solid #fff;box-shadow:0 0 0 2px var(--bd-blue)}
+.tl-item.major:before{background:var(--err);box-shadow:0 0 0 2px var(--bd-red)}
+.tl-item .t{font-weight:700;color:var(--brand);font-size:14px}
+.tl-item.major .t{color:var(--err)}
+.tl-item .e{color:var(--t1);font-size:14px}
+.tl-item .src{color:var(--t3);font-size:12px}
+/* 提示块 */
+.callout{border-radius:var(--r-s);padding:12px 16px;margin:12px 0;font-size:14px}
+.callout.warn{background:var(--card-wfade);border:1px solid var(--bd-yellow);color:#8A6200}
+.callout.err{background:var(--card-efade);border:1px solid var(--bd-red);color:#B03A16}
+.callout.ok{background:var(--card-pfade);border:1px solid var(--bd-blue);color:#1163AE}
+.chart{width:100%;height:520px}
+.chart-s{width:100%;height:300px}
+.gap-list li{margin:6px 0 6px 20px;color:var(--t2)}
+.gap-list b{color:var(--t1)}
+.footnote{color:var(--t3);font-size:12px;margin-top:8px}
+.footer{background:var(--poster-bg);color:#fff;border-radius:var(--r-l) var(--r-l) 0 0;text-align:center;padding:28px;margin-top:40px;font-size:14px}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+.toc a{color:var(--brand);text-decoration:none;background:var(--card-pfade);border:1px solid var(--bd-blue);border-radius:999px;padding:3px 14px;font-size:13px}
+.toc a:hover{background:var(--brand);color:#fff}
+a{color:var(--brand)}
+.diag{border-left:4px solid var(--err);background:var(--card-efade);border-radius:0 var(--r-s) var(--r-s) 0;padding:10px 14px;margin-bottom:10px}
+.diag b{color:#B03A16}
+.diag .d{color:var(--t2);font-size:13.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- 页头 -->
+<div class="poster">
+  <div>
+    <h1>且慢投顾模块现况盘点报告</h1>
+    <div class="sub">投顾一级页面 × 规划测算 × 推品体系 × 工具专区 · 全景梳理</div>
+    <div class="sub" style="margin-top:6px;font-size:13px">报告生成：2026年7月23日 ｜ 数据截至：净值 2026-07-22 / 风险评分 2026-06-30</div>
+    <div class="tags">
+      <span class="tag">页面实探：qieman.com/m4 全链路走查</span>
+      <span class="tag">数据：盈米MCP 28个策略实拉</span>
+      <span class="tag">调研：18个公开来源交叉验证</span>
+    </div>
+  </div>
+  <div class="poster-chart" id="posterChart"></div>
+</div>
+
+<!-- 目录 -->
+<div class="toc">
+  <a href="#s1">① 关键指标</a><a href="#s2">② 投顾页面解剖</a><a href="#s3">③ 货架全景盘点</a><a href="#s4">④ 风险-收益分布</a><a href="#s5">⑤ 规划与专区</a><a href="#s6">⑥ 工具盘点</a><a href="#s7">⑦ 上线里程碑</a><a href="#s8">⑧ 推品逻辑现状</a><a href="#s9">⑨ 用户与复用</a><a href="#s10">⑩ 竞品对标</a><a href="#s11">⑪ 问题诊断</a><a href="#s12">⑫ 待确认清单</a>
+</div>
+
+<!-- 摘要 -->
+<div class="summary">
+  <h2><i class="ri-file-list-3-line"></i> 摘要：一页看懂现状</h2>
+  <ul>
+    <li><b>投顾页（m4）是且慢唯一未做过体系性升级的一级页面</b>：当前结构 = 定制方案banner + 养老专区banner + 四笔钱货架（19个产品卡）+ 底部3个工具入口，本质是一张「静态货架清单」。</li>
+    <li><b>货架供给充足但呈现单薄</b>：在售投顾策略28个（四笔钱9 + 严选16 + 养老1 + 长赢2），跨越风险分数1~81的完整风险谱系，但页面仅以列表卡片展示，无任何横向比较、可视化与个性化。</li>
+    <li><b>「定制方案优先于标准策略」的推品原则在页面上没有落地</b>：定制方案只是顶部一个banner，与货架、工具之间没有流程串联；规划（四笔钱规划/养老测算）、推品（货架）、工具（估值/自建）三层互相孤立。</li>
+    <li><b>商业模式拐点已到</b>：2025年11月第一批组合改为按月收投顾费（0.5%/年封顶2000元/月），投顾费成为直接收入 → 推品效率与AUM转化从「重要」变为「生死攸关」，本次改版正当其时。</li>
+    <li><b>基本盘扎实</b>：投顾规模540亿（2026.3）、用户盈利占比96%、平均持有772天、长赢跟投40万人——改版的资产是信任与陪伴，风险是破坏简单感。</li>
+  </ul>
+</div>
+
+<!-- ① 关键指标 -->
+<section id="s1">
+  <div class="sec-title"><i class="ri-dashboard-3-line"></i>① 关键指标速览</div>
+  <div class="sec-desc">来源：且慢官方公告/App Store官方描述/页面披露，均标注截至时间；金融数据经页面展示值双重校验。</div>
+  <div class="grid g4">
+    <div class="kpi"><div class="v">540亿+</div><div class="l">公募基金投顾规模</div><div class="s">2026-03-31 · 盈米官方</div></div>
+    <div class="kpi"><div class="v">2287亿+</div><div class="l">基金保有量</div><div class="s">2026-03-31 · 盈米官方</div></div>
+    <div class="kpi"><div class="v">96%</div><div class="l">投顾用户盈利占比</div><div class="s">2025-09-30 · 官方公告</div></div>
+    <div class="kpi"><div class="v">772天</div><div class="l">投顾用户平均持有</div><div class="s">2025-09-30 · 官方公告</div></div>
+    <div class="kpi"><div class="v">28个</div><div class="l">在售投顾策略（实盘点）</div><div class="s">2026-07-23 · 页面+MCP</div></div>
+    <div class="kpi"><div class="v">40万+</div><div class="l">长赢计划跟投人数</div><div class="s">2025-10 · 公开报道</div></div>
+    <div class="kpi"><div class="v">18.3万+</div><div class="l">稳稳的幸福跟投人数</div><div class="s">2026-07 · 详情页披露</div></div>
+    <div class="kpi"><div class="v">10.9万</div><div class="l">每日估值订阅人数</div><div class="s">2026-07-23 · 页面实测</div></div>
+  </div>
+  <div class="callout warn"><i class="ri-alert-line"></i> 口径说明：新客首季人均约2万元、一年后升至约10万元；近90%客户资产为签约投顾资产、70%配置权益类（证券时报 2025-03）。总注册用户数、长钱板块单独规模、复购/留存率无公开披露，建议以内部数据补齐（见⑫）。</div>
+</section>
+
+<!-- ② 投顾页面解剖 -->
+<section id="s2">
+  <div class="sec-title"><i class="ri-layout-masonry-line"></i>② 投顾一级页面解剖（现状信息架构）</div>
+  <div class="sec-desc">2026-07-23 对 qieman.com/m4（APP投顾Tab对应网页版）自上而下逐屏走查结果。</div>
+  <div class="card">
+    <div class="ia-block"><span class="no">1</span><b>定制方案 Banner</b>「新增资金如何合理投资？量身定制您的投资方案」
+      <div class="d">→ alfa/advisor-consult（investment-planning 微应用，需登录）。<b>「定制优先」原则在页面上的唯一露出，仅为一条banner</b>，无预览、无价值证明、无与持仓/目标的关联。</div></div>
+    <div class="ia-block"><span class="no">2</span><b>养老专区 Banner</b>「一站式养老专区 · 从容养老 且慢伴你同行」
+      <div class="d">→ alfa/retirement/home：养老储蓄罐 + 三工具（养老测算/投资方案/个养专区）+ 颐养天年计划 + 推荐阅读 + 推荐产品（投顾/基金/保险三tab）。养老测算原理由富达国际提供。</div></div>
+    <div class="ia-block"><span class="no">3</span><b>且慢四笔钱货架</b>（页面主体，四个锚点Tab + 19个产品卡）
+      <div class="ia-sub">
+        <span>活钱管理（2）：盈米宝 · 货币三佳</span>
+        <span>短期稳健（5）：花好月圆 · 债基优等生 · 我要稳稳的幸福 · 超级理财加 · 攒多多(投连险)</span>
+        <span>长期投资（5）：全球丰收 · 春华秋实 · 周周同行 · 进取派优选 · 领多多(储蓄险)</span>
+        <span>保险保障（7）：专业保险服务 + 教育金/重疾/百万医疗/定寿/养老年金/意外 六计划</span>
+      </div>
+      <div class="d">产品卡信息 = 名称 + 主理方V + 一个收益数字（或策略目标）+ 类型/风险/存取 + 一句卖点。<b>无风险谱系可视化、无对比、无「为什么推荐给我」。</b></div></div>
+    <div class="ia-block"><span class="no">4</span><b>底部工具入口（3个）</b>
+      <div class="ia-sub"><span>攒钱计划 → wealth-scene（独立H5，轻松攒钱 增厚收益）</span><span>严选策略 → m4/more（短期稳健9 + 长期投资7）</span><span>每日估值 → idx-eval（订阅10.9万人）</span></div></div>
+    <div class="ia-block"><span class="no">5</span><b>浮层</b>「产品不会选，来问我吧～」在线客服气泡</div>
+    <h4><i class="ri-smartphone-line"></i> APP端另有、网页版未露出的模块（真机建议复核）</h4>
+    <div class="d" style="color:var(--t2);font-size:13.5px">长钱账户/四笔钱配置规划看板（App Store截图可见「配置分析 + 资产类别目标配置 + 10年规划测算曲线」）、AI小顾（2024.5上线、2025.2接入DeepSeek-R1）、同路人权益体系（2025.10上线）、长赢权益专区（longwin/index）、社区/主理人周报、调仓跟车通知流、自建组合（上限5个）。<br>「温度计」「行情信号」「额度宝」未找到且慢公开记录（温度计公开可查为好买/有知有行工具，额度宝为理财通/天天基金工具），<b>需内部确认这三项的实际状态</b>。</div>
+  </div>
+  <div class="card">
+    <h3><i class="ri-artboard-2-line"></i> 策略详情页解剖（以「我要稳稳的幸福」为例）</h3>
+    <table>
+      <tr><th>区块</th><th>内容</th><th>观察</th></tr>
+      <tr><td>头图卖点</td><td>交银"固收+"明星策略 / 实盘运行2900多天 / 主理人团队</td><td>信任导向，无风险画像</td></tr>
+      <tr><td>口碑验证</td><td>超50万用户跟投 · 年化+5.12% · 建议持有1年以上 · 2024全年收益4.72%</td><td>社会证明是核心转化手段</td></tr>
+      <tr><td>严控风险</td><td>权益中枢10%、股债灵活配置饼图</td><td>有风险叙述、无量化风险分数露出</td></tr>
+      <tr><td>适配说明</td><td>适合哪些人买/什么时间买/哪些人不适合</td><td>四格静态文案，非个性化判断</td></tr>
+      <tr><td>团队+风险提示</td><td>主理团队背书 + 合规文案</td><td>—</td></tr>
+      <tr><td>交易栏</td><td>1000元起购 · 申购1折 · 投顾费0.25%/年 · 咨询5.5w+ · 定投/转入 · <b>新功能：信号定投</b>（自动跟随主理人节奏）</td><td>咨询量大说明「选品决策难」真实存在</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ③ 货架全景 -->
+<section id="s3">
+  <div class="sec-title"><i class="ri-store-2-line"></i>③ 货架全景盘点（28个在售投顾策略）</div>
+  <div class="sec-desc">数据：盈米MCP实拉（净值2026-07-22，风险评分2026-06-30生效）；年化收益已与页面展示值双重校验一致。风险评分为1-100组合风险分数（类晨星组合风险分数体系）。</div>
+  <div class="card" style="overflow-x:auto">
+    <table id="shelfTable">
+      <thead><tr><th>货架</th><th>策略</th><th>主理方</th><th>品类</th><th>风险等级</th><th>风险分</th><th>年化收益</th><th>最大回撤</th><th>波动率</th><th>夏普</th><th>成立</th><th>建议持有</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="footnote">另有非策略型货架产品：盈米宝（货基现金管理，七日年化1.3693%）、攒多多（投连险，历史年化3.32%）、领多多（储蓄险，1万元起）、六大保险场景计划。长赢-S定投暂无风险评分披露。</div>
+  </div>
+</section>
+
+<!-- ④ 风险-收益分布 -->
+<section id="s4">
+  <div class="sec-title"><i class="ri-bubble-chart-line"></i>④ 全货架风险-收益分布（真实数据首次可视化）</div>
+  <div class="sec-desc">X轴=组合风险分数（1-100）· Y轴=年化收益 · 气泡大小=最大回撤 · 颜色=货架归属。这张图本身就是改版方案B「配置地图」的数据可行性验证。</div>
+  <div class="card"><div id="scatterChart" class="chart"></div>
+    <div class="callout ok"><i class="ri-lightbulb-line"></i> 三个可直接读出的货架洞察：<b>①风险分20-50区间供给断档</b>（仅春华秋实21、华夏全自动39、简慢49），恰是「稳中求进」大众客群最需要的中腰部；<b>②同风险档收益分化巨大</b>（风险分73的进取派年化4.92% vs 风险分57的价值五剑10.07%），列表式货架无法让用户感知；<b>③严选-短期稳健9个策略挤在风险分3-16</b>，同质化明显，缺乏品类区隔叙事——这正是品类矩阵升级要解决的问题。</div>
+  </div>
+</section>
+
+<!-- ⑤ 规划与专区 -->
+<section id="s5">
+  <div class="sec-title"><i class="ri-compass-3-line"></i>⑤ 规划/测算/专区功能盘点</div>
+  <div class="grid g2">
+    <div class="card"><h3><i class="ri-pie-chart-2-line"></i> 四笔钱投资规划</h3>
+      <p style="color:var(--t2);font-size:14px">「先规划后配置」主线：理清资金用途期限→划分四笔钱→每笔钱匹配严选策略。APP内有配置分析看板、资产类别目标配置、10年规划测算曲线（规划书形态）。<br><b>断点：</b>规划结论与货架推品之间是弱链接，规划完成后仍回到人工逛货架。</p></div>
+    <div class="card"><h3><i class="ri-user-star-line"></i> 定制方案（定制优先原则的载体）</h3>
+      <p style="color:var(--t2);font-size:14px">三段式：投前定制投资计划书→投中动态调整→投后陪伴。人工侧为专家顾问家庭财富蓝图（部分封装进同路人高等级权益）；AI侧为AI小顾（2024.5上线，2025.2接DeepSeek-R1）秒级生成方案+自动化账户管理。<br><b>断点：</b>投顾页入口仅一条banner，定制与标准货架二选一，没有「定制不成→降级推标准策略」的承接流。</p></div>
+    <div class="card"><h3><i class="ri-heart-pulse-line"></i> 养老规划专区（2022.12上线）</h3>
+      <p style="color:var(--t2);font-size:14px">养老储蓄罐 + 富达养老测算 + 「1+1+1」账户体系（个养账户Y份额税优+补充养老投资+养老保险）+ 颐养天年计划（2023.7成立，下滑曲线模型）+ 推荐产品三tab。<b>是目前唯一「测算→方案→产品」闭环较完整的专区</b>，可作为改版的模式参照。</p></div>
+    <div class="card"><h3><i class="ri-coins-line"></i> 攒钱计划 + 全球 + 其他</h3>
+      <p style="color:var(--t2);font-size:14px">攒钱计划：独立H5（2026年焕新升级版），场景化攒钱入口。全球配置：无独立专区，散落为全球丰收（四笔钱-长钱）+ 全球优选（严选-长期）两策略。<b>断点：</b>专区形态不统一——养老是重专区、全球无专区、攒钱是独立H5，缺乏统一的「专区/场景」框架。</p></div>
+  </div>
+</section>
+
+<!-- ⑥ 工具盘点 -->
+<section id="s6">
+  <div class="sec-title"><i class="ri-tools-line"></i>⑥ 工具盘点</div>
+  <div class="card" style="overflow-x:auto">
+    <table>
+      <tr><th>工具</th><th>形态与位置</th><th>使用信号</th><th>与推品的关系（现状）</th></tr>
+      <tr><td><b>每日估值</b></td><td>投顾页底部入口 / idx-eval；股债两市、宽基/行业/主题/策略/全球筛选，PE/PB分位配色表</td><td>订阅109,759人（实测）</td><td>纯资讯工具，<b>低估≠可买的且慢策略</b>，与货架零链接</td></tr>
+      <tr><td><b>信号定投</b></td><td>策略详情页新功能：自动跟随主理人节奏定投</td><td>新上线（详情页气泡推广中）</td><td>转化工具，绑定单策略，未上升为页面级能力</td></tr>
+      <tr><td><b>自建组合/创建组合</b></td><td>官网 /funds 入口；用户评价显示上限5个</td><td>未找到公开数据</td><td>DIY路径，与严选货架、诊断能力互相隔离</td></tr>
+      <tr><td><b>回测/资产分布分析</b></td><td>APP内工具（App Store描述）</td><td>未找到公开数据</td><td>分析工具，未接入推品流</td></tr>
+      <tr><td><b>AI小顾</b></td><td>24h AI投顾：输入时长/偏好/目标生成方案</td><td>2025.2接入DeepSeek-R1</td><td><b>最接近「定制优先」的自动化载体</b>，但与投顾页平行存在</td></tr>
+      <tr><td style="color:var(--t3)">温度计 / 行情信号 / 额度宝</td><td style="color:var(--t3)" colspan="3">未找到且慢公开记录（温度计公开可查为好买/有知有行；额度宝为理财通/天天基金）——需内部确认实际状态、数据归属与去留</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ⑦ 里程碑 -->
+<section id="s7">
+  <div class="sec-title"><i class="ri-road-map-line"></i>⑦ 上线里程碑时间线</div>
+  <div class="sec-desc">加红节点为改变产品性质的转折点。来源见附录（盈米官网/且慢公告/孟岩自述/App Store/研报等18项）。</div>
+  <div class="card"><div class="tl">
+    <div class="tl-item"><div class="t">2015.05 / 2015.11</div><div class="e">盈米基金成立；孟岩加入孵化C端产品</div></div>
+    <div class="tl-item major"><div class="t">2016.07.14</div><div class="e"><b>且慢1.0上线</b>——「高手云集的基金组合平台」（App Store首发）</div></div>
+    <div class="tl-item"><div class="t">2017.04.01</div><div class="e">E大「长赢指数投资计划」上线（转机之作）；同年我要稳稳的幸福、价值五剑、货币三佳等构成2.0严选策略时期</div></div>
+    <div class="tl-item major"><div class="t">2018</div><div class="e"><b>首创「四笔钱」资产规划框架</b>（后成行业事实标准，2024年出版《管好四笔钱 财富滚雪球》）</div></div>
+    <div class="tl-item"><div class="t">2019.04 / 2019.12</div><div class="e">且慢3.0「放下焦虑，全情生活」；12月中旬盈米获<b>首批基金投顾试点</b>（独立销售机构仅蚂蚁/腾安/盈米3家）；12月底孟岩离开</div></div>
+    <div class="tl-item major"><div class="t">2020.10.22</div><div class="e"><b>投顾业务正式上线</b>：「四笔钱投顾服务升级计划」，第一批投顾组合（长赢/春华秋实/周周同行/马拉松/南方梦想佳/货币三佳）、自动跟车、交易费抵扣投顾费模式</div></div>
+    <div class="tl-item"><div class="t">2021.07 / 2021.12</div><div class="e">投顾规模破100亿/200亿；投顾新规后对8000+组合严选升级</div></div>
+    <div class="tl-item major"><div class="t">2022.12</div><div class="e"><b>养老专区上线</b>：「1+1+1」账户体系、Y份额、富达养老计算器</div></div>
+    <div class="tl-item"><div class="t">2023.07 / 2023.12</div><div class="e">颐养天年养老计划成立；全球优选成立（全球配置方向）</div></div>
+    <div class="tl-item major"><div class="t">2024</div><div class="e"><b>投顾2.0（4.0个性化资产配置时代）</b>：以财富目标为起点的账户管理；<b>2024.05 AI小顾上线</b></div></div>
+    <div class="tl-item"><div class="t">2025.02 / 2025.04 / 2025.09</div><div class="e">AI小顾接DeepSeek-R1、规模破400亿；发布财富管理首个MCP Server（调用超600万次、服务150家机构）；规模破500亿、盈利占比96%、平均持有772天</div></div>
+    <div class="tl-item major"><div class="t">2025.11.03</div><div class="e"><b>商业模式拐点</b>：第一批组合从「手续费抵扣投顾费」（全市场独此一家坚持5年）改为按月收取投顾费（长赢&lt;100万部分0.5%/年、月封顶2000元）；同步上线同路人权益体系</div></div>
+    <div class="tl-item"><div class="t">2026.03.31</div><div class="e">投顾规模突破540亿元、基金保有量超2287亿元</div></div>
+  </div>
+  <div class="footnote">未找到公开上线时间：温度计、每日估值、行情信号、额度宝、自建组合/自助跟车（需内部档案补齐）。</div>
+  </div>
+</section>
+
+<!-- ⑧ 推品逻辑 -->
+<section id="s8">
+  <div class="sec-title"><i class="ri-flow-chart"></i>⑧ 推品逻辑现状</div>
+  <div class="grid g2">
+    <div class="card"><h3>设计的推品漏斗（理念）</h3>
+      <p style="color:var(--t2);font-size:14px">买方投顾定位：不卖爆款、不做排行榜、收入与客户资产增值挂钩。<br><b>四笔钱 = 规划（资金分层）→ 账户（心理账户）→ 推品（期限匹配）</b>：活钱→货币三佳；稳钱→稳稳的幸福等；长钱→长赢/春华秋实等；保险→合作产品。原则上<b>先推定制方案、再推标准策略</b>。</p></div>
+    <div class="card"><h3>页面上实际发生的（现状）</h3>
+      <p style="color:var(--t2);font-size:14px">① 定制方案=1条banner，无承接流；② 四笔钱Tab=静态货架，用户自己逛、自己比（详情页5.5w+咨询即决策困难的证据）；③ 严选策略折叠在底部「更多」，与四笔钱货架的关系（补充？进阶？平行？）未表达；④ 工具（估值/攒钱）与货架零串联；⑤ 无任何基于持仓/行为/目标的个性化推品。<b>结论：理念漏斗在页面上退化为「一张平铺清单」。</b></p></div>
+  </div>
+  <div class="card"><h3>收费模式变化对推品的含义</h3>
+    <p style="color:var(--t2);font-size:14px">2025.11起投顾费成为直接收入（此前靠交易费抵扣，投顾费≈0）。这意味着：<b>推品的目标函数从「促成交易」变为「促成签约投顾资产的长期沉淀」</b>——页面改版必须服务于「让用户更快找到适配方案并签约」，而非单纯提升点击。同路人权益（时长×规模定级）已提供留存侧抓手，页面缺的是<b>获取与转化侧</b>的体系化设计。</p></div>
+</section>
+
+<!-- ⑨ 用户与复用 -->
+<section id="s9">
+  <div class="sec-title"><i class="ri-group-line"></i>⑨ 用户使用与复用情况</div>
+  <div class="card" style="overflow-x:auto">
+    <table>
+      <tr><th>指标</th><th>数据</th><th>截至</th><th>来源</th></tr>
+      <tr><td>投顾用户盈利占比</td><td class="num">96%（历史口径98%→80%→96%随市场波动）</td><td>2025-09</td><td>且慢公告</td></tr>
+      <tr><td>平均持有时长</td><td class="num">772天（前口径690天，远高于自主交易用户）</td><td>2025-09</td><td>且慢公告/证券时报</td></tr>
+      <tr><td>客户资产深化</td><td>新客首季人均约2万 → 一年后约10万；近90%客户资产为签约投顾资产；70%配置权益类</td><td>2025年初</td><td>证券时报</td></tr>
+      <tr><td>头部策略集中度</td><td>长赢跟投40万+；稳稳的幸福跟投18.3万+（咨询5.5万+）；两大旗舰承载主要用户心智</td><td>2025-10/2026-07</td><td>公开报道/详情页</td></tr>
+      <tr><td>工具活跃信号</td><td>每日估值订阅10.9万人（对比：长赢跟投40万）——工具用户体量可观但转化路径缺失</td><td>2026-07</td><td>页面实测</td></tr>
+      <tr><td>规模服务口径</td><td>96%盈利数据背后是「数十万个家庭」</td><td>2025-09</td><td>App Store官方描述</td></tr>
+    </table>
+    <div class="callout warn"><i class="ri-alert-line"></i> 复用/复购、四笔钱渗透率（人均配置几笔钱）、规划完成率、定制方案转化率、各模块UV/转化漏斗均无公开数据——这批内部埋点数据是方案取舍的关键依据，已列入⑫待确认清单。</div>
+  </div>
+</section>
+
+<!-- ⑩ 竞品 -->
+<section id="s10">
+  <div class="sec-title"><i class="ri-sword-line"></i>⑩ 竞品对标：两条路线</div>
+  <div class="card" style="overflow-x:auto">
+    <table>
+      <tr><th>平台</th><th>组织模式</th><th>要点</th></tr>
+      <tr><td>雪球基金（蛋卷并入）</td><td>工具+大货架</td><td>流量入口=社区/行情/估值工具，投顾是货架商品之一；5700万用户、保有近500亿</td></tr>
+      <tr><td>天天基金</td><td>基金超市+工具矩阵</td><td>数据/排行/导购为主，投顾以「投顾管家」嵌入货架；工具最全（活期宝/指数宝/海外额度宝）</td></tr>
+      <tr><td>支付宝 帮你投/金选</td><td>场景流量+简化委托</td><td>100元起全委托；金选为卖方精选货架；人均AUM低、主打长尾</td></tr>
+      <tr><td>理财魔方</td><td>智能投顾</td><td>风险测评→组合配置→自动调仓，强调AI个性化平滑波动</td></tr>
+      <tr><td>Betterment/Wealthfront</td><td>目标导向规划+自动化账户</td><td>人生目标子账户（退休/购房/应急）→测算→自动化ETF组合，费率约0.25%/年</td></tr>
+      <tr><td style="background:var(--card-pfade)"><b>且慢（对照）</b></td><td style="background:var(--card-pfade)"><b>规划+推品型国内代表</b></td><td style="background:var(--card-pfade)">四笔钱把规划前置为账户框架、货架收敛为严选；与Betterment目标子账户最接近，保留「主理人跟车」中国特色；<b>短板：规划与推品之间的自动化衔接、货架的可视化与个性化</b></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ⑪ 问题诊断 -->
+<section id="s11">
+  <div class="sec-title"><i class="ri-stethoscope-line"></i>⑪ 问题诊断（改版立项依据）</div>
+  <div class="card">
+    <div class="diag"><b>P1 · 推品主线断裂</b><div class="d">「定制优先→标准策略兜底」的核心原则没有页面级流程承载：定制是banner、货架是清单、工具是孤岛。用户从「我有一笔钱/我有一个目标/我有持仓要调优」出发，页面没有任何一条被设计过的路径。</div></div>
+    <div class="diag"><b>P2 · 货架表达力不足</b><div class="d">28个策略仅一句卖点+一个收益数字：同风险档收益差2倍无法感知、风险分20-50断档无法暴露、严选与四笔钱关系不清、品类叙事缺失。选品决策难被外包给了客服（单策略咨询5.5w+）。</div></div>
+    <div class="diag"><b>P3 · 千人一面</b><div class="d">页面对新客/有持仓老客/养老人群/高净值完全同构；持仓调优、根据目标选品、DIY找品没有入口分层。四笔钱规划、AI小顾、诊断能力都已存在，但都没被编排进投顾页。</div></div>
+    <div class="diag"><b>P4 · 专区与工具形态不统一</b><div class="d">养老=重专区、全球=两个散落策略、攒钱=独立H5、估值=纯资讯页；新策略体系上线（新四笔钱+严选升级）时缺乏可复用的「专区/组件」框架，每次都要重做页面。</div></div>
+    <div class="diag"><b>P5 · 生产方式落后于策略供给</b><div class="d">品类矩阵与策略体系由研究院持续迭代，但页面是硬编码静态结构，运营无弹性调整空间——这正是AI产品工厂模式要解决的：页面应由「可编排的服务组件」组成。</div></div>
+  </div>
+</section>
+
+<!-- ⑫ 待确认 -->
+<section id="s12">
+  <div class="sec-title"><i class="ri-question-answer-line"></i>⑫ 待确认清单（需内部补齐）</div>
+  <div class="card"><ul class="gap-list">
+    <li><b>研究院品类矩阵文档</b>：<span style="color:var(--ok)">✅ 已获取（且慢业务场景.xlsx，2026-06-15）</span>，品类→货架映射已补入《02-改版方向与方案设计》2.3节。</li>
+    <li><b>内部埋点数据</b>：投顾页UV/各模块点击分布、四笔钱Tab切换率、定制方案banner转化率、规划完成率、AI小顾使用量、估值订阅→购买转化。</li>
+    <li><b>工具真实状态</b>：温度计/行情信号/额度宝是否在APP存在、数据归属、月活。</li>
+    <li><b>新策略体系信息</b>：新重点策略清单、新四笔钱与严选的品类结构、上线时间表、陪伴体系要求。</li>
+    <li><b>晨星组合风险分数</b>：MCP返回的1-100风险评分与晨星分数的换算/授权关系确认。</li>
+    <li><b>APP真机页面</b>：投顾Tab最新版实际布局（长钱账户、规划入口位置）与网页版差异复核。</li>
+  </ul></div>
+</section>
+
+<div class="footer">盈米基金｜且慢投顾模块现况盘点 · 内部研究文档 · 数据来源：盈米MCP + qieman.com实探 + 18项公开来源<br>产品历史业绩不预示其未来表现，市场有风险，投资需谨慎。</div>
+</div>
+
+<script>
+const STRATS = [
+ {code:"ZH012636",name:"货币三佳",mgr:"盈米基金",shelf:"四笔钱-活钱",cat:"货币基金",rl:"低风险",rs:1,ret:2.66,mdd:0.00,vol:0.15,sharpe:7.78,inc:"2017-01",hold:"随时存取"},
+ {code:"ZH099893",name:"花好月圆",mgr:"盈米研究院",shelf:"四笔钱-稳钱",cat:"货币+纯债",rl:"低风险",rs:3,ret:2.46,mdd:0.29,vol:0.23,sharpe:4.13,inc:"2021-04",hold:"3月以上"},
+ {code:"ZH156399",name:"债基优等生",mgr:"中欧财富",shelf:"四笔钱-稳钱",cat:"债券基金",rl:"低风险",rs:6,ret:3.03,mdd:1.04,vol:0.73,sharpe:2.10,inc:"2022-12",hold:"6月以上"},
+ {code:"ZH013136",name:"我要稳稳的幸福",mgr:"交银施罗德",shelf:"四笔钱-稳钱",cat:"固收+",rl:"中低风险",rs:11,ret:4.85,mdd:2.79,vol:2.36,sharpe:1.42,inc:"2017-01",hold:"1年以上"},
+ {code:"ZH112601",name:"超级理财加",mgr:"广发基金",shelf:"四笔钱-稳钱",cat:"固收+",rl:"低风险",rs:9,ret:2.50,mdd:3.25,vol:2.25,sharpe:0.44,inc:"2021-08",hold:"1年以上"},
+ {code:"ZH155420",name:"全球丰收",mgr:"盈米基金",shelf:"四笔钱-长钱",cat:"全球多元配置",rl:"中低风险",rs:18,ret:5.69,mdd:4.04,vol:3.73,sharpe:1.13,inc:"2024-02",hold:"3年以上"},
+ {code:"ZH032680",name:"春华秋实",mgr:"静静聊吧",shelf:"四笔钱-长钱",cat:"大类资产配置",rl:"中风险",rs:21,ret:5.41,mdd:12.83,vol:5.75,sharpe:0.68,inc:"2019-01",hold:"3年以上"},
+ {code:"SI000035",name:"周周同行",mgr:"盈米基金",shelf:"四笔钱-长钱",cat:"股基·周定投",rl:"中高风险",rs:60,ret:1.49,mdd:34.93,vol:15.10,sharpe:0.00,inc:"2021-05",hold:"3年以上"},
+ {code:"ZH035411",name:"进取派优选",mgr:"兴证全球",shelf:"四笔钱-长钱",cat:"股票基金",rl:"中高风险",rs:73,ret:4.92,mdd:28.56,vol:17.83,sharpe:0.19,inc:"2022-03",hold:"3年以上"},
+ {code:"ZH150669",name:"颐养天年养老计划",mgr:"盈米基金",shelf:"养老专区",cat:"养老下滑曲线",rl:"中高风险",rs:70,ret:5.99,mdd:15.64,vol:14.90,sharpe:0.30,inc:"2023-07",hold:"3年以上"},
+ {code:"LONG_WIN",name:"长赢计划-150份",mgr:"E大",shelf:"主理人计划",cat:"指数投资计划",rl:"中高风险",rs:56,ret:4.74,mdd:19.79,vol:11.13,sharpe:0.29,inc:"2015-07",hold:"3年以上"},
+ {code:"LONG_WIN_S",name:"长赢计划-S定投",mgr:"E大",shelf:"主理人计划",cat:"指数定投计划",rl:"中高风险",rs:null,ret:4.97,mdd:30.95,vol:16.68,sharpe:0.08,inc:"2017-12",hold:"3年以上"},
+ {code:"ZH045531",name:"南方梦想佳",mgr:"南方基金",shelf:"严选-短稳",cat:"货币+债券",rl:"中低风险",rs:3,ret:2.01,mdd:1.24,vol:0.67,sharpe:0.76,inc:"2020-07",hold:"3月以上"},
+ {code:"ZH158735",name:"息息相关",mgr:"盈米基金",shelf:"严选-短稳",cat:"生息资产",rl:"中低风险",rs:9,ret:3.42,mdd:0.91,vol:1.35,sharpe:1.42,inc:"2024-06",hold:"1年以上"},
+ {code:"ZH124523",name:"招商月月佳薪",mgr:"招商基金",shelf:"严选-短稳",cat:"固收为主",rl:"中低风险",rs:7,ret:2.40,mdd:1.12,vol:0.74,sharpe:1.22,inc:"2021-10",hold:"6月以上"},
+ {code:"ZH032687",name:"风和日丽",mgr:"盈米研究院",shelf:"严选-短稳",cat:"绝对收益",rl:"中低风险",rs:15,ret:3.63,mdd:4.70,vol:2.77,sharpe:0.77,inc:"2019-01",hold:"1年以上"},
+ {code:"ZH130772",name:"求稳派小添财",mgr:"兴证全球",shelf:"严选-短稳",cat:"固收+",rl:"中低风险",rs:8,ret:3.60,mdd:2.36,vol:1.79,sharpe:1.17,inc:"2022-03",hold:"1年以上"},
+ {code:"ZH045075",name:"马拉松固收增强",mgr:"华夏财富",shelf:"严选-短稳",cat:"固收增强",rl:"中风险",rs:9,ret:3.11,mdd:6.26,vol:3.13,sharpe:0.51,inc:"2020-06",hold:"1年以上"},
+ {code:"ZH040237",name:"小小的太阳",mgr:"广发基金",shelf:"严选-短稳",cat:"固收+",rl:"低风险",rs:11,ret:2.55,mdd:3.23,vol:2.69,sharpe:0.39,inc:"2021-08",hold:"1年以上"},
+ {code:"ZH037268",name:"富国启明星理财升级",mgr:"富国基金",shelf:"严选-短稳",cat:"绝对收益",rl:"中低风险",rs:13,ret:2.91,mdd:3.51,vol:2.92,sharpe:0.48,inc:"2022-02",hold:"2年以上"},
+ {code:"ZH124499",name:"招商固收+星秀",mgr:"招商基金",shelf:"严选-短稳",cat:"固收+",rl:"中低风险",rs:16,ret:2.98,mdd:3.52,vol:3.10,sharpe:0.48,inc:"2021-10",hold:"2年以上"},
+ {code:"SI000090",name:"U定投",mgr:"盈米基金",shelf:"严选-长投",cat:"指数定投",rl:"中高风险",rs:74,ret:6.20,mdd:31.35,vol:16.43,sharpe:0.29,inc:"2017-07",hold:"3年以上"},
+ {code:"J7",name:"简慢投资组合",mgr:"盈米基金",shelf:"严选-长投",cat:"均衡配置",rl:"中风险",rs:49,ret:8.98,mdd:25.48,vol:12.19,sharpe:0.61,inc:"2015-01",hold:"3年以上"},
+ {code:"ZH154032",name:"全球优选",mgr:"盈米基金",shelf:"严选-长投",cat:"海外配置",rl:"中高风险",rs:61,ret:11.65,mdd:17.27,vol:11.64,sharpe:0.87,inc:"2023-12",hold:"3年以上"},
+ {code:"ZH000082",name:"盈米稳健八心八箭",mgr:"盈米基金",shelf:"严选-长投",cat:"主动权益优选",rl:"中风险",rs:66,ret:6.85,mdd:34.24,vol:13.65,sharpe:0.39,inc:"2016-02",hold:"3年以上"},
+ {code:"ZH006498",name:"价值五剑",mgr:"盈米基金",shelf:"严选-长投",cat:"价值风格权益",rl:"中风险",rs:57,ret:10.07,mdd:40.87,vol:16.96,sharpe:0.51,inc:"2016-10",hold:"3年以上"},
+ {code:"ZH157591",name:"华夏全自动超级配置",mgr:"华夏财富",shelf:"严选-长投",cat:"股债动态配置",rl:"中高风险",rs:39,ret:9.05,mdd:18.64,vol:13.69,sharpe:0.55,inc:"2022-12",hold:"3年以上"},
+ {code:"ZH045072",name:"添富权益严选",mgr:"汇添富基金",shelf:"严选-长投",cat:"核心+卫星权益",rl:"中高风险",rs:81,ret:2.22,mdd:40.40,vol:17.18,sharpe:0.04,inc:"2021-12",hold:"3年以上"}
+];
+// 表格渲染
+const pillCls = {"低风险":"low","中低风险":"mlow","中风险":"mid","中高风险":"mhigh"};
+document.querySelector("#shelfTable tbody").innerHTML = STRATS.map(s=>
+ `<tr><td><span class="pill shelf">${s.shelf}</span></td><td><b>${s.name}</b></td><td>${s.mgr}</td><td>${s.cat}</td>
+ <td><span class="pill ${pillCls[s.rl]}">${s.rl}</span></td><td class="num">${s.rs??"—"}</td>
+ <td class="num pos">${s.ret.toFixed(2)}%</td><td class="num">${s.mdd.toFixed(2)}%</td><td class="num">${s.vol.toFixed(2)}%</td>
+ <td class="num">${s.sharpe.toFixed(2)}</td><td class="num">${s.inc}</td><td>${s.hold}</td></tr>`).join("");
+
+// 页头小图：AUM里程碑
+echarts.init(document.getElementById("posterChart")).setOption({
+  grid:{left:8,right:8,top:26,bottom:2,containLabel:true},
+  title:{text:"投顾规模里程碑（亿元）",textStyle:{color:"#fff",fontSize:13,fontWeight:400},left:0,top:0},
+  xAxis:{type:"category",data:["21.07","21.12","24.09","25.02","25.09","26.03"],axisLabel:{color:"rgba(255,255,255,.8)",fontSize:11},axisLine:{lineStyle:{color:"rgba(255,255,255,.4)"}}},
+  yAxis:{type:"value",axisLabel:{color:"rgba(255,255,255,.7)",fontSize:10},splitLine:{lineStyle:{color:"rgba(255,255,255,.15)"}}},
+  series:[{type:"bar",data:[100,200,370,400,500,540],itemStyle:{color:"rgba(255,255,255,.85)",borderRadius:[4,4,0,0]},label:{show:true,position:"top",color:"#fff",fontSize:10},barWidth:"55%"}]
+});
+
+// 风险-收益散点
+const shelfColor = {"四笔钱-活钱":"#7DD4C4","四笔钱-稳钱":"#69B1F4","四笔钱-长钱":"#3A7BB8","严选-短稳":"#FBCA74","严选-长投":"#F88D72","养老专区":"#ADAFE8","主理人计划":"#FA440C"};
+const sc = echarts.init(document.getElementById("scatterChart"));
+sc.setOption({
+  tooltip:{formatter:p=>{const s=p.data.s;return `<b>${s.name}</b>（${s.shelf}）<br/>主理方：${s.mgr} ｜ ${s.cat}<br/>风险分：<b>${s.rs}</b> ｜ 年化：<b>${s.ret}%</b><br/>最大回撤：${s.mdd}% ｜ 波动率：${s.vol}% ｜ 夏普：${s.sharpe}`}},
+  legend:{data:Object.keys(shelfColor),bottom:0,textStyle:{fontSize:12,color:"#606060"}},
+  grid:{left:50,right:30,top:44,bottom:60},
+  xAxis:{name:"组合风险分数（1-100，2026-06-30生效）",nameLocation:"middle",nameGap:28,min:0,max:90,splitLine:{lineStyle:{type:"dashed",color:"#EEE"}},axisLabel:{color:"#999"}},
+  yAxis:{name:"年化收益率 %",min:0,max:13,splitLine:{lineStyle:{type:"dashed",color:"#EEE"}},axisLabel:{color:"#999"}},
+  series:Object.keys(shelfColor).map(sh=>({
+    name:sh,type:"scatter",itemStyle:{color:shelfColor[sh],opacity:.88},
+    symbolSize:(val,params)=>8+Math.sqrt(params.data.s.mdd)*4.2,
+    label:{show:true,position:"top",fontSize:10.5,color:"#606060",formatter:p=>p.data.s.name},
+    data:STRATS.filter(s=>s.shelf===sh&&s.rs!==null).map(s=>({value:[s.rs,s.ret],s}))
+  })),
+  graphic:[{type:"rect",left:"38%",top:44,shape:{width:120,height:416},style:{fill:"rgba(250,68,12,.045)"},silent:true},
+    {type:"text",left:"39%",top:54,style:{text:"风险分20-50\n供给断档区",fill:"#FA440C",fontSize:12,opacity:.75},silent:true}]
+});
+window.addEventListener("resize",()=>{sc.resize()});
+</script>
+</body>
+</html>

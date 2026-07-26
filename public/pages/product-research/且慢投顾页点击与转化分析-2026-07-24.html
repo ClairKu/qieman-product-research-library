@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>且慢投顾页点击与转化分析｜2026-07-24</title>
+  <style>
+    :root {
+      --blue: #1b88ee;
+      --blue-dark: #0969c7;
+      --blue-soft: #eaf5ff;
+      --navy: #15243b;
+      --text: #27364a;
+      --muted: #68788d;
+      --line: #e5ebf2;
+      --bg: #f5f8fb;
+      --card: #fff;
+      --green: #1aa981;
+      --green-soft: #eaf8f4;
+      --orange: #f59f3a;
+      --orange-soft: #fff6e9;
+      --red: #e35252;
+      --red-soft: #fff0f0;
+      --radius: 16px;
+      --shadow: 0 8px 26px rgba(26, 62, 101, .07);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font: 14px/1.65 -apple-system, BlinkMacSystemFont, "PingFang SC",
+        "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    .page { max-width: 1240px; margin: 0 auto; padding: 30px 22px 60px; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 40px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 85% 12%, rgba(255,255,255,.18), transparent 28%),
+        linear-gradient(130deg, #0d6fc9, #1b88ee 58%, #55b8ff);
+      border-radius: 24px;
+      box-shadow: 0 18px 45px rgba(27, 136, 238, .22);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      right: -55px;
+      bottom: -120px;
+      border: 38px solid rgba(255,255,255,.10);
+      border-radius: 50%;
+    }
+    .eyebrow {
+      margin: 0 0 12px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      opacity: .8;
+    }
+    h1 { margin: 0; font-size: clamp(28px, 4vw, 44px); line-height: 1.18; }
+    .hero-sub { max-width: 780px; margin: 16px 0 0; font-size: 16px; opacity: .92; }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 22px;
+    }
+    .meta span {
+      padding: 7px 11px;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 999px;
+      font-size: 12px;
+    }
+    .notice {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      margin: 18px 0 0;
+      padding: 16px 18px;
+      color: #5f4713;
+      background: #fff8e6;
+      border: 1px solid #f4dfa6;
+      border-radius: 14px;
+    }
+    .notice strong { color: #3f300d; }
+    .section { margin-top: 26px; }
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 13px;
+    }
+    h2 { margin: 0; color: var(--navy); font-size: 22px; line-height: 1.3; }
+    h3 { margin: 0 0 10px; color: var(--navy); font-size: 17px; }
+    .section-desc { margin: 5px 0 0; color: var(--muted); }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .tag.blue { color: var(--blue-dark); background: var(--blue-soft); }
+    .tag.green { color: #087c5d; background: var(--green-soft); }
+    .tag.orange { color: #a16009; background: var(--orange-soft); }
+    .tag.red { color: #a72e2e; background: var(--red-soft); }
+    .tag.gray { color: #566477; background: #eef2f6; }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .kpi, .card {
+      background: var(--card);
+      border: 1px solid rgba(222,230,239,.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .kpi { padding: 19px; }
+    .kpi-label { color: var(--muted); font-size: 12px; }
+    .kpi-value {
+      margin-top: 8px;
+      color: var(--navy);
+      font-size: 28px;
+      font-weight: 750;
+      letter-spacing: -.02em;
+      line-height: 1.15;
+    }
+    .kpi-note { margin-top: 8px; color: var(--muted); font-size: 12px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .card { padding: 20px; }
+    .finding {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 12px;
+      padding: 15px 0;
+      border-top: 1px solid var(--line);
+    }
+    .finding:first-of-type { padding-top: 3px; border-top: 0; }
+    .finding:last-child { padding-bottom: 0; }
+    .num {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      color: #fff;
+      background: var(--blue);
+      border-radius: 10px;
+      font-weight: 800;
+    }
+    .finding p { margin: 3px 0 0; color: var(--muted); }
+    .finding strong { color: var(--navy); }
+    .metric-line {
+      display: grid;
+      grid-template-columns: minmax(110px, 190px) 1fr 58px;
+      gap: 10px;
+      align-items: center;
+      margin: 12px 0;
+    }
+    .metric-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .track { overflow: hidden; height: 10px; background: #edf2f7; border-radius: 99px; }
+    .fill { height: 100%; background: linear-gradient(90deg, var(--blue), #62baff); border-radius: 99px; }
+    .fill.green { background: linear-gradient(90deg, #16a47d, #58d0ad); }
+    .fill.orange { background: linear-gradient(90deg, #ee932d, #ffc266); }
+    .metric-value { color: var(--navy); font-weight: 700; text-align: right; }
+    .table-card { overflow: hidden; padding: 0; }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th {
+      padding: 13px 12px;
+      color: #526176;
+      background: #f7f9fc;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+    th:first-child, td:first-child { text-align: left; }
+    td {
+      padding: 13px 12px;
+      border-bottom: 1px solid #edf1f5;
+      text-align: right;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: #fbfdff; }
+    .content-name { color: var(--navy); font-weight: 700; }
+    .sub { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
+    .good { color: #098164; font-weight: 700; }
+    .warn { color: #aa650d; font-weight: 700; }
+    .bad { color: #bb3d3d; font-weight: 700; }
+    .na { color: #909cab; }
+    .method-list, .action-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .method-list li, .action-list li {
+      position: relative;
+      padding-left: 26px;
+      color: var(--text);
+    }
+    .method-list li::before, .action-list li::before {
+      position: absolute;
+      left: 0;
+      top: 1px;
+      color: var(--blue);
+      font-weight: 800;
+    }
+    .method-list li::before { content: "i"; width: 18px; height: 18px; text-align: center; border: 1px solid #afd7fb; border-radius: 50%; font-size: 11px; }
+    .action-list { counter-reset: action; }
+    .action-list li { counter-increment: action; }
+    .action-list li::before { content: counter(action); width: 18px; height: 18px; color: #fff; background: var(--blue); border-radius: 6px; text-align: center; line-height: 18px; font-size: 10px; }
+    .priority {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 14px;
+      padding: 16px 0;
+      border-top: 1px solid var(--line);
+    }
+    .priority:first-of-type { border-top: 0; padding-top: 2px; }
+    .priority p { margin: 5px 0 0; color: var(--muted); }
+    .callout {
+      margin-top: 14px;
+      padding: 15px 17px;
+      color: #254f73;
+      background: var(--blue-soft);
+      border-left: 4px solid var(--blue);
+      border-radius: 10px;
+    }
+    .footnote {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .footer {
+      margin-top: 28px;
+      padding: 20px;
+      color: var(--muted);
+      background: #eef3f8;
+      border-radius: 14px;
+      font-size: 12px;
+    }
+    .footer code {
+      padding: 2px 5px;
+      color: #36506b;
+      background: #fff;
+      border-radius: 5px;
+      word-break: break-all;
+    }
+    .mobile-cards { display: none; }
+    @media (max-width: 900px) {
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .page { padding: 14px 12px 36px; }
+      .hero { padding: 28px 22px; border-radius: 18px; }
+      .hero-sub { font-size: 14px; }
+      .kpis { grid-template-columns: 1fr 1fr; gap: 9px; }
+      .kpi { padding: 15px; }
+      .kpi-value { font-size: 23px; }
+      .card { padding: 16px; }
+      .metric-line { grid-template-columns: 105px 1fr 52px; gap: 7px; }
+      .section-head { display: block; }
+      .section-head .tag { margin-top: 8px; }
+    }
+    @media print {
+      body { background: #fff; }
+      .page { max-width: none; padding: 0; }
+      .hero, .kpi, .card { box-shadow: none; break-inside: avoid; }
+      .section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">QIEMAN PRODUCT ANALYTICS · READ-ONLY</p>
+      <h1>且慢投顾页<br>点击与转化分析</h1>
+      <p class="hero-sub">覆盖当前 App 投顾页的四笔钱导航、策略卡、服务入口与保险卡；把“内容被点击”“技术到达”“业务下单请求”拆成三层，避免把点击率误当成交转化。</p>
+      <div class="meta">
+        <span>数据窗口：2026-07-01—07-23</span>
+        <span>观察期：23 个完整自然日</span>
+        <span>核心口径：App UV</span>
+        <span>生成时间：2026-07-24</span>
+      </div>
+    </header>
+
+    <div class="notice">
+      <div>⚠️</div>
+      <div><strong>先说限制：</strong>当前埋点没有给每个内容模块同时记录稳定的“曝光 ID”和“点击 ID”，因此除投顾助理外，无法计算严格意义上的 CTR。下文“页面点击率”统一为<strong>点击该内容的去重用户 ÷ 投顾页去重访问用户</strong>，是可复核的页面访客点击转化代理值。</div>
+    </div>
+
+    <section class="kpis" aria-label="核心指标">
+      <article class="kpi">
+        <div class="kpi-label">投顾页访问用户</div>
+        <div class="kpi-value">76,758</div>
+        <div class="kpi-note">App 页面 UV</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-label">投顾页访问次数</div>
+        <div class="kpi-value">282,804</div>
+        <div class="kpi-note">3.68 次 / 访问用户</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-label">最高页面内容点击率</div>
+        <div class="kpi-value">24.22%</div>
+        <div class="kpi-note">四笔钱「活钱管理」</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-label">最高 7 日下单请求率</div>
+        <div class="kpi-value">35.89%</div>
+        <div class="kpi-note">策略「盈米宝」</div>
+      </article>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>一页结论</h2>
+          <p class="section-desc">真正影响改版优先级的，不是“谁点击多”一个维度。</p>
+        </div>
+        <span class="tag blue">结论先行</span>
+      </div>
+      <div class="grid-2">
+        <article class="card">
+          <div class="finding">
+            <div class="num">1</div>
+            <div><strong>四笔钱是主导航，不等于策略选择。</strong><p>活钱、短期、长期、保险的页面访客点击率分别为 24.22%、21.86%、18.50%、12.33%。这是用户在页面内切换钱用途的行为，应与具体策略卡分开评估。</p></div>
+          </div>
+          <div class="finding">
+            <div class="num">2</div>
+            <div><strong>「我要稳稳的幸福」兼具规模与交易意向。</strong><p>页面点击率 5.36%，是策略第一；完整 7 日观察样本中，同策略下单请求率 21.43%，兼顾流量规模与业务转化。</p></div>
+          </div>
+          <div class="finding">
+            <div class="num">3</div>
+            <div><strong>高点击不必然高下单。</strong><p>「全球丰收」页面点击率第二（4.30%），但 7 日同策略下单请求率仅 8.35%。流量入口通畅，主要问题更可能在价值解释、适配判断或购买意愿。</p></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="finding">
+            <div class="num">4</div>
+            <div><strong>交易意向强的内容不一定最显眼。</strong><p>「盈米宝」「货币三佳」7 日同策略下单请求率分别为 35.89%、23.60%，但页面点击率只有 2.71%、1.69%。值得优先保护和试验性提权。</p></div>
+          </div>
+          <div class="finding">
+            <div class="num">5</div>
+            <div><strong>技术链路整体健康，少数入口需要专项排查。</strong><p>多数策略点击后 10 分钟目标到达率超过 96%；「攒钱计划」只有 73.58%，「投顾助理」点击到可匹配打开仅 43.94%，优先排查跳转与埋点一致性。</p></div>
+          </div>
+          <div class="finding">
+            <div class="num">6</div>
+            <div><strong>当前最大盲区是曝光，而不是点击。</strong><p>1,685 名页面用户产生了元素内容为空的点击；顶部图片 Banner 缺少稳定内容名，收益率又被写入元素文案，导致版本、端和动态文案之间无法稳定归一。</p></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>四笔钱导航点击</h2>
+          <p class="section-desc">分母均为 76,758 名 App 投顾页访问用户。</p>
+        </div>
+        <span class="tag gray">页面访客点击转化代理</span>
+      </div>
+      <article class="card">
+        <div class="metric-line"><span class="metric-label">活钱管理</span><span class="track"><span class="fill" style="display:block;width:100%"></span></span><span class="metric-value">24.22%</span></div>
+        <div class="metric-line"><span class="metric-label">短期稳健</span><span class="track"><span class="fill" style="display:block;width:90.3%"></span></span><span class="metric-value">21.86%</span></div>
+        <div class="metric-line"><span class="metric-label">长期投资</span><span class="track"><span class="fill" style="display:block;width:76.4%"></span></span><span class="metric-value">18.50%</span></div>
+        <div class="metric-line"><span class="metric-label">保险保障</span><span class="track"><span class="fill" style="display:block;width:50.9%"></span></span><span class="metric-value">12.33%</span></div>
+        <p class="footnote">对应点击 UV：18,591 / 16,779 / 14,203 / 9,468。用户可能点击多个分类，不能相加为页面整体转化率。</p>
+      </article>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>策略卡：从点击到下单请求</h2>
+          <p class="section-desc">7 日转化仅纳入 7 月 1—16 日首击用户，确保每人都有完整 7 天观察期。</p>
+        </div>
+        <span class="tag green">核心业务漏斗</span>
+      </div>
+      <article class="card table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>策略内容</th>
+                <th>页面点击 UV</th>
+                <th>页面点击率</th>
+                <th>10 分钟目标到达</th>
+                <th>10 分钟详情到达</th>
+                <th>7 日完整样本</th>
+                <th>同策略下单请求 UV</th>
+                <th>7 日下单请求率</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="content-name">我要稳稳的幸福</span><span class="sub">规模 + 转化双高</span></td><td>4,115</td><td>5.36%</td><td class="good">98.52%</td><td class="good">98.52%</td><td>3,043</td><td>652</td><td class="good">21.43%</td></tr>
+              <tr><td><span class="content-name">全球丰收</span><span class="sub">点击高、交易意向偏中</span></td><td>3,298</td><td>4.30%</td><td class="good">97.79%</td><td class="good">97.73%</td><td>2,443</td><td>204</td><td>8.35%</td></tr>
+              <tr><td><span class="content-name">盈米宝</span><span class="sub">原生到达事件口径不一致</span></td><td>2,079</td><td>2.71%</td><td class="na">不可比</td><td class="na">不可比</td><td>1,513</td><td>543</td><td class="good">35.89%</td></tr>
+              <tr><td><span class="content-name">春华秋实</span><span class="sub">介绍页到详情页损耗明显</span></td><td>1,881</td><td>2.45%</td><td class="good">98.14%</td><td class="warn">51.57%</td><td>1,333</td><td>70</td><td>5.25%</td></tr>
+              <tr><td><span class="content-name">债基优等生</span></td><td>1,772</td><td>2.31%</td><td class="good">96.05%</td><td class="good">96.05%</td><td>1,247</td><td>164</td><td>13.15%</td></tr>
+              <tr><td><span class="content-name">花好月圆</span></td><td>1,745</td><td>2.27%</td><td class="good">97.31%</td><td class="good">97.31%</td><td>1,249</td><td>190</td><td class="good">15.21%</td></tr>
+              <tr><td><span class="content-name">周周同行</span></td><td>1,535</td><td>2.00%</td><td class="good">98.11%</td><td class="good">97.98%</td><td>1,119</td><td>67</td><td>5.99%</td></tr>
+              <tr><td><span class="content-name">进取派优选</span></td><td>1,421</td><td>1.85%</td><td class="good">97.96%</td><td class="good">97.96%</td><td>999</td><td>30</td><td class="bad">3.00%</td></tr>
+              <tr><td><span class="content-name">货币三佳</span><span class="sub">详情事件与交易路径可能分流</span></td><td>1,295</td><td>1.69%</td><td class="warn">86.72%</td><td class="bad">31.04%</td><td>983</td><td>232</td><td class="good">23.60%</td></tr>
+              <tr><td><span class="content-name">超级理财加</span></td><td>870</td><td>1.13%</td><td class="good">96.90%</td><td class="good">96.90%</td><td>637</td><td>10</td><td class="bad">1.57%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+      <div class="callout"><strong>判断：</strong>大多数策略点击后的技术到达率已超过 96%，因此改版重点不应只是“修跳转”。更有价值的是把高交易意向策略与用户的钱用途匹配得更早，同时缩短「春华秋实」等中间介绍层；「货币三佳」「盈米宝」应先补齐原生路径埋点，再判断页面损耗。</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>服务入口点击与技术到达</h2>
+          <p class="section-desc">到达率是同一用户首击后 10 分钟内出现对应目标事件的比例。</p>
+        </div>
+        <span class="tag orange">诊断跳转与埋点</span>
+      </div>
+      <article class="card table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>内容</th><th>页面点击 UV</th><th>页面点击率</th><th>10 分钟目标到达率</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="content-name">严选策略</span></td><td>1,869</td><td>2.43%</td><td class="good">100.00%</td><td>目标页事件稳定</td></tr>
+              <tr><td><span class="content-name">投顾助理</span></td><td>1,304</td><td>1.70%</td><td class="bad">43.94%</td><td>可匹配到算法打开事件；存在埋点口径分叉</td></tr>
+              <tr><td><span class="content-name">每日估值</span></td><td>1,207</td><td>1.57%</td><td class="good">97.35%</td><td>跳转基本健康</td></tr>
+              <tr><td><span class="content-name">攒钱计划</span></td><td>738</td><td>0.96%</td><td class="warn">73.58%</td><td>需排查登录、微应用或重定向损耗</td></tr>
+              <tr><td><span class="content-name">了解四笔钱</span></td><td>241</td><td>0.31%</td><td class="warn">85.89%</td><td>两种按钮文案已归一</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+      <div class="grid-2" style="margin-top:14px">
+        <article class="card">
+          <h3>投顾助理的严格曝光口径</h3>
+          <div class="metric-line"><span class="metric-label">曝光用户</span><span class="track"><span class="fill green" style="display:block;width:100%"></span></span><span class="metric-value">21,593</span></div>
+          <div class="metric-line"><span class="metric-label">打开用户</span><span class="track"><span class="fill green" style="display:block;width:5.08%"></span></span><span class="metric-value">1,097</span></div>
+          <p class="footnote">严格“打开 UV ÷ 曝光 UV” = 5.08%。这是当前页面唯一可用的模块级曝光转化率。AppClick 记录 1,304 人，而可在 10 分钟内匹配算法打开的只有 573 人，说明两个事件尚未使用统一内容 ID。</p>
+        </article>
+        <article class="card">
+          <h3>顶部 Banner 暂不能可靠排名</h3>
+          <p>App 端顶部图片在部分版本只记录空元素或脆弱的选择器，未记录稳定的 banner_id/content_name。Web 端当前两个短链在本期分别记录 82、25 名点击用户，但 Banner 轮换、位置曝光和 App 端口径均未打通，不能将其当成全端 CTR。</p>
+          <p class="footnote">这不是“没有人点”，而是“现有数据不能回答每张 Banner 展示了多少、点击了多少”。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>保险保障内容</h2>
+          <p class="section-desc">短链到达只说明技术跳转完成，不代表已看产品、试算或投保。</p>
+        </div>
+        <span class="tag gray">全量当前卡片</span>
+      </div>
+      <article class="card table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>保险内容</th><th>页面点击 UV</th><th>页面点击率</th><th>10 分钟短链/入口到达率</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="content-name">领多多（储蓄险）</span></td><td>791</td><td>1.03%</td><td class="good">99.49%</td></tr>
+              <tr><td><span class="content-name">攒多多（投连险）</span></td><td>788</td><td>1.03%</td><td class="good">99.87%</td></tr>
+              <tr><td><span class="content-name">退休钱包鼓计划</span></td><td>366</td><td>0.48%</td><td class="good">99.73%</td></tr>
+              <tr><td><span class="content-name">专业保险服务</span></td><td>297</td><td>0.39%</td><td class="warn">91.58%</td></tr>
+              <tr><td><span class="content-name">教育金无忧计划</span></td><td>268</td><td>0.35%</td><td class="good">98.88%</td></tr>
+              <tr><td><span class="content-name">意外守护者计划</span></td><td>227</td><td>0.30%</td><td class="good">98.68%</td></tr>
+              <tr><td><span class="content-name">百万保障计划</span></td><td>224</td><td>0.29%</td><td class="good">99.11%</td></tr>
+              <tr><td><span class="content-name">重疾守护计划</span></td><td>178</td><td>0.23%</td><td class="good">99.44%</td></tr>
+              <tr><td><span class="content-name">留爱不留债计划</span></td><td>151</td><td>0.20%</td><td class="good">99.34%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+      <p class="footnote">保险卡的后续业务转化需要补齐统一的 product_view / plan / lead / order / success 事件；本次不以短链解析成功冒充投保转化。</p>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>建议怎么改</h2>
+          <p class="section-desc">先修可测性，再用实验决定内容排序；避免一次性大改后仍不知道为什么。</p>
+        </div>
+        <span class="tag red">P0 / P1</span>
+      </div>
+      <div class="grid-2">
+        <article class="card">
+          <div class="priority">
+            <span class="tag red">P0</span>
+            <div><strong>统一全链路内容身份</strong><p>曝光、点击、打开、详情、下单请求、下单成功均携带 page_id、module_id、content_id、position_id、strategy_id/product_id；App、Web 和不同版本使用同一份字典。</p></div>
+          </div>
+          <div class="priority">
+            <span class="tag red">P0</span>
+            <div><strong>修复顶部 Banner 和动态文案埋点</strong><p>Banner 必须记录稳定 banner_id、内容名、位置和曝光批次；收益率等动态值放属性，不再拼进 element_content。优先消灭空元素点击。</p></div>
+          </div>
+          <div class="priority">
+            <span class="tag red">P0</span>
+            <div><strong>排查两个异常入口</strong><p>逐端复现「攒钱计划」点击后目标到达仅 73.58%、「投顾助理」点击与打开事件不一致，区分真实跳转失败、登录打断与事件漏报。</p></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="priority">
+            <span class="tag orange">P1</span>
+            <div><strong>保护“规模 × 转化”最强内容</strong><p>「我要稳稳的幸福」继续承担主力坑位；对「盈米宝」「货币三佳」做小流量提权实验，而非直接全量置顶。</p></div>
+          </div>
+          <div class="priority">
+            <span class="tag orange">P1</span>
+            <div><strong>优化高兴趣、低交易意向内容</strong><p>「全球丰收」强化适合谁、为何现在、主要风险和资金期限；「春华秋实」缩短介绍页或提高进入详情的主行动按钮权重。</p></div>
+          </div>
+          <div class="priority">
+            <span class="tag orange">P1</span>
+            <div><strong>用实验验证排序，不用历史相关性拍板</strong><p>按新老用户、资产量、四笔钱选择、持仓状态分层随机实验；主指标用下单成功/资金净流入，护栏看误触、撤单和风险适配。</p></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>口径与复核说明</h2>
+          <p class="section-desc">任何数字离开口径都不可复用。</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <article class="card">
+          <h3>本报告使用的三个转化层</h3>
+          <ul class="method-list">
+            <li><strong>页面点击率代理</strong> = 某内容 AppClick 去重用户 ÷ App 投顾页访问去重用户 76,758。</li>
+            <li><strong>10 分钟目标到达率</strong> = 同一用户某内容首击后 10 分钟内出现对应目标事件的人数 ÷ 点击用户。</li>
+            <li><strong>7 日同策略下单请求率</strong> = 7 月 1—16 日某策略首击用户中，7 天内出现相同 product_id 的 product_order_request 人数 ÷ 完整观察点击用户。</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>不能据此直接推断什么</h3>
+          <ul class="method-list">
+            <li>下单请求不是下单成功，不代表最终成交、资金净流入或留存。</li>
+            <li>7 日同用户同策略是归因代理，不证明点击造成了下单；既有持仓、搜索、消息触达等路径可能同时发生。</li>
+            <li>不同内容在页面上的真实曝光次数未知，不能用页面访问用户替代模块曝光后称为严格 CTR。</li>
+            <li>用户可点击多个内容，各内容 UV 和点击率不可直接相加。</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>历史参照（不与当前混算）</h2>
+          <p class="section-desc">旧看板仅用于理解既有漏斗，不代表 2026 年当前表现。</p>
+        </div>
+        <span class="tag gray">2023 历史数据</span>
+      </div>
+      <article class="card table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>历史入口</th><th>时间</th><th>投顾页 UV</th><th>入口点击 UV / 率</th><th>目标到达 UV / 点击后率</th><th>页面到目标总转化</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="content-name">养老专区</span></td><td>2023-01-07—03-17</td><td>186,925</td><td>6,530 / 3.49%</td><td>6,319 / 96.77%</td><td>3.38%</td></tr>
+              <tr><td><span class="content-name">小顾问诊</span></td><td>2023-02-01—03-15</td><td>150,965</td><td>6,453 / 4.27%</td><td>4,272 / 66.20%</td><td>2.83%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <footer class="footer">
+      <strong>数据来源：</strong>神策生产项目只读查询，事件表 <code>rawdata.events</code>；当前页面结构由且慢公开投顾页与本地产品资料交叉核对。<br>
+      <strong>页面口径：</strong>App 使用 <code>$AppViewScreen</code> 且标题为“投顾”；Web 使用 <code>$pageview</code> 且路径为 <code>/m4</code>，Web 仅作 Banner 补充，不与 App 主表混算。<br>
+      <strong>覆盖说明：</strong>已覆盖当前可识别的四笔钱导航、10 个策略、5 个服务入口与 9 个保险内容；顶部 Banner、空元素及部分原生目标事件因埋点缺失单独列为数据缺口。底部全局导航及「投顾 Tab」属于页面入口，不作为本页内容参与排名。
+    </footer>
+  </main>
+</body>
+</html>
