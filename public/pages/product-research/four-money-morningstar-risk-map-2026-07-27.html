@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="四笔钱公募策略的晨星风险分与3年期评分二维定位图。">
+  <meta property="og:title" content="公募策略风险—三年评分二维图">
+  <meta property="og:description" content="晨星风险分 × 3年期评分，比较稳钱与长钱策略的定位。">
+  <title>公募策略风险—三年评分二维图｜四笔钱</title>
+  <style>
+    :root {
+      --brand: #1b88ee;
+      --brand-deep: #116fc8;
+      --ink: #333;
+      --body: #606060;
+      --muted: #8a8f98;
+      --page: #f9fafb;
+      --card: #fff;
+      --line: #d8d8d8;
+      --blue: #69b1f4;
+      --blue-deep: #2f7fc9;
+      --orange: #f88d72;
+      --orange-deep: #d9654d;
+      --good: #07ad8f;
+      --shadow: 0 18px 55px rgba(38, 83, 120, .10);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--page); scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 88% 4%, rgba(105, 177, 244, .18), transparent 28rem),
+        linear-gradient(180deg, #f4f8fd 0, var(--page) 360px);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+    }
+    button, input { font: inherit; }
+    [hidden] { display: none !important; }
+    .gate {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(105, 177, 244, .28), transparent 24rem),
+        linear-gradient(145deg, #0d6fca, #1b88ee 48%, #69b1f4);
+    }
+    .gate-card {
+      width: min(420px, 100%);
+      border: 1px solid rgba(255,255,255,.42);
+      border-radius: 24px;
+      padding: 34px;
+      color: #fff;
+      background: rgba(19, 91, 157, .58);
+      box-shadow: 0 28px 80px rgba(8, 50, 88, .32);
+      backdrop-filter: blur(18px);
+    }
+    .gate-mark {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      margin-bottom: 28px;
+      border-radius: 16px;
+      color: var(--brand);
+      background: #fff;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .gate h1 { margin: 0; font-size: 28px; line-height: 1.3; }
+    .gate p { margin: 10px 0 24px; color: rgba(255,255,255,.82); line-height: 1.7; }
+    .gate-form { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+    .gate input {
+      min-width: 0;
+      height: 46px;
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 10px;
+      padding: 0 14px;
+      color: #fff;
+      outline: none;
+      background: rgba(255,255,255,.12);
+    }
+    .gate input::placeholder { color: rgba(255,255,255,.62); }
+    .gate input:focus { border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.16); }
+    .gate button {
+      height: 46px;
+      border: 0;
+      border-radius: 10px;
+      padding: 0 18px;
+      color: var(--brand);
+      background: #fff;
+      cursor: pointer;
+      font-weight: 650;
+    }
+    .gate-error {
+      min-height: 20px;
+      margin-top: 10px !important;
+      margin-bottom: 0 !important;
+      color: #fff !important;
+      font-size: 13px;
+    }
+    .hero {
+      padding: 54px 24px 30px;
+    }
+    .hero-inner, .content, .footer-inner { width: min(1180px, 100%); margin: 0 auto; }
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--brand);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      max-width: 920px;
+      margin: 0;
+      font-size: clamp(34px, 5.4vw, 64px);
+      font-weight: 650;
+      letter-spacing: -.045em;
+      line-height: 1.08;
+    }
+    .hero-copy {
+      max-width: 760px;
+      margin: 20px 0 0;
+      color: var(--body);
+      font-size: clamp(15px, 2vw, 19px);
+      line-height: 1.8;
+    }
+    .content { padding: 0 24px 54px; }
+    .chart-card {
+      border: 1px solid rgba(27, 136, 238, .16);
+      border-radius: 24px;
+      background: rgba(255,255,255,.95);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .chart-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 24px 0;
+    }
+    .legend { display: flex; flex-wrap: wrap; gap: 16px; color: var(--body); font-size: 13px; }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); }
+    .dot.orange { border-radius: 2px; background: var(--orange); transform: rotate(45deg); }
+    .chart-stat { color: var(--muted); font-size: 13px; }
+    .chart-scroll { padding: 6px 12px 0; overflow-x: auto; }
+    .chart-wrap { position: relative; min-width: 760px; }
+    #chart {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 520px;
+    }
+    .tooltip {
+      position: absolute;
+      z-index: 5;
+      width: max-content;
+      max-width: 270px;
+      pointer-events: none;
+      border: 1px solid rgba(27, 136, 238, .18);
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: var(--ink);
+      background: rgba(255,255,255,.98);
+      box-shadow: 0 12px 36px rgba(38, 83, 120, .18);
+      font-size: 12px;
+      line-height: 1.6;
+      transform: translate(12px, -50%);
+    }
+    .tooltip strong { display: block; margin-bottom: 2px; font-size: 13px; }
+    .axis-note {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      border-top: 1px solid #edf1f5;
+      padding: 16px 24px 20px;
+      color: var(--body);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .axis-note strong { color: var(--ink); }
+    .takeaways {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .takeaway {
+      border: 1px solid #e6edf5;
+      border-radius: 16px;
+      padding: 18px;
+      background: var(--card);
+    }
+    .takeaway .num { color: var(--brand); font-size: 12px; font-weight: 700; }
+    .takeaway h2 { margin: 9px 0 8px; font-size: 17px; line-height: 1.4; }
+    .takeaway p { margin: 0; color: var(--body); font-size: 13px; line-height: 1.7; }
+    details {
+      margin-top: 18px;
+      border: 1px solid #e6edf5;
+      border-radius: 16px;
+      padding: 0 18px;
+      background: var(--card);
+    }
+    summary { padding: 16px 0; cursor: pointer; color: var(--ink); font-weight: 650; }
+    .method {
+      border-top: 1px solid #edf1f5;
+      padding: 15px 0 18px;
+      color: var(--body);
+      font-size: 13px;
+      line-height: 1.75;
+    }
+    .method p { margin: 0 0 9px; }
+    footer { border-top: 1px solid #e4eaf0; padding: 24px; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .footer-inner p { margin: 0; }
+    @media (max-width: 760px) {
+      .hero { padding-top: 40px; }
+      .chart-head, .axis-note, .footer-inner { align-items: flex-start; flex-direction: column; }
+      .takeaways { grid-template-columns: 1fr; }
+      .chart-scroll { padding-left: 4px; padding-right: 4px; }
+    }
+    @media (max-width: 480px) {
+      .gate-card { padding: 26px 22px; }
+      .gate-form { grid-template-columns: 1fr; }
+      .hero, .content { padding-left: 16px; padding-right: 16px; }
+      .chart-head { padding-left: 16px; padding-right: 16px; }
+    }
+    @media print {
+      .gate { display: none !important; }
+      #report { display: block !important; }
+      body { background: #fff; }
+      .chart-card, .takeaway, details { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <section class="gate" id="gate" aria-labelledby="gate-title">
+    <div class="gate-card">
+      <div class="gate-mark" aria-hidden="true">且</div>
+      <h1 id="gate-title">策略定位图</h1>
+      <p>请输入访问密码查看晨星风险与3年期评分二维图。</p>
+      <form class="gate-form" id="gate-form">
+        <input id="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="访问密码" aria-label="访问密码" required>
+        <button type="submit">进入</button>
+      </form>
+      <p class="gate-error" id="gate-error" role="alert" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <main id="report" hidden>
+    <header class="hero">
+      <div class="hero-inner">
+        <p class="eyebrow">Qieman · Four Money Strategy Map</p>
+        <h1>公募策略风险—三年评分二维图</h1>
+        <p class="hero-copy">X 轴是晨星风险分，Y 轴是3年期评分。越往右风险定位越高，越往上评分越高；颜色区分“稳钱”与“长钱”。</p>
+      </div>
+    </header>
+
+    <section class="content" aria-label="策略二维图与结论">
+      <article class="chart-card">
+        <div class="chart-head">
+          <div class="legend" aria-label="图例">
+            <span><i class="dot" aria-hidden="true"></i>稳钱</span>
+            <span><i class="dot orange" aria-hidden="true"></i>长钱</span>
+            <span>虚线：样本中位数</span>
+          </div>
+          <div class="chart-stat">有效样本 16 个 · 数据截止 2026-06-15</div>
+        </div>
+        <div class="chart-scroll">
+          <div class="chart-wrap">
+            <svg id="chart" viewBox="0 0 1120 620" role="img" aria-labelledby="chart-title chart-desc">
+              <title id="chart-title">晨星风险分与3年期评分散点图</title>
+              <desc id="chart-desc">16个策略按晨星风险分和3年期评分定位，蓝色圆点代表稳钱，橙色菱形代表长钱。</desc>
+            </svg>
+            <div class="tooltip" id="tooltip" hidden></div>
+          </div>
+        </div>
+        <div class="axis-note">
+          <span><strong>象限线：</strong>晨星风险分中位数 23；3年期评分中位数 72。</span>
+          <span>悬停或轻触策略点可查看精确值。</span>
+        </div>
+      </article>
+
+      <section class="takeaways" aria-label="读图结论">
+        <article class="takeaway">
+          <span class="num">01</span>
+          <h2>稳钱集中在低风险区</h2>
+          <p>花好月圆、生生不息、风和日丽、全球丰收位于“低风险 / 较高评分”象限。</p>
+        </article>
+        <article class="takeaway">
+          <span class="num">02</span>
+          <h2>高分长钱也承担更高风险</h2>
+          <p>中西合璧与思远定投全球好资产的3年期评分最高，同时晨星风险分也明显较高。</p>
+        </article>
+        <article class="takeaway">
+          <span class="num">03</span>
+          <h2>高风险不自动对应高评分</h2>
+          <p>周周同行、全球优选、二八轮动位于“较高风险 / 较低评分”象限，建议进一步复核。</p>
+        </article>
+      </section>
+
+      <details>
+        <summary>口径与缺失数据</summary>
+        <div class="method">
+          <p>仅纳入晨星风险分和3年期评分均为数值的公募策略，缺失值未按 0 处理。象限以本页16个有效样本的中位数划分，仅用于相对定位。</p>
+          <p>未入图：盈米宝、锦上添花、稳健（3070）、守恒（5050）、简慢、月月分红、行业风向标、进取派优选、策略新上。</p>
+          <p>本图是策略定位辅助，不构成收益预测或投资建议；具体评分算法以原始表口径为准。</p>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <footer id="footer" hidden>
+    <div class="footer-inner">
+      <p>来源：Clair 提供的《公募策略体系》表</p>
+      <p>整理更新：2026-07-27 · 内部研究使用</p>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const gate = document.getElementById("gate");
+      const report = document.getElementById("report");
+      const footer = document.getElementById("footer");
+      const form = document.getElementById("gate-form");
+      const password = document.getElementById("password");
+      const error = document.getElementById("gate-error");
+
+      function unlock() {
+        gate.hidden = true;
+        report.hidden = false;
+        footer.hidden = false;
+        sessionStorage.setItem("qieman-risk-map-unlocked", "1");
+        requestAnimationFrame(drawChart);
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (password.value === "2026") {
+          error.textContent = "";
+          unlock();
+        } else {
+          error.textContent = "密码不正确，请重试。";
+          password.select();
+        }
+      });
+
+      if (sessionStorage.getItem("qieman-risk-map-unlocked") === "1") {
+        unlock();
+      } else {
+        password.focus();
+      }
+
+      const data = [
+        { name: "花好月圆", group: "稳钱", risk: 3, score: 82, dx: 10, dy: -12, anchor: "start" },
+        { name: "债基优等生", group: "稳钱", risk: 6, score: 66, dx: 10, dy: 20, anchor: "start" },
+        { name: "息息相关", group: "稳钱", risk: 9, score: 71, dx: 10, dy: -12, anchor: "start" },
+        { name: "我要稳稳的幸福", group: "稳钱", risk: 11, score: 64, dx: 10, dy: 20, anchor: "start" },
+        { name: "生生不息", group: "稳钱", risk: 21, score: 78, dx: 10, dy: -12, anchor: "start" },
+        { name: "风和日丽", group: "稳钱", risk: 15, score: 75, dx: 10, dy: -12, anchor: "start" },
+        { name: "全球丰收", group: "稳钱", risk: 18, score: 72, dx: 10, dy: 20, anchor: "start" },
+        { name: "天颐五剑", group: "长钱", risk: 30, score: 72, dx: 10, dy: 20, anchor: "start" },
+        { name: "春华秋实", group: "长钱", risk: 21, score: 63, dx: 10, dy: 22, anchor: "start" },
+        { name: "全天候-永久", group: "长钱", risk: 25, score: 78, dx: 10, dy: -13, anchor: "start" },
+        { name: "周周同行", group: "长钱", risk: 60, score: 70, dx: -12, dy: -20, anchor: "end" },
+        { name: "思远定投全球好资产", group: "长钱", risk: 67, score: 84, dx: -12, dy: -13, anchor: "end" },
+        { name: "中西合璧", group: "长钱", risk: 59, score: 86, dx: 10, dy: -13, anchor: "start" },
+        { name: "U定投", group: "长钱", risk: 74, score: 76, dx: -12, dy: -13, anchor: "end" },
+        { name: "全球优选", group: "长钱", risk: 61, score: 69, dx: 13, dy: 7, anchor: "start" },
+        { name: "二八轮动", group: "长钱", risk: 62, score: 68, dx: -13, dy: 28, anchor: "end" }
+      ];
+
+      let drawn = false;
+      function drawChart() {
+        if (drawn) return;
+        drawn = true;
+        const svg = document.getElementById("chart");
+        const tooltip = document.getElementById("tooltip");
+        const ns = "http://www.w3.org/2000/svg";
+        const left = 86, right = 1075, top = 48, bottom = 548;
+        const x = value => left + (value / 80) * (right - left);
+        const y = value => bottom - ((value - 60) / 30) * (bottom - top);
+        const make = (tag, attrs = {}, text = "") => {
+          const node = document.createElementNS(ns, tag);
+          Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+          if (text) node.textContent = text;
+          return node;
+        };
+
+        const zones = [
+          { x: left, y: top, w: x(23) - left, h: y(72) - top, fill: "#eaf7f4", label: "低风险 · 较高评分" },
+          { x: x(23), y: top, w: right - x(23), h: y(72) - top, fill: "#f0f6ff", label: "较高风险 · 较高评分" },
+          { x: left, y: y(72), w: x(23) - left, h: bottom - y(72), fill: "#fafbfc", label: "低风险 · 较低评分" },
+          { x: x(23), y: y(72), w: right - x(23), h: bottom - y(72), fill: "#fff7f3", label: "较高风险 · 较低评分" }
+        ];
+        zones.forEach(zone => {
+          svg.appendChild(make("rect", { x: zone.x, y: zone.y, width: zone.w, height: zone.h, fill: zone.fill }));
+          svg.appendChild(make("text", { x: zone.x + 12, y: zone.y + 22, fill: "#8a8f98", "font-size": "12" }, zone.label));
+        });
+
+        [60, 65, 70, 75, 80, 85, 90].forEach(value => {
+          svg.appendChild(make("line", { x1: left, y1: y(value), x2: right, y2: y(value), stroke: "#dde4eb", "stroke-width": "1" }));
+          svg.appendChild(make("text", { x: left - 14, y: y(value) + 4, "text-anchor": "end", fill: "#7a838d", "font-size": "12" }, value));
+        });
+        [0, 10, 20, 30, 40, 50, 60, 70, 80].forEach(value => {
+          svg.appendChild(make("line", { x1: x(value), y1: top, x2: x(value), y2: bottom, stroke: "#edf1f5", "stroke-width": "1" }));
+          svg.appendChild(make("text", { x: x(value), y: bottom + 24, "text-anchor": "middle", fill: "#7a838d", "font-size": "12" }, value));
+        });
+        svg.appendChild(make("line", { x1: x(23), y1: top, x2: x(23), y2: bottom, stroke: "#7a838d", "stroke-width": "1.5", "stroke-dasharray": "6 6" }));
+        svg.appendChild(make("line", { x1: left, y1: y(72), x2: right, y2: y(72), stroke: "#7a838d", "stroke-width": "1.5", "stroke-dasharray": "6 6" }));
+        svg.appendChild(make("text", { x: x(23) + 7, y: bottom - 8, fill: "#606060", "font-size": "11" }, "中位数 23"));
+        svg.appendChild(make("text", { x: right - 6, y: y(72) - 8, "text-anchor": "end", fill: "#606060", "font-size": "11" }, "中位数 72"));
+        svg.appendChild(make("line", { x1: left, y1: bottom, x2: right, y2: bottom, stroke: "#69747e", "stroke-width": "1.5" }));
+        svg.appendChild(make("line", { x1: left, y1: top, x2: left, y2: bottom, stroke: "#69747e", "stroke-width": "1.5" }));
+        svg.appendChild(make("text", { x: (left + right) / 2, y: 602, "text-anchor": "middle", fill: "#333", "font-size": "14", "font-weight": "600" }, "晨星风险分 →"));
+        const yTitle = make("text", { x: 22, y: (top + bottom) / 2, "text-anchor": "middle", fill: "#333", "font-size": "14", "font-weight": "600", transform: `rotate(-90 22 ${(top + bottom) / 2})` }, "3年期评分 →");
+        svg.appendChild(yTitle);
+
+        data.forEach(item => {
+          const group = make("g", { "data-name": item.name, style: "cursor:pointer" });
+          const cx = x(item.risk), cy = y(item.score);
+          if (item.group === "稳钱") {
+            group.appendChild(make("circle", { cx, cy, r: 8, fill: "#69b1f4", stroke: "#fff", "stroke-width": "2.5" }));
+          } else {
+            group.appendChild(make("rect", { x: cx - 7, y: cy - 7, width: 14, height: 14, rx: 2, fill: "#f88d72", stroke: "#fff", "stroke-width": "2.5", transform: `rotate(45 ${cx} ${cy})` }));
+          }
+          group.appendChild(make("text", {
+            x: cx + item.dx,
+            y: cy + item.dy,
+            "text-anchor": item.anchor,
+            fill: "#333",
+            "font-size": item.name.length > 10 ? "11" : "12",
+            "font-weight": "600",
+            stroke: "#fff",
+            "stroke-width": "3.5",
+            "paint-order": "stroke",
+            "stroke-linejoin": "round"
+          }, item.name));
+          const show = event => {
+            tooltip.innerHTML = `<strong>${item.name}</strong>${item.group} · 晨星风险分 ${item.risk} · 3年期评分 ${item.score}`;
+            tooltip.hidden = false;
+            const box = document.querySelector(".chart-wrap").getBoundingClientRect();
+            tooltip.style.left = `${Math.min(event.clientX - box.left, box.width - 290)}px`;
+            tooltip.style.top = `${event.clientY - box.top}px`;
+          };
+          group.addEventListener("pointerenter", show);
+          group.addEventListener("pointermove", show);
+          group.addEventListener("pointerleave", () => { tooltip.hidden = true; });
+          group.addEventListener("click", show);
+          svg.appendChild(group);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
