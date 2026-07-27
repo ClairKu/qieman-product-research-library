@@ -3,144 +3,122 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="description" content="盈米 AI 实验室移动端产品 Demo：让个性化金融服务从 AI 小顾的一次自然对话中生长出来。">
+  <meta name="description" content="盈米 AI 实验室产品 Demo：官方可视化服务组件、自然语言编排与完整服务生产闭环。">
   <meta name="theme-color" content="#eef5ff">
-  <meta property="og:title" content="盈米 AI 实验室｜对话即服务">
-  <meta property="og:description" content="从一次回答，到一项长期服务。保存、发布、分享、订阅与再造。">
+  <meta property="og:title" content="盈米 AI 实验室｜服务组件编排 Demo">
+  <meta property="og:description" content="从关键场景出发，自动组合官方组件，生成可修改、保存、发布与再造的个性化金融服务。">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%231B88EE'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='34' font-family='Arial' fill='white'%3EAI%3C/text%3E%3C/svg%3E">
-  <title>盈米 AI 实验室｜对话即服务 Demo</title>
+  <title>盈米 AI 实验室｜服务组件编排 Demo</title>
   <style>
     :root{
-      --brand:#1b88ee;--brand-deep:#1168b8;--brand-soft:#eff6ff;--ink:#18354c;--text:#334a5d;
-      --muted:#748796;--subtle:#a0adb7;--line:#dce7ef;--line-soft:#eaf0f4;--paper:#fff;--canvas:#eef4f8;
-      --blue-2:#dcebff;--mint:#07ad8f;--mint-soft:#e9f8f4;--violet:#7559ce;--violet-soft:#f1eefc;
-      --amber:#ea9500;--amber-soft:#fff7e8;--danger:#fa440c;--shadow:0 20px 60px rgba(16,51,78,.13);
-      --soft:0 8px 28px rgba(16,51,78,.08);--phone-w:390px;--phone-h:844px;
+      --brand:#1b88ee;--brand-deep:#1168b8;--brand-soft:#eff6ff;--brand-line:#9ccbf8;
+      --ink:#18354c;--text:#344d60;--muted:#748796;--subtle:#a0adb7;--line:#dce7ef;--line-soft:#eaf0f4;
+      --paper:#fff;--canvas:#edf4f8;--mint:#07ad8f;--mint-soft:#e9f8f4;--violet:#7559ce;--violet-soft:#f1eefc;
+      --amber:#ea9500;--amber-soft:#fff7e8;--red:#fa440c;--red-soft:#feede9;--navy:#0d2d47;
+      --chart1:#69b1f4;--chart2:#f88d72;--chart3:#fbca74;--chart4:#7dd4c4;
+      --shadow:0 22px 70px rgba(16,51,78,.13);--soft:0 8px 28px rgba(16,51,78,.08);
+      --phone-w:402px;--phone-h:862px;
     }
-    *{box-sizing:border-box}
-    html,body{margin:0;min-height:100%;background:var(--canvas);color:var(--text);
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--canvas);color:var(--text);
       font-family:"PingFang SC","SF Pro Display","Microsoft YaHei",Arial,sans-serif;-webkit-font-smoothing:antialiased}
-    button,input,textarea{font:inherit}button{color:inherit;cursor:pointer}.hidden{display:none!important}
-    button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid rgba(27,136,238,.22);outline-offset:2px}
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-    .icon{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:9px;background:var(--brand-soft);color:var(--brand-deep);
-      font-size:10px;font-weight:850;font-style:normal}.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;background:var(--brand-soft);
-      color:var(--brand-deep);font-size:8px;font-weight:800}.pill:before{width:5px;height:5px;border-radius:50%;background:currentColor;content:""}
-    .pill.mint{background:var(--mint-soft);color:#087e6a}.pill.violet{background:var(--violet-soft);color:var(--violet)}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 15px;border-radius:11px;font-size:10px;font-weight:800;transition:.18s}
+    button,input,textarea{font:inherit}button{color:inherit;cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid rgba(27,136,238,.22);outline-offset:2px}
+    .hidden{display:none!important}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .pill{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;background:var(--brand-soft);color:var(--brand-deep);font-size:7px;font-weight:850}
+    .pill:before{width:5px;height:5px;border-radius:50%;background:currentColor;content:""}.pill.mint{background:var(--mint-soft);color:#087d69}.pill.violet{background:var(--violet-soft);color:var(--violet)}
+    .pill.amber{background:var(--amber-soft);color:#aa6d00}.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 14px;border-radius:10px;font-size:9px;font-weight:850;transition:.18s}
     .btn:hover{transform:translateY(-1px)}.btn.primary{border:1px solid var(--brand);background:var(--brand);color:#fff;box-shadow:0 8px 18px rgba(27,136,238,.18)}
-    .btn.secondary{border:1px solid var(--line);background:#fff;color:#587082}.btn.ghost{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:#fff}
-    .btn.text{border:0;background:transparent;color:var(--brand-deep)}.btn.block{width:100%}
+    .btn.secondary{border:1px solid var(--line);background:#fff;color:#5a7182}.btn.dark{border:1px solid #224b6a;background:var(--navy);color:#fff}.btn.block{width:100%}
+    .icon-box{display:grid;width:36px;height:36px;place-items:center;border-radius:12px;background:var(--brand-soft);color:var(--brand-deep);font-size:11px;font-weight:900}
 
-    /* password */
-    .gate{position:fixed;z-index:999;inset:0;display:grid;place-items:center;overflow:hidden;padding:24px;color:#fff;
-      background:linear-gradient(145deg,#071c2f,#0e385c 58%,#176da9 140%)}
-    .gate:before,.gate:after{position:absolute;border:1px solid rgba(151,213,255,.16);border-radius:50%;content:""}
-    .gate:before{width:620px;height:620px;right:-200px;top:-240px;box-shadow:0 0 0 80px rgba(103,187,247,.03),0 0 0 160px rgba(103,187,247,.02)}
-    .gate:after{width:440px;height:440px;left:-180px;bottom:-220px}.gate-card{position:relative;z-index:2;width:min(420px,100%);padding:34px;
-      border:1px solid rgba(255,255,255,.14);border-radius:26px;background:rgba(255,255,255,.08);box-shadow:0 28px 90px rgba(0,0,0,.25);backdrop-filter:blur(22px)}
-    .gate-brand{width:auto;height:28px;object-fit:contain;margin-bottom:44px}.gate-kicker{display:flex;align-items:center;gap:8px;color:#8ecbfa;font-size:9px;font-weight:850;letter-spacing:.17em}
-    .gate-kicker:before{width:7px;height:7px;border-radius:50%;background:#75dbc8;box-shadow:0 0 0 5px rgba(117,219,200,.12);content:""}
-    .gate h1{margin:14px 0 11px;font-size:32px;letter-spacing:-.045em}.gate p{margin:0;color:#bed0dd;font-size:12px;line-height:1.7}
-    .gate-form{display:flex;gap:8px;margin-top:28px}.gate input{min-width:0;flex:1;padding:13px 14px;border:1px solid rgba(255,255,255,.17);border-radius:11px;
-      background:rgba(255,255,255,.08);color:#fff;letter-spacing:.14em}.gate input::placeholder{color:#87a3b8;letter-spacing:0}.gate button{padding:12px 18px;border:0;border-radius:11px;background:#fff;color:#1265a8;font-weight:800}
-    .gate-error{height:18px;margin-top:9px!important;color:#ffc2b3!important;font-size:10px!important}.shake{animation:shake .35s ease}@keyframes shake{25%{transform:translateX(-7px)}50%{transform:translateX(7px)}75%{transform:translateX(-4px)}}
+    /* gate */
+    .gate{position:fixed;z-index:999;inset:0;display:grid;place-items:center;overflow:hidden;padding:24px;color:#fff;background:linear-gradient(145deg,#071c2f,#0e385c 58%,#176da9 140%)}
+    .gate:before,.gate:after{position:absolute;border:1px solid rgba(151,213,255,.16);border-radius:50%;content:""}.gate:before{width:620px;height:620px;right:-200px;top:-240px;box-shadow:0 0 0 80px rgba(103,187,247,.03),0 0 0 160px rgba(103,187,247,.02)}
+    .gate:after{width:440px;height:440px;left:-180px;bottom:-220px}.gate-card{position:relative;z-index:2;width:min(430px,100%);padding:34px;border:1px solid rgba(255,255,255,.14);border-radius:26px;background:rgba(255,255,255,.08);box-shadow:0 28px 90px rgba(0,0,0,.25);backdrop-filter:blur(22px)}
+    .gate-brand{width:auto;height:28px;object-fit:contain;margin-bottom:42px}.gate-kicker{display:flex;align-items:center;gap:8px;color:#8ecbfa;font-size:9px;font-weight:850;letter-spacing:.17em}
+    .gate-kicker:before{width:7px;height:7px;border-radius:50%;background:#75dbc8;box-shadow:0 0 0 5px rgba(117,219,200,.12);content:""}.gate h1{margin:14px 0 11px;font-size:31px;letter-spacing:-.045em}
+    .gate p{margin:0;color:#bed0dd;font-size:12px;line-height:1.7}.gate-form{display:flex;gap:8px;margin-top:27px}.gate input{min-width:0;flex:1;padding:13px 14px;border:1px solid rgba(255,255,255,.17);border-radius:11px;background:rgba(255,255,255,.08);color:#fff;letter-spacing:.14em}
+    .gate input::placeholder{color:#87a3b8;letter-spacing:0}.gate button{padding:12px 18px;border:0;border-radius:11px;background:#fff;color:#1265a8;font-weight:800}.gate-error{height:18px;margin-top:9px!important;color:#ffc2b3!important;font-size:10px!important}
+    .shake{animation:shake .35s ease}@keyframes shake{25%{transform:translateX(-7px)}50%{transform:translateX(7px)}75%{transform:translateX(-4px)}}@keyframes fade{from{opacity:0;transform:translateY(3px)}}
 
-    /* desktop experience frame */
-    .experience{min-height:100vh;padding:22px;background:
-      radial-gradient(circle at 8% 5%,rgba(105,177,244,.16),transparent 26rem),
-      radial-gradient(circle at 95% 95%,rgba(125,212,196,.13),transparent 30rem),var(--canvas)}
-    .experience-head{display:flex;align-items:center;justify-content:space-between;max-width:1320px;margin:0 auto 18px;padding:0 8px}
-    .brand{display:flex;align-items:center;gap:11px}.brand img{width:91px;height:28px;object-fit:contain;object-position:left}.brand-divider{width:1px;height:23px;background:#cfdae3}
-    .brand span b,.brand span small{display:block}.brand span b{color:var(--ink);font-size:13px}.brand span small{margin-top:2px;color:var(--subtle);font-size:8px;letter-spacing:.08em}
-    .version{padding:7px 10px;border:1px solid #d7e3eb;border-radius:999px;background:rgba(255,255,255,.65);color:#748796;font-size:8px}
-    .experience-grid{display:grid;grid-template-columns:minmax(520px,1fr) 450px;gap:28px;align-items:center;max-width:1320px;margin:auto}
-
-    /* concept board */
-    .concept{min-height:var(--phone-h);padding:42px;border:1px solid rgba(218,229,237,.9);border-radius:30px;background:rgba(255,255,255,.82);box-shadow:var(--soft);backdrop-filter:blur(20px)}
-    .eyebrow{color:var(--brand-deep);font-size:9px;font-weight:850;letter-spacing:.17em}.concept h1{max-width:760px;margin:13px 0 13px;color:var(--ink);font-size:clamp(35px,4.2vw,55px);line-height:1.12;letter-spacing:-.055em}
-    .concept h1 span{color:var(--brand)}.concept-lead{max-width:700px;margin:0;color:var(--muted);font-size:12px;line-height:1.8}
-    .principles{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:28px}.principle{min-height:116px;padding:16px;border:1px solid var(--line);border-radius:15px;background:#fff}
-    .principle strong{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:11px}.principle strong i{display:grid;width:25px;height:25px;place-items:center;border-radius:8px;background:var(--brand-soft);color:var(--brand-deep);font-style:normal;font-size:9px}
-    .principle p{margin:12px 0 0;color:var(--muted);font-size:9px;line-height:1.6}
-    .object-card{margin-top:10px;padding:18px;border-radius:17px;background:linear-gradient(145deg,#143b5a,#0b273e);color:#fff}.object-head{display:flex;justify-content:space-between;gap:15px}
-    .object-head h3{margin:7px 0 0;font-size:16px}.object-head small{max-width:360px;color:#a9c2d4;font-size:8px;line-height:1.55}.object-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:17px}
-    .object-flow span{padding:8px 9px;border:1px solid rgba(255,255,255,.1);border-radius:9px;background:rgba(255,255,255,.055);color:#d5e4ee;font-size:8px}.object-flow i{color:#75b7e7;font-style:normal;font-size:8px}
-    .rules{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}.rule{padding:10px;border:1px solid var(--line);border-radius:11px;background:#fff;text-align:center}
-    .rule b{display:block;color:var(--brand-deep);font-size:10px}.rule small{display:block;margin-top:4px;color:var(--muted);font-size:7px;line-height:1.35}
-    .scenario-nav{display:flex;flex-wrap:wrap;gap:7px;margin-top:20px}.scenario-nav button{padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6c8090;font-size:8px}
-    .scenario-nav button.active{border-color:#a7d0f2;background:var(--brand-soft);color:var(--brand-deep);font-weight:800}
-    .desktop-tip{margin-top:11px;color:#9aa9b5;font-size:7px}
+    /* desktop board */
+    .experience{min-height:100vh;padding:20px;background:radial-gradient(circle at 7% 4%,rgba(105,177,244,.16),transparent 27rem),radial-gradient(circle at 96% 96%,rgba(125,212,196,.13),transparent 30rem),var(--canvas)}
+    .experience-head{display:flex;align-items:center;justify-content:space-between;max-width:1380px;margin:0 auto 14px;padding:0 8px}.brand{display:flex;align-items:center;gap:11px}.brand img{width:91px;height:28px;object-fit:contain;object-position:left}
+    .brand-divider{width:1px;height:23px;background:#cfdae3}.brand span b,.brand span small{display:block}.brand span b{color:var(--ink);font-size:13px}.brand span small{margin-top:2px;color:var(--subtle);font-size:8px;letter-spacing:.08em}
+    .version{padding:7px 10px;border:1px solid #d7e3eb;border-radius:999px;background:rgba(255,255,255,.68);color:#748796;font-size:8px}.experience-grid{display:grid;grid-template-columns:minmax(620px,1fr) 455px;gap:26px;align-items:center;max-width:1380px;margin:auto}
+    .board{height:var(--phone-h);overflow:auto;padding:37px;border:1px solid rgba(218,229,237,.9);border-radius:30px;background:rgba(255,255,255,.84);box-shadow:var(--soft);backdrop-filter:blur(20px)}
+    .eyebrow{color:var(--brand-deep);font-size:8px;font-weight:850;letter-spacing:.17em}.board h1{max-width:820px;margin:12px 0 12px;color:var(--ink);font-size:clamp(34px,3.9vw,52px);line-height:1.12;letter-spacing:-.055em}.board h1 span{color:var(--brand)}
+    .board-lead{max-width:780px;margin:0;color:var(--muted);font-size:11px;line-height:1.75}.component-rack{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:22px}.rack-card{min-height:125px;padding:12px;border:1px solid var(--line);border-radius:13px;background:#fff}
+    .rack-top{display:flex;align-items:center;justify-content:space-between}.rack-top i{display:grid;width:27px;height:27px;place-items:center;border-radius:9px;background:var(--brand-soft);color:var(--brand-deep);font-size:8px;font-style:normal;font-weight:900}.rack-top small{color:#9ca9b3;font-size:6px}
+    .rack-card h3{margin:12px 0 4px;color:var(--ink);font-size:9px}.rack-card p{margin:0;color:var(--muted);font-size:7px;line-height:1.45}.mini-bars{display:flex;align-items:flex-end;gap:2px;height:22px;margin-top:8px}.mini-bars span{width:6px;border-radius:2px;background:var(--chart1)}
+    .logic{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}.logic-card{padding:15px;border-radius:15px}.logic-card.user{border:1px solid #b9d8f2;background:var(--brand-soft)}.logic-card.system{background:linear-gradient(145deg,#143b59,#0c2a42);color:#fff}
+    .logic-card h3{margin:0 0 10px;font-size:11px}.logic-card p{margin:0;color:#647b8b;font-size:8px;line-height:1.55}.logic-card.system p{color:#a9c1d2}.logic-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}.logic-tags span{padding:6px 7px;border-radius:7px;background:#fff;color:#5b7283;font-size:7px}
+    .logic-card.system .logic-tags span{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#d6e5ef}.scenario-nav{display:flex;flex-wrap:wrap;gap:6px;margin-top:13px}.scenario-nav button{padding:7px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6f8290;font-size:7px}
+    .scenario-nav button.active{border-color:#a6d0f2;background:var(--brand-soft);color:var(--brand-deep);font-weight:800}.desktop-tip{margin:9px 0 0;color:#9ca9b3;font-size:7px}
 
     /* phone */
-    .phone-wrap{position:relative;display:grid;place-items:center}.phone{position:relative;overflow:hidden;width:var(--phone-w);height:var(--phone-h);border:7px solid #17354c;border-radius:42px;background:#f7f9fb;
-      box-shadow:0 30px 100px rgba(16,47,70,.28)}.phone:before{position:absolute;z-index:130;top:8px;left:50%;width:104px;height:26px;transform:translateX(-50%);border-radius:999px;background:#17354c;content:""}
-    .screen{position:absolute;inset:0;display:none;background:linear-gradient(180deg,#ddecff 0,#f7f9fb 150px)}.screen.active{display:flex;flex-direction:column;animation:fade .25s ease both}@keyframes fade{from{opacity:0;transform:translateY(3px)}}
-    .statusbar{display:flex;align-items:center;justify-content:space-between;height:38px;padding:11px 17px 0;color:#385266;font-size:8px;font-weight:800}.status-icons{display:flex;gap:4px;align-items:center}.status-icons i{width:10px;height:6px;border-radius:2px;background:#3d5669}.status-icons i:last-child{width:15px}
+    .phone-wrap{display:grid;place-items:center}.phone{position:relative;overflow:hidden;width:var(--phone-w);height:var(--phone-h);border:7px solid #17354c;border-radius:43px;background:#f7f9fb;box-shadow:0 30px 100px rgba(16,47,70,.28)}
+    .phone:before{position:absolute;z-index:160;top:8px;left:50%;width:104px;height:26px;transform:translateX(-50%);border-radius:999px;background:#17354c;content:""}.screen{position:absolute;inset:0;display:none;background:linear-gradient(180deg,#ddecff 0,#f7f9fb 150px)}
+    .screen.active{display:flex;flex-direction:column;animation:fade .23s ease both}.statusbar{display:flex;align-items:center;justify-content:space-between;height:38px;padding:11px 17px 0;color:#385266;font-size:8px;font-weight:800}.status-icons{display:flex;gap:4px}.status-icons i{width:10px;height:6px;border-radius:2px;background:#3d5669}.status-icons i:last-child{width:15px}
     .appbar{display:grid;grid-template-columns:38px 1fr 38px;align-items:center;height:52px;padding:0 11px;color:var(--ink)}.appbar button{display:grid;width:34px;height:34px;place-items:center;border:0;border-radius:11px;background:transparent;font-size:17px}
-    .app-title{text-align:center}.app-title b,.app-title small{display:block}.app-title b{font-size:13px}.app-title small{margin-top:2px;color:#7c8f9e;font-size:7px}
-    .xiaogu-face{display:grid;width:32px;height:32px;place-items:center;border-radius:11px;background:linear-gradient(145deg,#fff,#cbe4fb);box-shadow:0 5px 12px rgba(27,136,238,.12);font-size:11px;font-weight:900;color:var(--brand-deep)}
-    .chat{min-height:0;flex:1;overflow:auto;padding:10px 14px 130px;scroll-behavior:smooth}.day{text-align:center;color:#9aa8b3;font-size:7px;margin:5px 0 13px}
-    .message{display:flex;gap:8px;margin-bottom:13px}.message.user{justify-content:flex-end}.bot-avatar{display:grid;width:27px;height:27px;flex:none;place-items:center;border-radius:9px;background:linear-gradient(145deg,#fff,#cce5fb);color:var(--brand-deep);font-size:8px;font-weight:900}
-    .bubble{max-width:295px;padding:11px 12px;border-radius:5px 15px 15px 15px;background:#fff;color:#3e5668;box-shadow:0 4px 15px rgba(17,56,85,.06);font-size:10px;line-height:1.6}
-    .user .bubble{border-radius:15px 5px 15px 15px;background:var(--brand);color:#fff}.bubble strong{color:var(--ink)}.user .bubble strong{color:#fff}
-    .chat-card{width:100%;margin:2px 0 14px;padding:14px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:var(--soft)}.chat-card h3{margin:9px 0 5px;color:var(--ink);font-size:13px}
-    .chat-card p{margin:0;color:var(--muted);font-size:8px;line-height:1.58}.report-card{display:grid;grid-template-columns:1fr 64px;gap:10px;align-items:center;padding:12px;border-radius:12px;background:linear-gradient(145deg,#edf6ff,#e0edff)}
-    .report-card b{display:block;color:var(--ink);font-size:10px}.report-card small{display:block;margin-top:5px;color:#728796;font-size:7px}.mini-chart{height:51px;padding:6px;border-radius:10px;background:rgba(255,255,255,.68)}
-    .seed-card{border-color:#bcdcf5;background:linear-gradient(145deg,#fff,#eff7ff)}.seed-card .seed-head{display:flex;align-items:flex-start;gap:9px}.spark{display:grid;width:33px;height:33px;flex:none;place-items:center;border-radius:11px;background:var(--brand);color:#fff;font-size:14px}
-    .seed-card h3{margin:0 0 5px;font-size:13px}.seed-card .actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:13px}.seed-card .actions .btn{padding:9px 8px;font-size:8px}
-    .smart-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.smart-chips button,.smart-chips span{padding:7px 8px;border:1px solid #cfe0ec;border-radius:999px;background:#fff;color:#5e7688;font-size:8px}
-    .smart-chips button.selected,.smart-chips span.selected{border-color:#a7d1f4;background:var(--brand-soft);color:var(--brand-deep);font-weight:800}.inline-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.inline-actions .btn{padding:9px 11px;font-size:8px}
-    .result-card{overflow:hidden;padding:0}.result-cover{padding:14px;background:linear-gradient(145deg,#173d5d,#0c2a43);color:#fff}.result-cover .pill{background:rgba(255,255,255,.11);color:#cce7fb}
-    .result-cover h3{margin:11px 0 5px;color:#fff;font-size:14px}.result-cover p{color:#a8c2d5}.result-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:12px}.result-metrics span{padding:8px;border:1px solid rgba(255,255,255,.1);border-radius:9px;background:rgba(255,255,255,.045)}
-    .result-metrics b,.result-metrics small{display:block}.result-metrics b{font-size:10px}.result-metrics small{margin-top:3px;color:#92aec2;font-size:6px}.result-body{padding:13px}.insight{display:grid;grid-template-columns:25px 1fr;gap:8px;padding:9px;border-radius:10px;background:#f4f7f9}
-    .insight i{display:grid;width:25px;height:25px;place-items:center;border-radius:8px;background:var(--brand-soft);color:var(--brand-deep);font-size:8px;font-style:normal;font-weight:900}.insight b{display:block;color:var(--ink);font-size:8px}.insight small{display:block;margin-top:3px;color:var(--muted);font-size:7px;line-height:1.45}
-    .service-card{padding:0;overflow:hidden}.service-cover{padding:14px;background:linear-gradient(145deg,#eff7ff,#e7f2ff)}.service-cover-top{display:flex;align-items:center;justify-content:space-between}.service-icon{display:grid;width:39px;height:39px;place-items:center;border-radius:13px;background:#fff;color:var(--brand-deep);font-size:12px;font-weight:900;box-shadow:0 6px 16px rgba(27,136,238,.1)}
-    .service-cover h3{margin:13px 0 5px}.service-body{padding:13px}.contract{display:grid;gap:6px}.contract-row{display:grid;grid-template-columns:60px 1fr;gap:7px;padding:7px;border-radius:9px;background:#f5f8fa;font-size:7px}
-    .contract-row span{color:#98a6b0}.contract-row b{color:#4b6577}.module-row{display:flex;gap:5px;overflow:auto;margin-top:9px}.module-row span{padding:6px 7px;border-radius:8px;background:var(--violet-soft);color:var(--violet);font-size:7px;white-space:nowrap}
-    .save-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}.save-actions .btn{padding:9px;font-size:8px}.fineprint{margin-top:8px;color:#a0adb7;font-size:6px;line-height:1.5}
-    .chat-input{position:absolute;z-index:90;right:0;bottom:0;left:0;padding:7px 12px 12px;background:linear-gradient(180deg,rgba(247,249,251,0),#f7f9fb 20%,#f7f9fb 100%)}
-    .quick-row{display:flex;gap:6px;overflow:auto;padding:8px 0 7px}.quick-row button{padding:7px 9px;border:1px solid #bcd9ee;border-radius:999px;background:#fff;color:var(--brand-deep);font-size:7px;white-space:nowrap}
-    .input-row{display:grid;grid-template-columns:34px 1fr 36px;gap:6px;align-items:center;padding:6px;border-radius:17px;background:#fff;box-shadow:0 3px 18px rgba(17,55,84,.09)}.input-row button{display:grid;width:32px;height:32px;place-items:center;border:0;border-radius:11px;background:transparent;color:var(--brand-deep)}
-    .input-row button.send{background:var(--brand);color:#fff}.input-row input{min-width:0;border:0;outline:0;color:#536c7d;font-size:9px}.input-row input::placeholder{color:#a5b0b9}
-    .menu-layer{position:absolute;z-index:100;inset:0;display:none;background:rgba(9,27,42,.36);backdrop-filter:blur(3px)}.menu-layer.show{display:block}.drawer{width:302px;height:100%;padding:52px 17px 20px;background:#fff;box-shadow:20px 0 60px rgba(0,0,0,.16)}
-    .drawer-brand{display:flex;align-items:center;gap:9px;margin-bottom:24px}.drawer-brand .xiaogu-face{width:38px;height:38px}.drawer-brand b,.drawer-brand small{display:block}.drawer-brand b{color:var(--ink);font-size:12px}.drawer-brand small{margin-top:3px;color:var(--muted);font-size:7px}
-    .drawer-nav{display:grid;gap:5px}.drawer-nav button{display:flex;align-items:center;gap:10px;padding:11px;border:0;border-radius:11px;background:transparent;color:#5e7383;font-size:9px;text-align:left}
-    .drawer-nav button:hover,.drawer-nav button.active{background:var(--brand-soft);color:var(--brand-deep);font-weight:800}.drawer-nav .icon{width:27px;height:27px}.drawer-title{margin:17px 9px 7px;color:#a0adb6;font-size:7px}
-    .drawer-service{padding:10px;border:1px solid var(--line);border-radius:11px;background:#fff}.drawer-service b{display:block;color:var(--ink);font-size:8px}.drawer-service small{display:block;margin-top:4px;color:var(--muted);font-size:7px}.drawer-foot{position:absolute;right:17px;bottom:20px;left:17px;padding-top:12px;border-top:1px solid var(--line-soft);color:#8898a4;font-size:7px}
+    .app-title{text-align:center}.app-title b,.app-title small{display:block}.app-title b{font-size:13px}.app-title small{margin-top:2px;color:#7c8f9e;font-size:7px}.xiaogu-face{display:grid;width:32px;height:32px;place-items:center;border-radius:11px;background:linear-gradient(145deg,#fff,#cbe4fb);box-shadow:0 5px 12px rgba(27,136,238,.12);font-size:11px;font-weight:900;color:var(--brand-deep)}
+    .content{min-height:0;flex:1;overflow:auto;padding:9px 13px 24px;scroll-behavior:smooth}.chat{padding-bottom:128px}.day{text-align:center;color:#9aa8b3;font-size:7px;margin:5px 0 13px}.message{display:flex;gap:8px;margin-bottom:12px}.message.user{justify-content:flex-end}
+    .bot-avatar{display:grid;width:27px;height:27px;flex:none;place-items:center;border-radius:9px;background:linear-gradient(145deg,#fff,#cce5fb);color:var(--brand-deep);font-size:8px;font-weight:900}.bubble{max-width:298px;padding:11px 12px;border-radius:5px 15px 15px 15px;background:#fff;color:#3e5668;box-shadow:0 4px 15px rgba(17,56,85,.06);font-size:9px;line-height:1.58}
+    .user .bubble{border-radius:15px 5px 15px 15px;background:var(--brand);color:#fff}.bubble strong{color:var(--ink)}.user .bubble strong{color:#fff}.chat-card{width:100%;margin:2px 0 13px;padding:13px;border:1px solid var(--line);border-radius:15px;background:#fff;box-shadow:var(--soft)}
+    .assembly-card{border-color:#bcdcf5;background:linear-gradient(145deg,#fff,#f0f7ff)}.assembly-head{display:flex;gap:9px}.spark{display:grid;width:33px;height:33px;flex:none;place-items:center;border-radius:11px;background:var(--brand);color:#fff;font-size:13px}.assembly-card h3{margin:0 0 4px;color:var(--ink);font-size:12px}.assembly-card p{margin:0;color:var(--muted);font-size:7px;line-height:1.5}
+    .preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:11px}.preview-tile{min-height:68px;padding:8px;border:1px solid #d9e6ef;border-radius:10px;background:#fff}.preview-tile b{display:block;color:var(--ink);font-size:7px}.preview-tile small{display:block;margin-top:3px;color:#93a2ad;font-size:6px}.preview-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:7px}.preview-calendar i{height:6px;border-radius:2px;background:#d9edff}.preview-calendar i.up{background:#f6b8a8}.preview-calendar i.down{background:#a9e2d6}
+    .preview-line{width:100%;height:26px;margin-top:5px}.assembly-actions{display:grid;grid-template-columns:.85fr 1.15fr;gap:6px;margin-top:10px}.assembly-actions .btn{padding:8px;font-size:7px}
+    .chat-input{position:absolute;z-index:100;right:0;bottom:0;left:0;padding:7px 11px 12px;background:linear-gradient(180deg,rgba(247,249,251,0),#f7f9fb 20%,#f7f9fb 100%)}.quick-row{display:flex;gap:6px;overflow:auto;padding:8px 0 7px}.quick-row button{padding:7px 9px;border:1px solid #bcd9ee;border-radius:999px;background:#fff;color:var(--brand-deep);font-size:7px;white-space:nowrap}
+    .input-row{display:grid;grid-template-columns:34px 1fr 36px;gap:6px;align-items:center;padding:6px;border-radius:17px;background:#fff;box-shadow:0 3px 18px rgba(17,55,84,.09)}.input-row button{display:grid;width:32px;height:32px;place-items:center;border:0;border-radius:11px;background:transparent;color:var(--brand-deep)}.input-row button.send{background:var(--brand);color:#fff}.input-row input{min-width:0;border:0;outline:0;color:#536c7d;font-size:9px}
 
-    /* secondary phone screens */
-    .content{min-height:0;flex:1;overflow:auto;padding:10px 14px 24px}.page-head h2{margin:4px 0 6px;color:var(--ink);font-size:20px;letter-spacing:-.035em}.page-head p{margin:0;color:var(--muted);font-size:8px;line-height:1.55}
-    .segment{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:14px 0;padding:4px;border-radius:12px;background:#eaf0f5}.segment button{padding:8px 5px;border:0;border-radius:9px;background:transparent;color:#7f909c;font-size:8px}
-    .segment button.active{background:#fff;color:var(--brand-deep);font-weight:800;box-shadow:0 3px 10px rgba(16,51,78,.07)}.section-label{display:flex;justify-content:space-between;align-items:center;margin:16px 2px 9px}
-    .section-label b{color:var(--ink);font-size:10px}.section-label button{border:0;background:transparent;color:var(--brand-deep);font-size:7px}.service-list{display:grid;gap:9px}.list-card{position:relative;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 5px 16px rgba(17,55,84,.05)}
-    .list-head{display:grid;grid-template-columns:36px 1fr auto;gap:9px;align-items:center}.list-head .service-icon{width:36px;height:36px}.list-head h3{margin:0 0 4px;color:var(--ink);font-size:10px}.list-head p{margin:0;color:var(--muted);font-size:7px}.state{display:flex;align-items:center;gap:4px;color:#4b7a70;font-size:7px}.state:before{width:5px;height:5px;border-radius:50%;background:var(--mint);content:""}
-    .list-meta{display:flex;gap:6px;margin-top:10px}.list-meta span{padding:6px 7px;border-radius:7px;background:#f4f7f9;color:#768996;font-size:7px}.list-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
-    .list-actions button{padding:8px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#62798a;font-size:7px}.list-actions button.primary-mini{border-color:#bad9f3;background:var(--brand-soft);color:var(--brand-deep);font-weight:800}
-    .market-hero{padding:16px;border-radius:16px;background:linear-gradient(145deg,#173d5d,#0c2a43);color:#fff}.market-hero h2{margin:8px 0 6px;font-size:18px}.market-hero p{margin:0;color:#acc4d5;font-size:8px;line-height:1.55}.market-hero .searchbar{display:flex;align-items:center;gap:7px;margin-top:13px;padding:9px;border-radius:11px;background:rgba(255,255,255,.09);color:#aac2d3;font-size:8px}
-    .market-tabs{display:flex;gap:6px;overflow:auto;margin:12px 0}.market-tabs button{padding:7px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#738795;font-size:7px;white-space:nowrap}.market-tabs button.active{border-color:#afd3ef;background:var(--brand-soft);color:var(--brand-deep)}
-    .market-card{overflow:hidden;padding:0}.market-cover{display:grid;grid-template-columns:1fr 58px;gap:8px;align-items:center;padding:13px;background:linear-gradient(145deg,#f3f8ff,#e8f3ff)}.market-card h3{margin:0 0 5px;color:var(--ink);font-size:11px}.market-card p{margin:0;color:var(--muted);font-size:7px;line-height:1.5}
-    .market-card .service-icon{width:50px;height:50px;justify-self:end}.creator-line{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border-top:1px solid var(--line-soft);color:#8595a1;font-size:7px}.socials{display:flex;gap:10px}.socials button{border:0;background:transparent;color:#687f90;font-size:7px}.socials button.active{color:var(--brand-deep);font-weight:800}
-    .detail-hero{padding:18px;border-radius:17px;background:linear-gradient(145deg,#153b5a,#0c293f);color:#fff}.detail-hero .service-icon{background:rgba(255,255,255,.1);color:#fff}.detail-hero h2{margin:14px 0 7px;font-size:19px}.detail-hero p{margin:0;color:#aec5d6;font-size:8px;line-height:1.6}
-    .detail-author{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);color:#a7c0d1;font-size:7px}.detail-author span:first-child{display:flex;align-items:center;gap:6px}
-    .author-avatar{display:grid;width:23px;height:23px;place-items:center;border-radius:8px;background:rgba(255,255,255,.1);color:#fff;font-size:7px;font-weight:800}
-    .promise{margin-top:10px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fff}.promise h3{margin:0 0 11px;color:var(--ink);font-size:10px}.promise-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.promise-grid div{padding:9px;border-radius:9px;background:#f5f8fa}
-    .promise-grid small,.promise-grid b{display:block}.promise-grid small{color:#98a6b0;font-size:6px}.promise-grid b{margin-top:4px;color:#4c6577;font-size:7px}.remix-note{display:flex;gap:8px;margin-top:9px;padding:11px;border-radius:11px;background:var(--violet-soft);color:#665687;font-size:7px;line-height:1.5}
-    .detail-bottom{margin-top:auto;padding:9px 14px 14px;background:#f7f9fb}.detail-actions{display:grid;grid-template-columns:42px 1fr 1fr;gap:7px}.detail-actions button{padding:10px 5px;border:1px solid var(--line);border-radius:11px;background:#fff;color:#637a8b;font-size:8px}.detail-actions button.primary{border-color:var(--brand);background:var(--brand);color:#fff;font-weight:800}
-    .back{display:grid;width:34px;height:34px;place-items:center;border:0;border-radius:11px;background:transparent;color:#355066;font-size:17px}
+    /* service composition */
+    .service-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.service-toolbar .scope{display:flex;gap:5px}.scope span{padding:6px 7px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#667c8c;font-size:7px}.scope span.changed{border-color:#a7d0f1;background:var(--brand-soft);color:var(--brand-deep);font-weight:800}
+    .auto-note{display:flex;gap:8px;margin-bottom:9px;padding:10px;border:1px solid #bcdcf5;border-radius:12px;background:var(--brand-soft);color:#577286;font-size:7px;line-height:1.5}.auto-note i{display:grid;width:22px;height:22px;flex:none;place-items:center;border-radius:8px;background:var(--brand);color:#fff;font-style:normal;font-weight:900}
+    .component-stack{display:grid;gap:9px}.component{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:15px;background:#fff;box-shadow:0 5px 18px rgba(17,55,84,.055)}.component.dragging{border-color:#a6d0f1;box-shadow:0 10px 30px rgba(27,136,238,.14)}.component-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:12px 12px 8px}
+    .component-title{display:flex;gap:8px}.component-title .icon-box{width:31px;height:31px;border-radius:10px}.component-title h3{margin:1px 0 3px;color:var(--ink);font-size:10px}.component-title p{margin:0;color:var(--muted);font-size:6px}.component-menu{display:flex;gap:3px}.component-menu button{display:grid;width:25px;height:25px;place-items:center;border:0;border-radius:8px;background:#f4f7f9;color:#728593;font-size:9px}
+    .metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:0 12px 12px}.metric{padding:9px;border-radius:10px;background:#f4f7f9}.metric b,.metric small{display:block}.metric b{color:var(--ink);font-size:12px}.metric b.red{color:#dd5b3a}.metric small{margin-top:4px;color:#8999a5;font-size:6px}
+    .calendar-wrap{padding:0 12px 12px}.week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px}.week span{text-align:center;color:#9aa7b1;font-size:6px}.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.calendar span{display:grid;height:29px;place-items:center;border-radius:6px;background:#f3f6f8;color:#7b8c98;font-size:6px}.calendar span.up1{background:#fee5de;color:#bc5b43}.calendar span.up2{background:#fac8ba;color:#a4432c}.calendar span.down{background:#dff4ef;color:#268472}.calendar span.empty{background:transparent}
+    .chart-wrap{padding:0 12px 10px}.big-chart{width:100%;height:120px}.chart-legend{display:flex;gap:10px;padding:0 12px 12px;color:#83939f;font-size:6px}.chart-legend span{display:flex;align-items:center;gap:4px}.chart-legend i{width:12px;height:3px;border-radius:3px;background:var(--chart1)}.chart-legend i.orange{background:var(--chart2)}
+    .trade-markers{display:flex;gap:8px;padding:0 12px 12px;color:#7e909e;font-size:6px}.trade-markers span{display:flex;align-items:center;gap:4px}.trade-markers i{display:grid;width:15px;height:15px;place-items:center;border-radius:5px;background:var(--mint-soft);color:#087e6a;font-style:normal}.trade-markers i.sell{background:var(--red-soft);color:#c55234}
+    .frontier-wrap{padding:0 12px 12px}.frontier{width:100%;height:128px;border-radius:10px;background:linear-gradient(180deg,#fbfdff,#f5f8fa)}.frontier-note{display:flex;align-items:center;gap:7px;margin-top:7px;padding:8px;border-radius:9px;background:var(--brand-soft);color:#537187;font-size:6px;line-height:1.4}
+    .insight-list{display:grid;gap:6px;padding:0 12px 12px}.insight{display:grid;grid-template-columns:24px 1fr;gap:8px;padding:8px;border-radius:9px;background:#f4f7f9}.insight i{display:grid;width:24px;height:24px;place-items:center;border-radius:8px;background:var(--brand-soft);color:var(--brand-deep);font-size:7px;font-style:normal;font-weight:900}.insight b{display:block;color:var(--ink);font-size:7px}.insight small{display:block;margin-top:3px;color:var(--muted);font-size:6px;line-height:1.45}
+    .new-badge{position:absolute;z-index:2;right:9px;top:45px;padding:4px 6px;border-radius:999px;background:var(--violet);color:#fff;font-size:6px}.service-bottom{display:grid;grid-template-columns:.72fr 1.28fr;gap:7px;padding:9px 13px 14px;background:linear-gradient(180deg,rgba(247,249,251,0),#f7f9fb 30%)}.service-bottom .btn{padding:10px 7px;font-size:8px}
 
-    /* sheet */
-    .sheet-layer{position:absolute;z-index:120;inset:0;display:none;align-items:flex-end;background:rgba(8,27,42,.42);backdrop-filter:blur(4px)}.sheet-layer.show{display:flex}.sheet{width:100%;max-height:78%;overflow:auto;padding:10px 15px 22px;border-radius:24px 24px 0 0;background:#fff;box-shadow:0 -20px 60px rgba(0,0,0,.16)}
-    .sheet-handle{width:38px;height:4px;margin:0 auto 14px;border-radius:999px;background:#dce4ea}.sheet h2{margin:0 0 6px;color:var(--ink);font-size:17px}.sheet>p{margin:0;color:var(--muted);font-size:8px;line-height:1.55}.share-options{display:grid;gap:7px;margin-top:13px}
-    .share-option{display:grid;grid-template-columns:32px 1fr 20px;gap:9px;align-items:center;padding:11px;border:1px solid var(--line);border-radius:12px;background:#fff}.share-option.active{border-color:#a9d0f1;background:var(--brand-soft)}
-    .share-option i{display:grid;width:32px;height:32px;place-items:center;border-radius:10px;background:#f3f6f8;color:#61798a;font-style:normal;font-size:9px;font-weight:800}.share-option b,.share-option small{display:block}.share-option b{color:var(--ink);font-size:9px}
-    .share-option small{margin-top:3px;color:var(--muted);font-size:7px;line-height:1.45}.share-option em{display:grid;width:18px;height:18px;place-items:center;border:1px solid #cddae3;border-radius:50%;font-style:normal;font-size:8px}.share-option.active em{border-color:var(--brand);background:var(--brand);color:#fff}
-    .rule-callout{margin:11px 0;padding:10px;border-radius:10px;background:var(--mint-soft);color:#50756d;font-size:7px;line-height:1.55}.sheet-actions{display:grid;grid-template-columns:.8fr 1.2fr;gap:7px}.sheet-actions .btn{padding:10px;font-size:8px}
-    .toast{position:absolute;z-index:150;right:14px;bottom:105px;left:14px;display:none;padding:10px 12px;border:1px solid #b7e1d8;border-radius:11px;background:#f2fffb;color:#176d60;box-shadow:var(--soft);font-size:8px;text-align:center}.toast.show{display:block;animation:fade .2s ease}
+    /* blueprint */
+    .blueprint-summary{padding:14px;border-radius:15px;background:linear-gradient(145deg,#163d5d,#0c2a42);color:#fff}.blueprint-summary h2{margin:8px 0 6px;font-size:17px}.blueprint-summary p{margin:0;color:#abc4d6;font-size:7px;line-height:1.5}.blueprint-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:11px}.blueprint-stats span{padding:8px;border:1px solid rgba(255,255,255,.1);border-radius:9px;background:rgba(255,255,255,.05)}.blueprint-stats b,.blueprint-stats small{display:block}.blueprint-stats b{font-size:9px}.blueprint-stats small{margin-top:3px;color:#90aec3;font-size:6px}
+    .mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:10px 0;padding:4px;border-radius:11px;background:#eaf0f4}.mode-tabs button{padding:8px;border:0;border-radius:8px;background:transparent;color:#7c8e9b;font-size:7px}.mode-tabs button.active{background:#fff;color:var(--brand-deep);font-weight:800;box-shadow:0 3px 9px rgba(16,51,78,.06)}
+    .blueprint-list{display:grid;gap:7px}.bp-row{padding:11px;border:1px solid var(--line);border-radius:12px;background:#fff}.bp-top{display:grid;grid-template-columns:30px 1fr auto;gap:8px;align-items:center}.bp-top .icon-box{width:30px;height:30px;border-radius:9px}.bp-top h3{margin:0 0 3px;color:var(--ink);font-size:8px}.bp-top p{margin:0;color:var(--muted);font-size:6px}.bp-top>span{color:#8d9ca7;font-size:6px}.bp-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}.bp-tags span{padding:5px 6px;border-radius:6px;background:#f3f6f8;color:#617889;font-size:6px}.bp-tags span.prompt{background:var(--violet-soft);color:var(--violet)}.bp-tags span.skill{background:var(--mint-soft);color:#087e6a}.bp-tags span.api{background:var(--brand-soft);color:var(--brand-deep)}.bp-tags span.agent{background:var(--amber-soft);color:#a86b00}
+    .bp-explain{margin-top:7px;padding-top:7px;border-top:1px dashed var(--line);color:#7c8e9b;font-size:6px;line-height:1.45}.locked{margin-top:9px;padding:10px;border:1px solid #bde2da;border-radius:11px;background:var(--mint-soft);color:#4f756d;font-size:7px;line-height:1.5}
 
-    @media(max-width:900px){
-      .experience{padding:0;background:#f7f9fb}.experience-head,.concept{display:none}.experience-grid{display:block;max-width:none;margin:0}.phone-wrap{display:block}.phone{width:100%;height:100dvh;min-height:700px;border:0;border-radius:0;box-shadow:none}.phone:before{display:none}
-      .statusbar{padding-top:max(8px,env(safe-area-inset-top));height:calc(30px + env(safe-area-inset-top))}.chat-input{padding-bottom:max(12px,env(safe-area-inset-bottom))}.detail-bottom{padding-bottom:max(14px,env(safe-area-inset-bottom))}
+    /* library and market */
+    .page-head h2{margin:3px 0 5px;color:var(--ink);font-size:19px;letter-spacing:-.035em}.page-head p{margin:0;color:var(--muted);font-size:7px;line-height:1.5}.searchbar{display:flex;align-items:center;gap:6px;margin-top:11px;padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:#fff;color:#8c9aa5;font-size:7px}
+    .tabs{display:flex;gap:5px;overflow:auto;margin:11px 0}.tabs button{padding:7px 8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#758794;font-size:7px;white-space:nowrap}.tabs button.active{border-color:#acd1ef;background:var(--brand-soft);color:var(--brand-deep);font-weight:800}
+    .library-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.library-card{min-height:143px;padding:11px;border:1px solid var(--line);border-radius:13px;background:#fff}.library-top{display:flex;justify-content:space-between;align-items:center}.library-card h3{margin:12px 0 4px;color:var(--ink);font-size:9px}.library-card p{margin:0;color:var(--muted);font-size:6px;line-height:1.45}.library-card .btn{margin-top:9px;padding:7px;width:100%;font-size:7px}
+    .template-list{display:grid;gap:8px}.template{overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#fff}.template-cover{display:grid;grid-template-columns:1fr 57px;gap:9px;align-items:center;padding:13px;background:linear-gradient(145deg,#f3f8ff,#e8f3ff)}.template h3{margin:6px 0 4px;color:var(--ink);font-size:10px}.template p{margin:0;color:var(--muted);font-size:6px;line-height:1.45}.template-cover .icon-box{width:50px;height:50px;justify-self:end}
+    .template-modules{display:flex;gap:4px;margin-top:8px}.template-modules span{padding:5px 6px;border-radius:6px;background:#fff;color:#60788a;font-size:6px}.template-foot{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;color:#81929e;font-size:6px}.template-actions{display:flex;gap:8px}.template-actions button{border:0;background:transparent;color:#61798a;font-size:6px}.template-actions button.active{color:var(--brand-deep);font-weight:800}
+
+    /* mine + detail */
+    .segment{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:12px 0;padding:4px;border-radius:11px;background:#eaf0f4}.segment button{padding:8px 4px;border:0;border-radius:8px;background:transparent;color:#7b8e9b;font-size:7px}.segment button.active{background:#fff;color:var(--brand-deep);font-weight:800}
+    .my-list{display:grid;gap:8px}.my-card{padding:12px;border:1px solid var(--line);border-radius:13px;background:#fff}.my-head{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:center}.my-head .icon-box{width:34px;height:34px}.my-head h3{margin:0 0 3px;color:var(--ink);font-size:9px}.my-head p{margin:0;color:var(--muted);font-size:6px}.state{display:flex;align-items:center;gap:4px;color:#4c796f;font-size:6px}.state:before{width:5px;height:5px;border-radius:50%;background:var(--mint);content:""}.my-meta{display:flex;gap:5px;margin-top:9px}.my-meta span{padding:5px 6px;border-radius:6px;background:#f3f6f8;color:#738795;font-size:6px}.my-actions{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:9px}.my-actions button{padding:7px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#61798a;font-size:6px}.my-actions button.primary-mini{border-color:#b8d8f2;background:var(--brand-soft);color:var(--brand-deep);font-weight:800}
+    .detail-hero{padding:15px;border-radius:15px;background:linear-gradient(145deg,#153b5a,#0c293f);color:#fff}.detail-hero h2{margin:11px 0 5px;font-size:17px}.detail-hero p{margin:0;color:#aec5d6;font-size:7px;line-height:1.5}.author{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1);color:#a9c1d2;font-size:6px}
+    .detail-block{margin-top:8px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}.detail-block h3{margin:0 0 9px;color:var(--ink);font-size:9px}.detail-components{display:grid;gap:5px}.detail-components span{display:flex;justify-content:space-between;padding:7px;border-radius:8px;background:#f4f7f9;color:#5c7485;font-size:6px}
+    .source-note{margin-top:7px;padding:9px;border-radius:9px;background:var(--violet-soft);color:#665687;font-size:6px;line-height:1.5}.detail-bottom{display:grid;grid-template-columns:38px 1fr 1fr;gap:6px;padding:8px 13px 14px;background:#f7f9fb}.detail-bottom button{padding:9px 5px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#607889;font-size:7px}.detail-bottom button.primary{border-color:var(--brand);background:var(--brand);color:#fff;font-weight:800}
+
+    /* nav drawer and sheets */
+    .menu-layer{position:absolute;z-index:120;inset:0;display:none;background:rgba(9,27,42,.36);backdrop-filter:blur(3px)}.menu-layer.show{display:block}.drawer{position:relative;width:305px;height:100%;padding:52px 17px 20px;background:#fff;box-shadow:20px 0 60px rgba(0,0,0,.16)}
+    .drawer-brand{display:flex;align-items:center;gap:9px;margin-bottom:22px}.drawer-brand .xiaogu-face{width:38px;height:38px}.drawer-brand b,.drawer-brand small{display:block}.drawer-brand b{color:var(--ink);font-size:11px}.drawer-brand small{margin-top:3px;color:var(--muted);font-size:6px}
+    .drawer-nav{display:grid;gap:4px}.drawer-nav button{display:flex;align-items:center;gap:9px;padding:10px;border:0;border-radius:10px;background:transparent;color:#5e7383;font-size:8px;text-align:left}.drawer-nav button.active,.drawer-nav button:hover{background:var(--brand-soft);color:var(--brand-deep);font-weight:800}.drawer-nav i{display:grid;width:26px;height:26px;place-items:center;border-radius:8px;background:#f2f6f9;font-style:normal;font-size:7px}
+    .drawer-label{margin:15px 9px 6px;color:#a0adb6;font-size:6px}.drawer-item{padding:9px;border:1px solid var(--line);border-radius:10px}.drawer-item b,.drawer-item small{display:block}.drawer-item b{color:var(--ink);font-size:7px}.drawer-item small{margin-top:3px;color:var(--muted);font-size:6px}
+    .sheet-layer{position:absolute;z-index:150;inset:0;display:none;align-items:flex-end;background:rgba(8,27,42,.42);backdrop-filter:blur(4px)}.sheet-layer.show{display:flex}.sheet{width:100%;max-height:82%;overflow:auto;padding:10px 14px 21px;border-radius:24px 24px 0 0;background:#fff;box-shadow:0 -20px 60px rgba(0,0,0,.16)}
+    .sheet-handle{width:38px;height:4px;margin:0 auto 13px;border-radius:999px;background:#dce4ea}.sheet h2{margin:0 0 5px;color:var(--ink);font-size:16px}.sheet>p{margin:0;color:var(--muted);font-size:7px;line-height:1.5}.prompt-box{margin-top:11px;padding:10px;border:1px solid #bedbf2;border-radius:12px;background:var(--brand-soft)}
+    .prompt-box textarea{width:100%;min-height:72px;padding:10px;border:1px solid #d6e3ec;border-radius:9px;background:#fff;color:#4e687a;resize:none;font-size:8px;line-height:1.5}.prompt-suggestions{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.prompt-suggestions button{padding:6px 7px;border:1px solid #cbdde9;border-radius:999px;background:#fff;color:#607789;font-size:6px}
+    .change-preview{display:grid;gap:5px;margin-top:10px}.change-preview div{display:flex;justify-content:space-between;padding:7px;border-radius:8px;background:#f4f7f9;font-size:6px}.change-preview span{color:#8b9aa5}.change-preview b{color:#4c6577}.sheet-actions{display:grid;grid-template-columns:.75fr 1.25fr;gap:6px;margin-top:10px}.sheet-actions .btn{padding:9px;font-size:7px}
+    .publish-options{display:grid;gap:6px;margin-top:11px}.publish-option{display:grid;grid-template-columns:30px 1fr 18px;gap:8px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:11px}.publish-option.active{border-color:#abd1ef;background:var(--brand-soft)}.publish-option i{display:grid;width:30px;height:30px;place-items:center;border-radius:9px;background:#f3f6f8;color:#607889;font-style:normal;font-size:7px;font-weight:800}
+    .publish-option b,.publish-option small{display:block}.publish-option b{color:var(--ink);font-size:8px}.publish-option small{margin-top:3px;color:var(--muted);font-size:6px;line-height:1.4}.publish-option em{display:grid;width:17px;height:17px;place-items:center;border:1px solid #cbd8e1;border-radius:50%;font-size:7px;font-style:normal}.publish-option.active em{border-color:var(--brand);background:var(--brand);color:#fff}
+    .game-rule{margin-top:9px;padding:9px;border-radius:9px;background:var(--mint-soft);color:#4f756d;font-size:6px;line-height:1.5}.toast{position:absolute;z-index:180;right:13px;bottom:98px;left:13px;display:none;padding:10px 12px;border:1px solid #b7e1d8;border-radius:11px;background:#f2fffb;color:#176d60;box-shadow:var(--soft);font-size:7px;text-align:center}.toast.show{display:block;animation:fade .2s ease}
+
+    @media(max-width:950px){
+      .experience{padding:0;background:#f7f9fb}.experience-head,.board{display:none}.experience-grid{display:block;max-width:none;margin:0}.phone-wrap{display:block}.phone{width:100%;height:100dvh;min-height:720px;border:0;border-radius:0;box-shadow:none}.phone:before{display:none}
+      .statusbar{height:calc(30px + env(safe-area-inset-top));padding-top:max(8px,env(safe-area-inset-top))}.chat-input,.detail-bottom,.service-bottom{padding-bottom:max(12px,env(safe-area-inset-bottom))}
     }
     @media(max-width:430px){.gate{padding:18px}.gate-card{padding:27px}.gate-form{display:block}.gate button{width:100%;margin-top:8px}}
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
@@ -150,49 +128,44 @@
   <section class="gate" id="gate" aria-label="访问验证">
     <div class="gate-card" id="gateCard">
       <img class="gate-brand" src="assets/yingmi-logo-white.png" alt="盈米基金">
-      <span class="gate-kicker">MOBILE PRODUCT CONCEPT · V2</span>
-      <h1>从对话，长出服务</h1>
-      <p>盈米 AI 实验室不再是一个表单式创建器，而是 AI 小顾日常服务的自然延展。</p>
+      <span class="gate-kicker">SERVICE COMPOSER · V3</span>
+      <h1>一项服务，很多种专业组件</h1>
+      <p>AI 根据金融场景自动选择官方可视化组件，用户用自然语言调整、重排并保存为自己的长期服务。</p>
       <form class="gate-form" id="gateForm">
-        <label class="sr-only" for="password">访问密码</label>
-        <input id="password" type="password" autocomplete="current-password" inputmode="numeric" placeholder="请输入访问密码">
-        <button type="submit">进入 Demo</button>
-      </form>
-      <p class="gate-error" id="gateError" role="alert"></p>
+        <label class="sr-only" for="password">访问密码</label><input id="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="请输入访问密码"><button type="submit">进入 Demo</button>
+      </form><p class="gate-error" id="gateError" role="alert"></p>
     </div>
   </section>
 
   <main class="experience" id="experience" aria-hidden="true">
     <header class="experience-head">
-      <div class="brand"><img src="assets/yingmi-logo.png" alt="盈米基金"><span class="brand-divider"></span><span><b>AI 实验室</b><small>CONVERSATION → SERVICE</small></span></div>
-      <span class="version">移动优先概念 Demo · 2026.07</span>
+      <div class="brand"><img src="assets/yingmi-logo.png" alt="盈米基金"><span class="brand-divider"></span><span><b>AI 实验室</b><small>OFFICIAL COMPONENTS × PERSONAL SERVICE</small></span></div>
+      <span class="version">服务组件编排 Demo · 2026.07</span>
     </header>
     <div class="experience-grid">
-      <section class="concept">
-        <span class="eyebrow">THE NEW MENTAL MODEL</span>
-        <h1>用户不“创建应用”，<br>只是在和小顾<span>继续一件事</span></h1>
-        <p class="concept-lead">平台负责识别可持续价值、抽象服务蓝图和守住游戏规则；用户只需确认“以后是否继续”和少量个性偏好。一次结果先证明价值，再自然进入保存、分享、订阅与再造。</p>
-        <div class="principles">
-          <article class="principle"><strong><i>01</i>入口在真实对话</strong><p>不把用户送进空白创建器。系统从上下文发现重复需求、长期目标和可持续服务机会。</p></article>
-          <article class="principle"><strong><i>02</i>先运行，再保存</strong><p>用户先看一次真实效果；满意后才把这一套方法保存成持续运行的服务。</p></article>
-          <article class="principle"><strong><i>03</i>模块化而非表单化</strong><p>目标、触发、数据、方法、输出、边界与版本是标准模块，由 AI 自动组合并向用户翻译。</p></article>
-          <article class="principle"><strong><i>04</i>框架内个性化</strong><p>用户可改频率、范围、关注点、表达和输出，但不能绕过权限、适当性、审计与行动边界。</p></article>
+      <section class="board">
+        <span class="eyebrow">THE SERVICE COMPOSER</span>
+        <h1>不是生成一张卡，<br>而是自动编排<span>一套服务</span></h1>
+        <p class="board-lead">关键金融场景先由官方沉淀专业、可信、可复用的组件；AI 再根据用户目的、数据和表达习惯自动选型、排列与运行。用户不需要理解 Prompt、Skill 或 Agent，但可以展开查看、修改，或继续用自然语言生成。</p>
+        <div class="component-rack">
+          <article class="rack-card"><div class="rack-top"><i>历</i><small>官方组件</small></div><h3>收益日历</h3><p>总资产、指定区间、指定产品范围。</p><div class="preview-calendar"><i class="up"></i><i></i><i class="down"></i><i></i><i class="up"></i><i></i><i class="down"></i></div></article>
+          <article class="rack-card"><div class="rack-top"><i>撤</i><small>官方组件</small></div><h3>区间最大回撤</h3><p>支持任意区间和多账户对比。</p><svg class="preview-line" viewBox="0 0 100 30"><path d="M2 24 C18 18 24 9 39 13 C51 18 58 25 69 14 C80 5 90 11 98 4" fill="none" stroke="#69b1f4" stroke-width="2"/></svg></article>
+          <article class="rack-card"><div class="rack-top"><i>买</i><small>官方组件</small></div><h3>买卖点走势</h3><p>基金收益曲线叠加真实交易时间点。</p><svg class="preview-line" viewBox="0 0 100 30"><path d="M2 24 C18 21 27 8 39 15 C54 24 61 8 77 11 C86 12 92 5 98 3" fill="none" stroke="#69b1f4" stroke-width="2"/><circle cx="27" cy="8" r="3" fill="#07ad8f"/><circle cx="61" cy="8" r="3" fill="#f88d72"/></svg></article>
+          <article class="rack-card"><div class="rack-top"><i>效</i><small>投顾特色</small></div><h3>资产效率线</h3><p>当前持仓在风险收益空间中的位置。</p><svg class="preview-line" viewBox="0 0 100 30"><path d="M5 26 Q42 8 95 3" fill="none" stroke="#7dd4c4" stroke-width="2"/><circle cx="52" cy="11" r="4" fill="#1b88ee"/></svg></article>
+          <article class="rack-card"><div class="rack-top"><i>旭</i><small>投顾特色</small></div><h3>资产旭日图</h3><p>账户、产品、基金与底层资产穿透。</p><div class="mini-bars"><span style="height:22px"></span><span style="height:15px;background:#7dd4c4"></span><span style="height:9px;background:#fbca74"></span><span style="height:18px;background:#adafe8"></span></div></article>
+          <article class="rack-card"><div class="rack-top"><i>费</i><small>官方组件</small></div><h3>费率分析</h3><p>基金费率、投顾费与长期成本影响。</p><div class="mini-bars"><span style="height:9px"></span><span style="height:13px"></span><span style="height:18px"></span><span style="height:22px;background:#f88d72"></span></div></article>
+          <article class="rack-card"><div class="rack-top"><i>流</i><small>官方组件</small></div><h3>资金流</h3><p>买、卖、调、分红与净投入拆解。</p><svg class="preview-line" viewBox="0 0 100 30"><path d="M2 18 L22 18 L22 8 L43 8 L43 23 L65 23 L65 12 L98 12" fill="none" stroke="#69b1f4" stroke-width="2"/></svg></article>
+          <article class="rack-card"><div class="rack-top"><i>顾</i><small>AI 组件</small></div><h3>投顾解读</h3><p>结合目标、风险和市场生成个性结论。</p><div class="mini-bars"><span style="height:21px;background:#dceeff"></span><span style="height:15px;background:#dceeff"></span><span style="height:18px;background:#dceeff"></span></div></article>
         </div>
-        <article class="object-card">
-          <div class="object-head"><div><span class="eyebrow" style="color:#8ec9f3">STANDARD SERVICE OBJECT</span><h3>同一个对象，贯穿完整生态</h3></div><small>保存、发布、分享、收藏、订阅和再造不是六套功能，而是同一服务对象的不同关系与状态。</small></div>
-          <div class="object-flow"><span>服务承诺</span><i>＋</i><span>触发器</span><i>＋</i><span>数据范围</span><i>＋</i><span>能力模块</span><i>＋</i><span>输出组件</span><i>＋</i><span>行动边界</span><i>＋</i><span>来源 / 版本</span></div>
-        </article>
-        <div class="rules">
-          <div class="rule"><b>保存</b><small>我与服务建立长期关系</small></div><div class="rule"><b>发布</b><small>创作者提交公开版本</small></div><div class="rule"><b>分享</b><small>传播服务，不传播数据</small></div>
-          <div class="rule"><b>订阅</b><small>用我的授权独立运行</small></div><div class="rule"><b>再造</b><small>保留来源，生成个人分支</small></div>
+        <div class="logic">
+          <article class="logic-card user"><h3>用户只表达“想看什么”</h3><p>区间、产品范围、重点指标、排序、表达方式、是否持续运行。</p><div class="logic-tags"><span>2025年以来</span><span>只看长钱账户</span><span>最大回撤放第一</span><span>标注买卖点</span></div></article>
+          <article class="logic-card system"><h3>系统自动决定“怎么实现”</h3><p>按稳定性、风险、实时性与复用频率选择最合适的执行形态。</p><div class="logic-tags"><span>官方模板</span><span>Prompt</span><span>Skill</span><span>Agent</span><span>工程接口</span><span>刷新策略</span></div></article>
         </div>
-        <nav class="scenario-nav" aria-label="Demo 体验路径">
-          <button class="active" data-scenario="chat">① 从日常对话开始</button>
-          <button data-scenario="mine">② 查看我的服务</button>
-          <button data-scenario="market">③ 收藏与订阅</button>
-          <button data-scenario="detail">④ 再造他人服务</button>
+        <nav class="scenario-nav" aria-label="体验路径">
+          <button class="active" data-scenario="chat">① 场景自动生成</button><button data-scenario="service">② 组件服务</button><button data-open-compose>③ 自然语言重排</button>
+          <button data-scenario="blueprint">④ 查看运行蓝图</button><button data-scenario="library">⑤ 官方组件库</button><button data-scenario="market">⑥ 收藏订阅与复制</button><button data-scenario="mine">⑦ 保存发布</button>
         </nav>
-        <p class="desktop-tip">右侧手机可直接交互。推荐先点击对话中的“以后都帮我”。</p>
+        <p class="desktop-tip">右侧手机可完整点击。推荐从“生成完整服务”开始体验。</p>
       </section>
 
       <section class="phone-wrap" aria-label="手机端产品 Demo">
@@ -200,130 +173,172 @@
           <section class="screen active" id="chatScreen">
             <div class="statusbar"><span>9:41</span><span class="status-icons"><i></i><i></i><i></i></span></div>
             <header class="appbar"><button id="menuButton" aria-label="打开会话菜单">☰</button><div class="app-title"><b>AI 小顾</b><small>你的投资顾问</small></div><span class="xiaogu-face">AI</span></header>
-            <div class="chat" id="chatFeed">
+            <div class="content chat">
               <div class="day">今天 09:38</div>
-              <div class="message user"><div class="bubble">小顾，帮我看一下这个月账户有哪些变化？</div></div>
-              <div class="message"><span class="bot-avatar">AI</span><div class="bubble">看完了。整体仍在你的稳健计划内，只有一件事值得关注：<strong>权益比例比目标高了 3.2%</strong>，主要来自本月上涨，不是主动加仓，暂时不需要调整。</div></div>
-              <article class="chat-card">
-                <div class="report-card"><span><b>7 月账户变化简报</b><small>1 项关注 · 2 项稳定 · 0 项需行动</small></span>
-                  <svg class="mini-chart" viewBox="0 0 70 50" aria-label="演示账户走势"><path d="M2 42 C15 37 18 40 28 28 C39 17 42 29 51 19 C59 11 63 14 68 7" fill="none" stroke="#1b88ee" stroke-width="3" stroke-linecap="round"/><path d="M2 42 C15 37 18 40 28 28 C39 17 42 29 51 19 C59 11 63 14 68 7 L68 50 L2 50Z" fill="#69b1f4" opacity=".14"/></svg>
+              <div class="message user"><div class="bubble">小顾，帮我做一次账户收益复盘。我想看收益、回撤，也想知道现在的配置效率怎么样。</div></div>
+              <div class="message"><span class="bot-avatar">AI</span><div class="bubble">可以。我会先按<strong>全部账户、历史以来</strong>分析，并把最重要的结论放在前面。</div></div>
+              <article class="chat-card assembly-card">
+                <div class="assembly-head"><span class="spark">✦</span><div><h3>已为你组合「账户收益复盘」</h3><p>根据场景选择了 5 个官方组件，先生成一次，你再按自己的习惯修改。</p></div></div>
+                <div class="preview-grid">
+                  <div class="preview-tile"><b>核心收益指标</b><small>收益 · 年化 · 回撤</small><svg class="preview-line" viewBox="0 0 100 30"><path d="M2 24 C20 17 30 21 43 12 C58 2 68 18 80 9 C89 3 94 5 98 2" fill="none" stroke="#69b1f4" stroke-width="2"/></svg></div>
+                  <div class="preview-tile"><b>收益日历</b><small>按日定位波动</small><div class="preview-calendar"><i class="up"></i><i></i><i class="down"></i><i class="up"></i><i></i><i class="down"></i><i></i><i></i><i class="up"></i><i class="up"></i><i></i><i class="down"></i><i></i><i></i></div></div>
+                  <div class="preview-tile"><b>收益走势</b><small>账户 vs 沪深300</small><svg class="preview-line" viewBox="0 0 100 30"><path d="M2 24 C20 21 31 8 45 14 C57 20 69 5 82 9 C90 11 95 4 98 3" fill="none" stroke="#69b1f4" stroke-width="2"/></svg></div>
+                  <div class="preview-tile"><b>资产效率线</b><small>当前持仓位置</small><svg class="preview-line" viewBox="0 0 100 30"><path d="M5 26 Q42 8 95 3" fill="none" stroke="#7dd4c4" stroke-width="2"/><circle cx="52" cy="11" r="4" fill="#1b88ee"/></svg></div>
                 </div>
+                <div class="assembly-actions"><button class="btn secondary" data-open-blueprint>先看怎么做</button><button class="btn primary" data-screen="serviceScreen">生成完整服务</button></div>
               </article>
-              <article class="chat-card seed-card" id="seedCard">
-                <div class="seed-head"><span class="spark">✦</span><div><h3>这类问题，你最近问了 3 次</h3><p>要不要以后每月自动复盘？小顾只在有重要变化时提醒你。</p></div></div>
-                <div class="actions"><button class="btn secondary" data-action="once">先试一次</button><button class="btn primary" data-action="continue">以后都帮我</button></div>
-              </article>
-              <div id="generatedConversation"></div>
+              <div class="message"><span class="bot-avatar">AI</span><div class="bubble">生成后可以直接说“只看 2025 年以来”“把最大回撤放第一”或“增加我的买卖点”，不用重新填表。</div></div>
             </div>
-            <div class="chat-input">
-              <div class="quick-row"><button>可以这么问 💬</button><button>资产分析</button><button>收益分析</button><button>账户诊断</button></div>
-              <div class="input-row"><button aria-label="更多能力">＋</button><input id="chatInput" aria-label="聊聊您的想法" placeholder="聊聊您的想法"><button class="send" id="sendButton" aria-label="发送">↑</button></div>
-            </div>
+            <div class="chat-input"><div class="quick-row"><button>收益分析</button><button>账户诊断</button><button>交易复盘</button><button>配置效率</button></div><div class="input-row"><button>＋</button><input id="chatInput" placeholder="聊聊您的想法"><button class="send" id="sendButton">↑</button></div></div>
             <div class="menu-layer" id="menuLayer">
               <aside class="drawer">
-                <div class="drawer-brand"><span class="xiaogu-face">AI</span><span><b>AI 小顾</b><small>Hi Clair，今天想聊什么？</small></span></div>
-                <nav class="drawer-nav">
-                  <button data-screen="chatScreen" class="active"><i class="icon">聊</i>新建对话</button>
-                  <button data-screen="mineScreen"><i class="icon">服</i>我的服务</button>
-                  <button data-screen="marketScreen"><i class="icon">逛</i>服务广场</button>
-                  <button data-screen="resultsScreen"><i class="icon">果</i>小顾成果</button>
-                </nav>
-                <div class="drawer-title">最近运行</div>
-                <div class="drawer-service"><b>市场与我</b><small>今天 18:30 · 有变化才提醒</small></div>
-                <div class="drawer-title">最近对话</div>
-                <div class="drawer-service"><b>7 月账户变化分析</b><small>今天 09:38</small></div>
-                <div class="drawer-foot">个性化设置 · 人工客服</div>
+                <div class="drawer-brand"><span class="xiaogu-face">AI</span><span><b>AI 小顾</b><small>一项服务，可以持续进化</small></span></div>
+                <nav class="drawer-nav"><button data-screen="chatScreen" class="active"><i>聊</i>新建对话</button><button data-screen="mineScreen"><i>服</i>我的服务</button><button data-screen="libraryScreen"><i>组</i>官方组件库</button><button data-screen="marketScreen"><i>逛</i>服务广场</button><button data-screen="blueprintScreen"><i>图</i>运行蓝图</button></nav>
+                <div class="drawer-label">最近服务</div><div class="drawer-item"><b>账户收益复盘</b><small>5 个组件 · 刚刚生成</small></div>
+                <div class="drawer-label">最近对话</div><div class="drawer-item"><b>查看收益、回撤与配置效率</b><small>今天 09:38</small></div>
               </aside>
             </div>
           </section>
 
-          <section class="screen" id="mineScreen">
+          <section class="screen" id="serviceScreen">
             <div class="statusbar"><span>9:41</span><span class="status-icons"><i></i><i></i><i></i></span></div>
-            <header class="appbar"><button class="back" data-screen="chatScreen" aria-label="返回">‹</button><div class="app-title"><b>我的服务</b><small>持续为我运行</small></div><button data-screen="marketScreen" aria-label="发现服务">＋</button></header>
+            <header class="appbar"><button data-screen="chatScreen">‹</button><div class="app-title"><b id="serviceTitle">账户收益复盘</b><small id="serviceSource">AI 自动组合 · 尚未保存</small></div><button data-open-blueprint style="font-size:11px">◈</button></header>
+            <div class="content" id="serviceContent" style="padding-bottom:8px">
+              <div class="service-toolbar"><div class="scope"><span id="periodScope">历史以来</span><span id="productScope">全部账户</span></div><span class="pill mint" id="componentCount">5 个组件</span></div>
+              <div class="auto-note"><i>AI</i><span id="autoNoteText">我按“先结论、再定位、后解释”的顺序排列。组件均来自官方标准库，可以继续用自然语言调整。</span></div>
+              <div class="component-stack" id="componentStack">
+                <article class="component" id="metricsComponent" data-component="metrics">
+                  <div class="component-head"><div class="component-title"><span class="icon-box">收</span><div><h3 id="metricsTitle">核心收益指标</h3><p>官方默认 · 自动选择关键口径</p></div></div><div class="component-menu"><button data-move="down">↓</button><button data-edit-component="核心收益指标">⋯</button></div></div>
+                  <div class="metric-grid"><div class="metric"><b>+18.6%</b><small>累计收益</small></div><div class="metric"><b>+4.3%</b><small>年化收益</small></div><div class="metric"><b class="red">-9.8%</b><small id="drawdownLabel">历史最大回撤</small></div></div>
+                </article>
+                <article class="component" id="calendarComponent" data-component="calendar">
+                  <div class="component-head"><div class="component-title"><span class="icon-box">历</span><div><h3>收益日历</h3><p id="calendarDesc">全部账户 · 2026年7月</p></div></div><div class="component-menu"><button data-move="up">↑</button><button data-edit-component="收益日历">⋯</button></div></div>
+                  <div class="calendar-wrap"><div class="week"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class="calendar">
+                    <span class="empty"></span><span class="empty"></span><span class="up1">1<br>+0.3%</span><span>2<br>0.0%</span><span class="down">3<br>-0.2%</span><span>4</span><span>5</span>
+                    <span class="up2">6<br>+0.8%</span><span class="up1">7<br>+0.2%</span><span class="down">8<br>-0.4%</span><span>9<br>+0.1%</span><span class="up1">10<br>+0.3%</span><span>11</span><span>12</span>
+                    <span class="down">13<br>-0.2%</span><span>14<br>+0.1%</span><span class="up2">15<br>+0.7%</span><span>16<br>0.0%</span><span class="down">17<br>-0.3%</span><span>18</span><span>19</span>
+                    <span>20<br>+0.1%</span><span class="up1">21<br>+0.4%</span><span class="up1">22<br>+0.3%</span><span class="down">23<br>-0.1%</span><span>24<br>+0.1%</span><span>25</span><span>26</span>
+                    <span class="up1">27<br>+0.2%</span><span class="empty"></span><span class="empty"></span><span class="empty"></span><span class="empty"></span><span class="empty"></span><span class="empty"></span>
+                  </div></div>
+                </article>
+                <article class="component" id="trendComponent" data-component="trend">
+                  <div class="component-head"><div class="component-title"><span class="icon-box">势</span><div><h3>收益走势与回撤区间</h3><p id="trendDesc">账户收益 vs 沪深300 · 历史以来</p></div></div><div class="component-menu"><button data-move="up">↑</button><button data-edit-component="收益走势">⋯</button></div></div>
+                  <div class="chart-wrap"><svg class="big-chart" viewBox="0 0 350 120" role="img" aria-label="演示收益走势">
+                    <defs><linearGradient id="area1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#69b1f4" stop-opacity=".25"/><stop offset="1" stop-color="#69b1f4" stop-opacity="0"/></linearGradient></defs>
+                    <g stroke="#e9eff3"><line x1="0" y1="25" x2="350" y2="25"/><line x1="0" y1="60" x2="350" y2="60"/><line x1="0" y1="95" x2="350" y2="95"/></g>
+                    <path d="M2 102 C35 91 48 93 73 73 C101 53 117 82 145 64 C173 45 189 62 219 42 C247 24 271 44 302 24 C320 12 337 17 348 8 L348 118 L2 118Z" fill="url(#area1)"/>
+                    <path d="M2 102 C35 91 48 93 73 73 C101 53 117 82 145 64 C173 45 189 62 219 42 C247 24 271 44 302 24 C320 12 337 17 348 8" fill="none" stroke="#1b88ee" stroke-width="3"/>
+                    <path d="M2 104 C39 98 58 86 91 88 C124 91 153 77 184 73 C218 69 246 63 277 57 C305 52 326 54 348 46" fill="none" stroke="#f88d72" stroke-width="2" stroke-dasharray="5 4"/>
+                    <rect x="102" y="48" width="47" height="39" fill="#fa440c" opacity=".05"/><text x="108" y="58" fill="#c46852" font-size="7">最大回撤</text>
+                  </svg></div><div class="chart-legend"><span><i></i>我的账户</span><span><i class="orange"></i>沪深300</span><span>阴影：最大回撤区间</span></div>
+                </article>
+                <article class="component hidden" id="tradeComponent" data-component="trade">
+                  <span class="new-badge">自然语言新增</span>
+                  <div class="component-head"><div class="component-title"><span class="icon-box">买</span><div><h3>产品收益走势 × 我的买卖点</h3><p>长钱账户 · 某主动基金 · 2025年至今</p></div></div><div class="component-menu"><button data-move="up">↑</button><button data-edit-component="买卖点走势">⋯</button></div></div>
+                  <div class="chart-wrap"><svg class="big-chart" viewBox="0 0 350 120"><g stroke="#e9eff3"><line x1="0" y1="25" x2="350" y2="25"/><line x1="0" y1="60" x2="350" y2="60"/><line x1="0" y1="95" x2="350" y2="95"/></g><path d="M2 98 C40 84 67 95 95 68 C121 42 148 77 176 54 C203 31 229 48 256 29 C284 10 319 24 348 8" fill="none" stroke="#1b88ee" stroke-width="3"/><g><circle cx="67" cy="95" r="6" fill="#07ad8f"/><text x="61" y="85" fill="#087e6a" font-size="7">买</text><circle cx="176" cy="54" r="6" fill="#07ad8f"/><text x="170" y="44" fill="#087e6a" font-size="7">买</text><circle cx="256" cy="29" r="6" fill="#f88d72"/><text x="250" y="19" fill="#bb593f" font-size="7">卖</text></g></svg></div>
+                  <div class="trade-markers"><span><i>买</i>2 次买入</span><span><i class="sell">卖</i>1 次卖出</span><span>演示交易数据</span></div>
+                </article>
+                <article class="component" id="frontierComponent" data-component="frontier">
+                  <div class="component-head"><div class="component-title"><span class="icon-box">效</span><div><h3>资产配置效率线</h3><p>当前持仓在风险收益空间中的位置</p></div></div><div class="component-menu"><button data-move="up">↑</button><button data-edit-component="资产配置效率线">⋯</button></div></div>
+                  <div class="frontier-wrap"><svg class="frontier" viewBox="0 0 350 128"><g stroke="#e9eff3"><line x1="35" y1="12" x2="35" y2="108"/><line x1="35" y1="108" x2="335" y2="108"/><line x1="35" y1="75" x2="335" y2="75"/><line x1="35" y1="42" x2="335" y2="42"/></g><path d="M55 101 Q115 72 175 48 T322 19" fill="none" stroke="#7dd4c4" stroke-width="3"/><circle cx="185" cy="59" r="8" fill="#1b88ee"/><circle cx="250" cy="35" r="6" fill="#fbca74"/><text x="194" y="62" fill="#1168b8" font-size="7">当前持仓</text><text x="258" y="37" fill="#9c710e" font-size="7">更优组合</text><text x="4" y="18" fill="#8d9ca7" font-size="7">收益</text><text x="310" y="122" fill="#8d9ca7" font-size="7">风险</text></svg><div class="frontier-note"><span class="icon-box" style="width:23px;height:23px;border-radius:7px">AI</span><span>当前组合接近有效前沿；在相近风险下，仍有约 0.7% 的预期收益改善空间。</span></div></div>
+                </article>
+                <article class="component" id="insightComponent" data-component="insight">
+                  <div class="component-head"><div class="component-title"><span class="icon-box">顾</span><div><h3>小顾结论与下一步</h3><p>基于目标、风险与上述组件生成</p></div></div><div class="component-menu"><button data-move="up">↑</button><button data-edit-component="小顾解读">⋯</button></div></div>
+                  <div class="insight-list"><div class="insight"><i>1</i><span><b>回撤仍在你的舒适区间</b><small>最大回撤发生在 2022 年，当前长期计划无需调整。</small></span></div><div class="insight"><i>2</i><span><b>配置效率可以小幅改善</b><small>建议先看权益内部重复配置，不需要显著提高整体风险。</small></span></div></div>
+                </article>
+              </div>
+            </div>
+            <div class="service-bottom"><button class="btn secondary" data-open-compose>用一句话修改</button><button class="btn primary" id="saveServiceButton">确认并保存服务</button></div>
+          </section>
+
+          <section class="screen" id="blueprintScreen">
+            <div class="statusbar"><span>9:41</span><span class="status-icons"><i></i><i></i><i></i></span></div>
+            <header class="appbar"><button data-screen="serviceScreen">‹</button><div class="app-title"><b>运行蓝图</b><small>普通用户不必理解，但可以查看</small></div><button data-open-compose style="font-size:11px">✦</button></header>
             <div class="content">
-              <div class="page-head"><h2>小顾正在为你做的事</h2><p>服务会按约定运行；重要变化主动出现，其余时间保持安静。</p></div>
-              <div class="segment"><button class="active">运行中 3</button><button>我创建的 1</button><button>收藏 6</button></div>
-              <div class="section-label"><b>今天</b><button data-screen="resultsScreen">查看成果 →</button></div>
-              <div class="service-list" id="myServices">
-                <article class="list-card" id="monthlyService">
-                  <div class="list-head"><span class="service-icon">月</span><div><h3>每月账户复盘 <span class="pill violet">我的定制</span></h3><p>只提醒与你的稳健计划有关的重要变化</p></div><span class="state">运行中</span></div>
-                  <div class="list-meta"><span>发薪后运行</span><span>下次 8月1日</span><span>版本 v1.0</span></div>
-                  <div class="list-actions"><button data-open-share>分享 / 发布</button><button class="primary-mini" data-screen="chatScreen">对话调整</button></div>
-                </article>
-                <article class="list-card">
-                  <div class="list-head"><span class="service-icon">守</span><div><h3>账户健康守护 <span class="pill">且慢官方</span></h3><p>偏离目标或越过风险边界时再来提醒</p></div><span class="state">守护中</span></div>
-                  <div class="list-meta"><span>事件触发</span><span>10 次安静运行</span></div>
-                  <div class="list-actions"><button>查看记录</button><button class="primary-mini">设置</button></div>
-                </article>
-                <article class="list-card">
-                  <div class="list-head"><span class="service-icon">市</span><div><h3>市场与我 <span class="pill mint">已订阅</span></h3><p>只解释与你持仓和目标有关的市场变化</p></div><span class="state">守护中</span></div>
-                  <div class="list-meta"><span>每天 18:30</span><span>来自 盈米投研</span></div>
-                  <div class="list-actions"><button>查看来源</button><button class="primary-mini">再造一版</button></div>
-                </article>
+              <div class="blueprint-summary"><span class="eyebrow" style="color:#8fc9f3">SERVICE RUNTIME</span><h2>账户收益复盘 · v1.1</h2><p>AI 根据稳定性、实时性、风险和复用频率，为每个组件选择不同执行方式。</p><div class="blueprint-stats"><span><b>5 个</b><small>官方组件</small></span><span><b>3 类</b><small>运行形态</small></span><span><b>按需</b><small>默认刷新</small></span></div></div>
+              <div class="mode-tabs"><button class="active">通俗说明</button><button>专业视图</button></div>
+              <div class="blueprint-list">
+                <article class="bp-row"><div class="bp-top"><span class="icon-box">收</span><div><h3>核心指标 / 收益日历 / 走势图</h3><p>稳定口径、频繁使用，优先保证准确与速度</p></div><span>每次刷新</span></div><div class="bp-tags"><span class="api">工程接口</span><span class="api">官方图表模板</span><span>缓存 15 分钟</span></div><div class="bp-explain">为什么：数据口径明确，不需要 Agent 自由判断；区间或产品范围改变时重新查询并渲染。</div></article>
+                <article class="bp-row"><div class="bp-top"><span class="icon-box">买</span><div><h3>买卖点收益走势</h3><p>需要把交易、净值与区间对齐后再作图</p></div><span>条件运行</span></div><div class="bp-tags"><span class="skill">交易对齐 Skill</span><span class="api">净值接口</span><span class="api">走势图组件</span></div><div class="bp-explain">为什么：步骤稳定但数据组合复杂，使用 Skill 编排；产品或区间变化时重新运行。</div></article>
+                <article class="bp-row"><div class="bp-top"><span class="icon-box">效</span><div><h3>资产配置效率线</h3><p>计算密集、规则明确，持仓变化后再更新</p></div><span>事件运行</span></div><div class="bp-tags"><span class="skill">有效前沿 Skill</span><span class="api">工程计算服务</span><span>持仓变更触发</span></div><div class="bp-explain">为什么：计算应可复现，不交给大模型自由生成；参数和约束由官方模板固定。</div></article>
+                <article class="bp-row"><div class="bp-top"><span class="icon-box">顾</span><div><h3>小顾解读与下一步</h3><p>需要综合目标、风险和前序组件作个性判断</p></div><span>每次生成</span></div><div class="bp-tags"><span class="prompt">官方 Prompt</span><span class="agent">投顾 Agent</span><span class="skill">适当性 Skill</span><span>不可自动交易</span></div><div class="bp-explain">为什么：结论需要上下文推理，但必须在官方 Prompt、适当性和行动边界内重新生成。</div></article>
+                <article class="bp-row"><div class="bp-top"><span class="icon-box">版</span><div><h3>是否固化为新模板</h3><p>当前个性化版本已被重复使用 3 次</p></div><span>待确认</span></div><div class="bp-tags"><span class="prompt">保留个性 Prompt</span><span class="api">固化组件顺序</span><span class="agent">发布前评测</span></div><div class="bp-explain">建议：先保存为个人服务；达到稳定运行与复用门槛后，再申请发布为公开模板。</div></article>
+              </div>
+              <div class="locked">平台锁定项：数据权限、风险口径、适当性、行动边界、来源与版本链。用户可修改区间、范围、指标、排序、提醒和表达方式。</div>
+            </div>
+          </section>
+
+          <section class="screen" id="libraryScreen">
+            <div class="statusbar"><span>9:41</span><span class="status-icons"><i></i><i></i><i></i></span></div>
+            <header class="appbar"><button data-screen="chatScreen">‹</button><div class="app-title"><b>官方组件库</b><small>可组合的服务积木</small></div><button data-screen="mineScreen" style="font-size:12px">⌘</button></header>
+            <div class="content">
+              <div class="page-head"><h2>不是从空白开始</h2><p>每个组件都包含数据口径、可调参数、默认样式、运行方式和风险边界。</p></div><div class="searchbar">⌕ 搜索“回撤、费率、资金流…”</div>
+              <div class="tabs"><button class="active">全部</button><button>收益</button><button>风险</button><button>配置</button><button>交易</button><button>AI 解读</button></div>
+              <div class="library-grid">
+                <article class="library-card"><div class="library-top"><span class="icon-box">历</span><span class="pill">官方</span></div><h3>收益日历</h3><p>可调：区间、账户、产品范围、日/月粒度。</p><button class="btn secondary add-component" data-add="calendar">加入当前服务</button></article>
+                <article class="library-card"><div class="library-top"><span class="icon-box">撤</span><span class="pill">官方</span></div><h3>最大回撤</h3><p>可调：区间、标的、基准、恢复期展示。</p><button class="btn secondary add-component" data-add="drawdown">加入当前服务</button></article>
+                <article class="library-card"><div class="library-top"><span class="icon-box">买</span><span class="pill mint">交易</span></div><h3>买卖点走势</h3><p>可调：产品、区间、交易类型、收益口径。</p><button class="btn secondary add-component" data-add="trade">加入当前服务</button></article>
+                <article class="library-card"><div class="library-top"><span class="icon-box">效</span><span class="pill violet">投顾特色</span></div><h3>资产效率线</h3><p>可调：资产范围、约束、风险收益假设。</p><button class="btn secondary add-component" data-add="frontier">加入当前服务</button></article>
+                <article class="library-card"><div class="library-top"><span class="icon-box">旭</span><span class="pill violet">投顾特色</span></div><h3>资产旭日图</h3><p>穿透账户、产品、基金和底层资产。</p><button class="btn secondary add-component">加入当前服务</button></article>
+                <article class="library-card"><div class="library-top"><span class="icon-box">费</span><span class="pill amber">成本</span></div><h3>费率影响</h3><p>基金、投顾费与长期复利成本模拟。</p><button class="btn secondary add-component">加入当前服务</button></article>
+                <article class="library-card"><div class="library-top"><span class="icon-box">流</span><span class="pill">官方</span></div><h3>资金流</h3><p>买卖调、分红、净投入和现金流变化。</p><button class="btn secondary add-component">加入当前服务</button></article>
+                <article class="library-card"><div class="library-top"><span class="icon-box">顾</span><span class="pill violet">AI</span></div><h3>投顾解读</h3><p>可调：重点、语气、长度和行动层级。</p><button class="btn secondary add-component">加入当前服务</button></article>
               </div>
             </div>
           </section>
 
           <section class="screen" id="marketScreen">
             <div class="statusbar"><span>9:41</span><span class="status-icons"><i></i><i></i><i></i></span></div>
-            <header class="appbar"><button class="back" data-screen="chatScreen" aria-label="返回">‹</button><div class="app-title"><b>服务广场</b><small>发现好方法</small></div><button data-screen="mineScreen" aria-label="我的收藏">♡</button></header>
+            <header class="appbar"><button data-screen="chatScreen">‹</button><div class="app-title"><b>服务广场</b><small>订阅好服务，再造为自己的</small></div><button data-screen="mineScreen" style="font-size:12px">♡</button></header>
             <div class="content">
-              <div class="market-hero"><span class="eyebrow" style="color:#8dcbf7">YINGMI AI LAB</span><h2>先用别人的好方法<br>再变成更适合你的</h2><p>每项服务都有明确承诺、来源和边界。订阅只使用你自己的授权数据。</p><div class="searchbar">⌕ 搜索场景、问题或创作者</div></div>
-              <div class="market-tabs"><button class="active">为你推荐</button><button>我的账户</button><button>基金研究</button><button>有趣实验</button></div>
-              <div class="service-list">
-                <article class="list-card market-card">
-                  <div class="market-cover"><div><span class="pill">官方认证</span><h3>市场与我</h3><p>过滤热点噪声，只解释与你持仓和目标有关的变化。</p></div><span class="service-icon">市</span></div>
-                  <div class="creator-line"><span>盈米投研 · 8,624 人订阅</span><span class="socials"><button class="favorite">♡ 收藏</button><button data-screen="detailScreen">查看 →</button></span></div>
-                </article>
-                <article class="list-card market-card">
-                  <div class="market-cover" style="background:linear-gradient(145deg,#f4f1fc,#eee8fb)"><div><span class="pill violet">生态共建</span><h3>主动基金体检</h3><p>每季检查风格、经理、回撤与费率是否发生关键变化。</p></div><span class="service-icon" style="color:#7559ce">基</span></div>
-                  <div class="creator-line"><span>研究员 林一 · 4,119 人订阅</span><span class="socials"><button class="favorite">♡ 收藏</button><button>查看 →</button></span></div>
-                </article>
-                <article class="list-card market-card">
-                  <div class="market-cover" style="background:linear-gradient(145deg,#fff8e9,#ffefce)"><div><span class="pill violet">AI 大赛</span><h3>我的投资 MBTI</h3><p>从真实行为理解你的决策优势与可能的性格盲区。</p></div><span class="service-icon" style="color:#b87600">型</span></div>
-                  <div class="creator-line"><span>投教作者 周予 · 12,420 人使用</span><span class="socials"><button class="favorite">♡ 收藏</button><button>查看 →</button></span></div>
-                </article>
+              <div class="page-head"><h2>一套组件，就是一种专业方法</h2><p>订阅只使用你自己的授权数据；复制模板会保留来源与版本关系。</p></div><div class="searchbar">⌕ 搜索服务场景或创作者</div>
+              <div class="tabs"><button class="active">为你推荐</button><button>账户</button><button>基金</button><button>交易</button><button>配置</button></div>
+              <div class="template-list">
+                <article class="template"><div class="template-cover"><div><span class="pill">官方认证</span><h3>账户收益复盘 Pro</h3><p>从收益日历、回撤、交易点到配置效率的完整复盘。</p><div class="template-modules"><span>收益日历</span><span>最大回撤</span><span>效率线</span></div></div><span class="icon-box">收</span></div><div class="template-foot"><span>盈米投研 · 8,624 人订阅</span><span class="template-actions"><button class="favorite">♡ 收藏</button><button data-screen="detailScreen">查看 →</button></span></div></article>
+                <article class="template"><div class="template-cover" style="background:linear-gradient(145deg,#f4f1fc,#eee8fb)"><div><span class="pill violet">生态共建</span><h3>我的交易行为复盘</h3><p>把收益走势、买卖点和行为偏差放在一起看。</p><div class="template-modules"><span>买卖点</span><span>资金流</span><span>行为解读</span></div></div><span class="icon-box" style="color:#7559ce">省</span></div><div class="template-foot"><span>投教作者 周予 · 4,119 人使用</span><span class="template-actions"><button class="favorite">♡ 收藏</button><button>查看 →</button></span></div></article>
+                <article class="template"><div class="template-cover" style="background:linear-gradient(145deg,#eefaf7,#e0f4ef)"><div><span class="pill mint">官方认证</span><h3>资产配置效率观察</h3><p>持仓变化后自动更新效率线与配置建议。</p><div class="template-modules"><span>效率线</span><span>旭日图</span><span>投顾解读</span></div></div><span class="icon-box" style="color:#087e6a">效</span></div><div class="template-foot"><span>且慢官方 · 2,607 人订阅</span><span class="template-actions"><button class="favorite">♡ 收藏</button><button>查看 →</button></span></div></article>
               </div>
             </div>
           </section>
 
           <section class="screen" id="detailScreen">
             <div class="statusbar"><span>9:41</span><span class="status-icons"><i></i><i></i><i></i></span></div>
-            <header class="appbar"><button class="back" data-screen="marketScreen" aria-label="返回">‹</button><div class="app-title"><b>服务详情</b><small>公开版本 v2.3</small></div><button data-open-share aria-label="分享">↗</button></header>
-            <div class="content" style="padding-bottom:12px">
-              <div class="detail-hero"><span class="service-icon">市</span><h2>市场与我</h2><p>每天收盘后，过滤热点噪声，只解释与你持仓、目标和风险边界有关的市场变化。</p>
-                <div class="detail-author"><span><i class="author-avatar">盈</i>盈米投研 · 官方认证</span><span>8,624 人订阅</span></div>
-              </div>
-              <article class="promise"><h3>这项服务承诺什么</h3><div class="promise-grid"><div><small>何时运行</small><b>每天收盘后</b></div><div><small>使用什么</small><b>独立授权数据</b></div><div><small>给你什么</small><b>最多 3 项重要变化</b></div><div><small>不会做什么</small><b>不自动交易</b></div></div></article>
-              <article class="promise"><h3>标准能力模块</h3><div class="module-row"><span>市场事件聚合</span><span>持仓关联</span><span>目标影响判断</span><span>服务卡</span></div><div class="remix-note"><span class="icon" style="background:#fff;color:#7559ce">变</span><span><b>可以再造，但不能越过边界</b><br>你可以改变关注范围、提醒阈值、表达风格和输出组件；数据权限、风险规则与来源链保持不变。</span></div></article>
-              <article class="promise"><h3>来源与版本</h3><div class="contract"><div class="contract-row"><span>当前版本</span><b>v2.3 · 2026-07-24 更新</b></div><div class="contract-row"><span>质量状态</span><b>官方评测通过 · 可追溯</b></div><div class="contract-row"><span>衍生关系</span><b>已有 318 个个性化分支</b></div></div></article>
+            <header class="appbar"><button data-screen="marketScreen">‹</button><div class="app-title"><b>服务详情</b><small>官方模板 v3.2</small></div><button data-open-publish style="font-size:12px">↗</button></header>
+            <div class="content" style="padding-bottom:10px">
+              <div class="detail-hero"><span class="pill" style="background:rgba(255,255,255,.1);color:#d9edfc">官方认证</span><h2>账户收益复盘 Pro</h2><p>把收益、回撤、买卖点与配置效率放到同一套复盘服务中，支持任意区间和账户范围。</p><div class="author"><span>盈米投研 · 2026-07-24 更新</span><span>8,624 人订阅</span></div></div>
+              <article class="detail-block"><h3>默认服务组件</h3><div class="detail-components"><span>核心收益指标 <b>工程接口</b></span><span>收益日历 <b>官方模板</b></span><span>区间最大回撤 <b>工程接口</b></span><span>买卖点收益走势 <b>Skill</b></span><span>资产配置效率线 <b>计算服务</b></span><span>投顾解读 <b>Agent</b></span></div></article>
+              <article class="detail-block"><h3>你可以怎么改</h3><div class="detail-components"><span>分析区间与产品范围 <b>自由修改</b></span><span>组件增删与排列 <b>自由修改</b></span><span>提醒频率与输出形式 <b>自由修改</b></span><span>数据权限与行动边界 <b>平台锁定</b></span></div><div class="source-note">复制后会生成你的个人分支，保留“源自 盈米投研 / 账户收益复盘 Pro v3.2”的来源链。你的数据和运行结果不会回传给原作者。</div></article>
             </div>
-            <div class="detail-bottom"><div class="detail-actions"><button class="favorite">♡</button><button class="remix-button">再造一版</button><button class="primary subscribe-button">订阅服务</button></div></div>
+            <div class="detail-bottom"><button class="favorite">♡</button><button class="subscribe">订阅服务</button><button class="primary" id="copyTemplate">复制模板再编辑</button></div>
           </section>
 
-          <section class="screen" id="resultsScreen">
+          <section class="screen" id="mineScreen">
             <div class="statusbar"><span>9:41</span><span class="status-icons"><i></i><i></i><i></i></span></div>
-            <header class="appbar"><button class="back" data-screen="chatScreen" aria-label="返回">‹</button><div class="app-title"><b>小顾成果</b><small>重要结果沉淀在这里</small></div><span></span></header>
+            <header class="appbar"><button data-screen="chatScreen">‹</button><div class="app-title"><b>我的服务</b><small>保存、运行与发布</small></div><button data-screen="libraryScreen" style="font-size:13px">＋</button></header>
             <div class="content">
-              <div class="page-head"><h2>不是每次运行，都要打扰你</h2><p>11 次服务已完成，只有 2 次产生需要你关注的成果。</p></div>
-              <div class="section-label"><b>7 月</b><button>全部成果</button></div>
-              <div class="service-list">
-                <article class="list-card"><div class="list-head"><span class="service-icon">月</span><div><h3>7 月账户变化简报</h3><p>每月账户复盘 · 今天 09:38</p></div><span class="pill mint">1 项关注</span></div><div class="list-actions"><button data-screen="chatScreen">回到对话</button><button class="primary-mini">查看完整结果</button></div></article>
-                <article class="list-card"><div class="list-head"><span class="service-icon">市</span><div><h3>本周市场与你关系不大</h3><p>市场与我 · 周五 18:30</p></div><span class="pill">无需行动</span></div><div class="list-actions"><button>查看来源</button><button class="primary-mini">查看简报</button></div></article>
+              <div class="page-head"><h2>我的服务生产线</h2><p>从草稿到个人服务，再到公开模板，每个版本都有来源与运行记录。</p></div><div class="segment"><button class="active">运行中 3</button><button>我发布的 1</button><button>收藏 6</button></div>
+              <div class="my-list">
+                <article class="my-card" id="savedService"><div class="my-head"><span class="icon-box">收</span><div><h3>账户收益复盘 · 我的版 <span class="pill violet">个人分支</span></h3><p>6 个组件 · 2025年至今 · 长钱账户</p></div><span class="state">已保存</span></div><div class="my-meta"><span>下次手动运行</span><span>版本 v1.1</span><span>源自官方模板</span></div><div class="my-actions"><button data-screen="serviceScreen">继续编辑</button><button class="primary-mini" data-open-publish>发布 / 分享</button></div></article>
+                <article class="my-card"><div class="my-head"><span class="icon-box">市</span><div><h3>市场与我 <span class="pill mint">已订阅</span></h3><p>3 个组件 · 每天收盘后</p></div><span class="state">运行中</span></div><div class="my-meta"><span>今天 18:30</span><span>官方 v2.3</span></div><div class="my-actions"><button>查看记录</button><button class="primary-mini">复制再造</button></div></article>
+                <article class="my-card"><div class="my-head"><span class="icon-box">效</span><div><h3>家庭配置效率月报 <span class="pill amber">已发布</span></h3><p>4 个组件 · 36 人订阅</p></div><span class="state">公开中</span></div><div class="my-meta"><span>审核通过</span><span>模板 v1.4</span></div><div class="my-actions"><button>查看数据</button><button class="primary-mini" data-open-publish>分享服务</button></div></article>
               </div>
             </div>
           </section>
 
-          <div class="sheet-layer" id="shareSheet">
+          <div class="sheet-layer" id="composeSheet">
             <section class="sheet">
-              <div class="sheet-handle"></div><h2>让这项服务帮助更多人</h2><p>分享的是服务方法和规则，不会分享你的账户、持仓、对话或运行结果。</p>
-              <div class="share-options">
-                <div class="share-option active"><i>链</i><span><b>生成邀请链接</b><small>朋友打开后，用自己的数据独立运行。</small></span><em>✓</em></div>
-                <div class="share-option"><i>群</i><span><b>分享给指定用户</b><small>适合顾问、客户或内部团队协作。</small></span><em></em></div>
-                <div class="share-option"><i>广</i><span><b>申请发布到服务广场</b><small>通过质量、合规与运行评测后公开分发。</small></span><em></em></div>
-              </div>
-              <div class="rule-callout">平台游戏规则：公开版本锁定服务承诺、权限边界与来源；他人可订阅或再造，但每个分支都保留原作者和版本链。</div>
-              <div class="sheet-actions"><button class="btn secondary" data-close-sheet>取消</button><button class="btn primary" id="confirmShare">生成链接</button></div>
+              <div class="sheet-handle"></div><h2>直接告诉小顾，你想怎么改</h2><p>可以修改范围、指标、顺序、图表、提醒和表达；平台会继续守住数据与行动边界。</p>
+              <div class="prompt-box"><textarea id="composePrompt">改成 2025 年以来，只看长钱账户，把最大回撤放在第一张卡，再增加我买某只基金的买卖点。</textarea><div class="prompt-suggestions"><button>只看近一年</button><button>最大回撤放第一</button><button>增加买卖点</button><button>去掉市场基准</button><button>每月自动运行</button></div></div>
+              <div class="change-preview"><div><span>分析区间</span><b>历史以来 → 2025年至今</b></div><div><span>产品范围</span><b>全部账户 → 长钱账户</b></div><div><span>组件顺序</span><b>最大回撤提前</b></div><div><span>新增组件</span><b>买卖点收益走势</b></div></div>
+              <div class="sheet-actions"><button class="btn secondary" data-close-sheet>取消</button><button class="btn primary" id="applyCompose">生成这个版本</button></div>
+            </section>
+          </div>
+          <div class="sheet-layer" id="publishSheet">
+            <section class="sheet">
+              <div class="sheet-handle"></div><h2>保存后，服务可以继续流动</h2><p>保存、发布、分享和复制都基于同一个服务对象，不会复制或泄露个人数据。</p>
+              <div class="publish-options"><div class="publish-option active"><i>存</i><span><b>保存为我的服务</b><small>使用自己的数据，可继续对话修改。</small></span><em>✓</em></div><div class="publish-option"><i>链</i><span><b>生成分享链接</b><small>分享方法与模板，朋友独立授权运行。</small></span><em></em></div><div class="publish-option"><i>广</i><span><b>申请发布到服务广场</b><small>通过质量、合规和运行评测后公开订阅。</small></span><em></em></div></div>
+              <div class="game-rule">公开版本会锁定服务承诺、权限边界和来源链；订阅者可复制再造，但每个分支都保留原作者与版本关系。</div>
+              <div class="sheet-actions"><button class="btn secondary" data-close-sheet>稍后</button><button class="btn primary" id="confirmPublish">确认</button></div>
             </section>
           </div>
           <div class="toast" id="toast"></div>
@@ -333,84 +348,60 @@
   </main>
 
   <script>
-    const gate=document.getElementById('gate'),experience=document.getElementById('experience');
-    const gateForm=document.getElementById('gateForm'),password=document.getElementById('password'),gateError=document.getElementById('gateError'),gateCard=document.getElementById('gateCard');
-    function unlock(){gate.classList.add('hidden');experience.setAttribute('aria-hidden','false');sessionStorage.setItem('yingmi-ai-lab-v2','unlocked')}
-    if(sessionStorage.getItem('yingmi-ai-lab-v2')==='unlocked')unlock();
+    const gate=document.getElementById('gate'),experience=document.getElementById('experience'),gateForm=document.getElementById('gateForm'),password=document.getElementById('password'),gateError=document.getElementById('gateError'),gateCard=document.getElementById('gateCard');
+    function unlock(){gate.classList.add('hidden');experience.setAttribute('aria-hidden','false');sessionStorage.setItem('yingmi-ai-lab-v3','unlocked')}
+    if(sessionStorage.getItem('yingmi-ai-lab-v3')==='unlocked')unlock();
     gateForm.addEventListener('submit',e=>{e.preventDefault();if(password.value==='2026')unlock();else{gateError.textContent='密码不正确，请重新输入';gateCard.classList.remove('shake');void gateCard.offsetWidth;gateCard.classList.add('shake');password.select()}});
 
-    const screens=[...document.querySelectorAll('.screen')],menuLayer=document.getElementById('menuLayer'),chatFeed=document.getElementById('chatFeed');
-    function showScreen(id){
-      screens.forEach(s=>s.classList.toggle('active',s.id===id));menuLayer.classList.remove('show');
-      document.querySelectorAll('[data-scenario]').forEach(b=>b.classList.toggle('active',b.dataset.scenario===id.replace('Screen','')));
-    }
+    const screens=[...document.querySelectorAll('.screen')],menuLayer=document.getElementById('menuLayer'),composeSheet=document.getElementById('composeSheet'),publishSheet=document.getElementById('publishSheet');
+    function showScreen(id){screens.forEach(s=>s.classList.toggle('active',s.id===id));menuLayer.classList.remove('show');document.querySelectorAll('[data-scenario]').forEach(b=>b.classList.toggle('active',b.dataset.scenario===id.replace('Screen','')))}
     document.addEventListener('click',e=>{const target=e.target.closest('[data-screen]');if(target)showScreen(target.dataset.screen)});
     document.querySelectorAll('[data-scenario]').forEach(b=>b.addEventListener('click',()=>showScreen(b.dataset.scenario+'Screen')));
-    document.getElementById('menuButton').addEventListener('click',()=>menuLayer.classList.add('show'));
-    menuLayer.addEventListener('click',e=>{if(e.target===menuLayer)menuLayer.classList.remove('show')});
+    document.getElementById('menuButton').addEventListener('click',()=>menuLayer.classList.add('show'));menuLayer.addEventListener('click',e=>{if(e.target===menuLayer)menuLayer.classList.remove('show')});
+    document.querySelectorAll('[data-open-compose]').forEach(b=>b.addEventListener('click',()=>composeSheet.classList.add('show')));
+    document.querySelectorAll('[data-open-blueprint]').forEach(b=>b.addEventListener('click',()=>showScreen('blueprintScreen')));
+    document.querySelectorAll('[data-open-publish]').forEach(b=>b.addEventListener('click',()=>publishSheet.classList.add('show')));
+    document.querySelectorAll('[data-close-sheet]').forEach(b=>b.addEventListener('click',()=>{composeSheet.classList.remove('show');publishSheet.classList.remove('show')}));
+    [composeSheet,publishSheet].forEach(layer=>layer.addEventListener('click',e=>{if(e.target===layer)layer.classList.remove('show')}));
 
-    const generated=document.getElementById('generatedConversation');let stage=0;
-    function scrollChat(){setTimeout(()=>{chatFeed.scrollTop=chatFeed.scrollHeight},30)}
-    function serviceProposal(){
-      if(stage>0)return;stage=1;document.getElementById('seedCard').classList.add('hidden');
-      generated.insertAdjacentHTML('beforeend',`
-        <div class="message user"><div class="bubble">以后都帮我</div></div>
-        <div class="message"><span class="bot-avatar">AI</span><div class="bubble">可以。我先按这次对话理解：<strong>每月发薪后，复盘整个账户，只告诉你真正需要关注的变化。</strong></div></div>
-        <div class="message"><span class="bot-avatar">AI</span><div class="bubble">我只需要你确认这 3 件事：
-          <div class="smart-chips"><button class="selected">发薪后运行</button><button class="selected">整个账户</button><button class="selected">只提醒重要变化</button></div>
-          <span style="font-size:8px;color:#8c9aa6">其余的数据、分析方法和风险检查，我会自动组合。</span>
-          <div class="inline-actions"><button class="btn primary" data-action="run">就这样，先跑一次</button><button class="btn secondary" data-action="customize">还有一个想法</button></div>
-        </div></div>`);
-      scrollChat()
+    let customized=false,copied=false;
+    function applyCustomization(){
+      customized=true;composeSheet.classList.remove('show');showScreen('serviceScreen');
+      document.getElementById('periodScope').textContent='2025年至今';document.getElementById('periodScope').classList.add('changed');
+      document.getElementById('productScope').textContent='长钱账户';document.getElementById('productScope').classList.add('changed');
+      document.getElementById('drawdownLabel').textContent='区间最大回撤';document.getElementById('calendarDesc').textContent='长钱账户 · 2025年至今';
+      document.getElementById('trendDesc').textContent='长钱账户 vs 沪深300 · 2025年至今';document.getElementById('tradeComponent').classList.remove('hidden');
+      document.getElementById('componentCount').textContent='6 个组件';document.getElementById('autoNoteText').textContent='已按你的要求修改区间、范围和顺序，并新增买卖点组件。底层权限与风险规则保持不变。';
+      const stack=document.getElementById('componentStack'),metrics=document.getElementById('metricsComponent');stack.insertBefore(metrics,stack.firstElementChild);metrics.classList.add('dragging');setTimeout(()=>metrics.classList.remove('dragging'),900);
+      showToast('已生成个性化版本：4 项修改，底层边界不变')
     }
-    function runOnce(){
-      if(stage>1)return;stage=2;
-      generated.insertAdjacentHTML('beforeend',`
-        <div class="message user"><div class="bubble">就这样，先跑一次</div></div>
-        <div class="message"><span class="bot-avatar">AI</span><div class="bubble">正在用演示账户试运行。已完成数据授权、能力可用性和行动边界检查。</div></div>
-        <article class="chat-card result-card">
-          <div class="result-cover"><span class="pill">首次试运行 · 演示数据</span><h3>账户整体稳定，1 个变化值得关注</h3><p>长期目标没有偏离，本月不需要调整主方案。</p>
-            <div class="result-metrics"><span><b>+2.4%</b><small>本月变化</small></span><span><b>3.2%</b><small>权益偏离</small></span><span><b>0 项</b><small>需立即行动</small></span></div>
-          </div>
-          <div class="result-body"><div class="insight"><i>1</i><span><b>权益比例比目标高 3.2%</b><small>主要来自上涨，仍在允许区间内，暂不需要动作。</small></span></div></div>
-        </article>
-        <div class="message"><span class="bot-avatar">AI</span><div class="bubble">这次结果符合预期吗？满意的话，我就把这套方法保存下来，以后自动运行。
-          <div class="inline-actions"><button class="btn primary" data-action="save">保存为服务</button><button class="btn secondary" data-action="customize">让它更懂我</button></div>
-        </div></div>`);
-      scrollChat()
-    }
-    function saveService(){
-      if(stage>2)return;stage=3;
-      generated.insertAdjacentHTML('beforeend',`
-        <div class="message user"><div class="bubble">保存为服务</div></div>
-        <article class="chat-card service-card">
-          <div class="service-cover"><div class="service-cover-top"><span class="service-icon">月</span><span class="pill violet">我的定制</span></div><h3>每月账户复盘</h3><p>发薪后复盘整个账户，只提醒与你的稳健计划有关的重要变化。</p></div>
-          <div class="service-body">
-            <div class="contract"><div class="contract-row"><span>何时运行</span><b>每月发薪后 · 重大变化加急</b></div><div class="contract-row"><span>使用数据</span><b>账户、交易、目标与市场</b></div><div class="contract-row"><span>行动边界</span><b>只解释和建议，不自动交易</b></div></div>
-            <div class="module-row"><span>账户变化</span><span>目标偏离</span><span>市场影响</span><span>服务卡</span></div>
-            <div class="save-actions"><button class="btn secondary" data-open-share>分享 / 发布</button><button class="btn primary" data-screen="mineScreen">加入小顾并运行</button></div>
-            <div class="fineprint">服务 ID 已生成 · v1.0 · 可暂停、可撤回、可追溯</div>
-          </div>
-        </article>
-        <div class="message"><span class="bot-avatar">AI</span><div class="bubble">已经保存。以后想调整，不用重新配置，直接跟我说“只看家庭账户”或“改成季度复盘”就可以。</div></div>`);
-      scrollChat();showToast('服务已保存，并加入 AI 小顾')
-    }
-    function customReply(){generated.insertAdjacentHTML('beforeend',`<div class="message user"><div class="bubble">只看与长期目标有关的变化，语气再简洁一点</div></div><div class="message"><span class="bot-avatar">AI</span><div class="bubble">明白。我会把“长期目标相关性”设为筛选条件，结果最多保留 3 条，不改变数据和行动边界。<div class="inline-actions"><button class="btn primary" data-action="run">按这个版本试跑</button></div></div></div>`);stage=1;scrollChat()}
-    document.addEventListener('click',e=>{const a=e.target.closest('[data-action]');if(!a)return;if(a.dataset.action==='continue')serviceProposal();if(a.dataset.action==='once')runOnce();if(a.dataset.action==='run')runOnce();if(a.dataset.action==='save')saveService();if(a.dataset.action==='customize')customReply()});
+    document.getElementById('applyCompose').addEventListener('click',applyCustomization);
+    document.querySelectorAll('.prompt-suggestions button').forEach(b=>b.addEventListener('click',()=>{const box=document.getElementById('composePrompt');if(!box.value.includes(b.textContent))box.value+=(box.value.trim().endsWith('。')?'':'，')+b.textContent}));
 
-    const chatInput=document.getElementById('chatInput');
-    function sendChat(){if(!chatInput.value.trim())return;generated.insertAdjacentHTML('beforeend',`<div class="message user"><div class="bubble">${chatInput.value.replace(/[<>]/g,'')}</div></div><div class="message"><span class="bot-avatar">AI</span><div class="bubble">收到。我会把这条偏好作为服务的个性化规则，但不会改变数据权限和行动边界。</div></div>`);chatInput.value='';scrollChat()}
+    document.querySelectorAll('[data-move]').forEach(button=>button.addEventListener('click',()=>{
+      const card=button.closest('.component'),stack=document.getElementById('componentStack');if(button.dataset.move==='up'&&card.previousElementSibling)stack.insertBefore(card,card.previousElementSibling);if(button.dataset.move==='down'&&card.nextElementSibling)stack.insertBefore(card.nextElementSibling,card);
+      card.classList.add('dragging');setTimeout(()=>card.classList.remove('dragging'),650);showToast('组件顺序已调整，保存后成为你的默认排列')
+    }));
+    document.querySelectorAll('[data-edit-component]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('composePrompt').value=`修改「${b.dataset.editComponent}」：`;composeSheet.classList.add('show')}));
+    document.getElementById('saveServiceButton').addEventListener('click',()=>publishSheet.classList.add('show'));
+
+    document.querySelectorAll('.publish-option').forEach(option=>option.addEventListener('click',()=>{document.querySelectorAll('.publish-option').forEach(x=>{x.classList.remove('active');x.querySelector('em').textContent=''});option.classList.add('active');option.querySelector('em').textContent='✓'}));
+    document.getElementById('confirmPublish').addEventListener('click',()=>{
+      const selected=document.querySelector('.publish-option.active b').textContent;publishSheet.classList.remove('show');showScreen('mineScreen');
+      showToast(selected==='保存为我的服务'?'服务已保存：以后可继续用自然语言修改':selected==='生成分享链接'?'分享链接已生成：不包含个人数据':'已提交公开发布评测');
+    });
+
+    document.querySelectorAll('.favorite').forEach(b=>b.addEventListener('click',()=>{b.classList.toggle('active');b.textContent=b.classList.contains('active')?'♥ 已收藏':'♡ 收藏';showToast(b.classList.contains('active')?'已收藏到“我的服务”':'已取消收藏')}));
+    document.querySelector('.subscribe').addEventListener('click',e=>{e.target.textContent='✓ 已订阅';e.target.disabled=true;showToast('订阅成功：将使用你的授权数据独立运行')});
+    document.getElementById('copyTemplate').addEventListener('click',()=>{
+      copied=true;showScreen('serviceScreen');document.getElementById('serviceTitle').textContent='账户收益复盘 · 我的版';document.getElementById('serviceSource').textContent='源自 盈米投研 / Pro v3.2';
+      document.getElementById('autoNoteText').textContent='已复制官方模板并建立个人分支。你可以改变组件和参数，来源与版本关系会继续保留。';composeSheet.classList.add('show');showToast('模板已复制：现在可以继续编辑')
+    });
+    document.querySelectorAll('.add-component').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.add==='trade'){document.getElementById('tradeComponent').classList.remove('hidden');document.getElementById('componentCount').textContent='6 个组件'}b.textContent='✓ 已加入';b.disabled=true;showToast('组件已加入当前服务，可回到服务中继续排列')}));
+    document.querySelectorAll('.mode-tabs button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.mode-tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');showToast(b.textContent==='专业视图'?'已展开 Prompt / Skill / Agent / API 信息':'已切换为通俗说明')}));
+
+    const chatInput=document.getElementById('chatInput');function sendChat(){if(!chatInput.value.trim())return;document.getElementById('composePrompt').value=chatInput.value;chatInput.value='';showScreen('serviceScreen');composeSheet.classList.add('show')}
     document.getElementById('sendButton').addEventListener('click',sendChat);chatInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
-
-    const shareSheet=document.getElementById('shareSheet');
-    document.addEventListener('click',e=>{if(e.target.closest('[data-open-share]'))shareSheet.classList.add('show');if(e.target.closest('[data-close-sheet]'))shareSheet.classList.remove('show')});
-    shareSheet.addEventListener('click',e=>{if(e.target===shareSheet)shareSheet.classList.remove('show')});
-    document.querySelectorAll('.share-option').forEach(option=>option.addEventListener('click',()=>{document.querySelectorAll('.share-option').forEach(x=>{x.classList.remove('active');x.querySelector('em').textContent=''});option.classList.add('active');option.querySelector('em').textContent='✓'}));
-    document.getElementById('confirmShare').addEventListener('click',()=>{shareSheet.classList.remove('show');showToast('邀请链接已生成：分享服务方法，不分享个人数据')});
-
-    document.querySelectorAll('.favorite').forEach(b=>b.addEventListener('click',()=>{b.classList.toggle('active');b.textContent=b.classList.contains('active')?'♥ 已收藏':'♡ 收藏';showToast(b.classList.contains('active')?'已收藏到我的服务':'已取消收藏')}));
-    document.querySelector('.subscribe-button').addEventListener('click',e=>{e.target.textContent='✓ 已订阅';e.target.disabled=true;showToast('已订阅：服务将用你的授权数据独立运行')});
-    document.querySelector('.remix-button').addEventListener('click',()=>{showScreen('chatScreen');generated.insertAdjacentHTML('beforeend',`<div class="message user"><div class="bubble">帮我再造一版“市场与我”，只关注我的主动基金</div></div><div class="message"><span class="bot-avatar">AI</span><div class="bubble">可以。我会保留原服务的市场事件、持仓关联和风险规则，只把范围改成<strong>你的主动基金</strong>。原作者与版本来源会继续保留。<div class="smart-chips"><span class="selected">范围：主动基金</span><span>提醒：重大变化</span><span>输出：3 条以内</span></div><div class="inline-actions"><button class="btn primary" data-action="run">先跑一次</button></div></div></div>`);stage=1;scrollChat();showToast('已创建个性化分支，来源关系已保留')});
     const toast=document.getElementById('toast');function showToast(text){toast.textContent=text;toast.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>toast.classList.remove('show'),3200)}
   </script>
 </body>
