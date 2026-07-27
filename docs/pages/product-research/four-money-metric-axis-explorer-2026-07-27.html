@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="四笔钱公募策略多指标双轴交互定位图，可自由切换风险、评分、收益、回撤与风险等级。">
+  <meta property="og:title" content="公募策略多指标双轴探索器">
+  <meta property="og:description" content="自由选择 X、Y 轴，比较四笔钱策略的关键指标定位。">
+  <title>公募策略多指标双轴探索器｜四笔钱</title>
+  <style>
+    :root {
+      --brand: #1b88ee;
+      --brand-deep: #116fc8;
+      --ink: #333;
+      --body: #606060;
+      --muted: #8a8f98;
+      --page: #f9fafb;
+      --card: #fff;
+      --line: #d8d8d8;
+      --blue: #69b1f4;
+      --orange: #f88d72;
+      --soft-blue: #f0f6ff;
+      --shadow: 0 18px 55px rgba(38, 83, 120, .10);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--page); scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 88% 4%, rgba(105, 177, 244, .18), transparent 28rem),
+        linear-gradient(180deg, #f4f8fd 0, var(--page) 360px);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+    }
+    button, input, select { font: inherit; }
+    [hidden] { display: none !important; }
+    .gate {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(105, 177, 244, .28), transparent 24rem),
+        linear-gradient(145deg, #0d6fca, #1b88ee 48%, #69b1f4);
+    }
+    .gate-card {
+      width: min(420px, 100%);
+      border: 1px solid rgba(255,255,255,.42);
+      border-radius: 24px;
+      padding: 34px;
+      color: #fff;
+      background: rgba(19, 91, 157, .58);
+      box-shadow: 0 28px 80px rgba(8, 50, 88, .32);
+      backdrop-filter: blur(18px);
+    }
+    .gate-mark {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      margin-bottom: 28px;
+      border-radius: 16px;
+      color: var(--brand);
+      background: #fff;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .gate h1 { margin: 0; font-size: 28px; line-height: 1.3; }
+    .gate p { margin: 10px 0 24px; color: rgba(255,255,255,.82); line-height: 1.7; }
+    .gate-form { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+    .gate input {
+      min-width: 0;
+      height: 46px;
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 10px;
+      padding: 0 14px;
+      color: #fff;
+      outline: none;
+      background: rgba(255,255,255,.12);
+    }
+    .gate input::placeholder { color: rgba(255,255,255,.62); }
+    .gate input:focus { border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.16); }
+    .gate button {
+      height: 46px;
+      border: 0;
+      border-radius: 10px;
+      padding: 0 18px;
+      color: var(--brand);
+      background: #fff;
+      cursor: pointer;
+      font-weight: 650;
+    }
+    .gate-error {
+      min-height: 20px;
+      margin: 10px 0 0 !important;
+      color: #fff !important;
+      font-size: 13px;
+    }
+    .hero { padding: 54px 24px 30px; }
+    .hero-inner, .content, .footer-inner { width: min(1180px, 100%); margin: 0 auto; }
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--brand);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      max-width: 960px;
+      margin: 0;
+      font-size: clamp(34px, 5.4vw, 64px);
+      font-weight: 650;
+      letter-spacing: -.045em;
+      line-height: 1.08;
+    }
+    .hero-copy {
+      max-width: 780px;
+      margin: 20px 0 0;
+      color: var(--body);
+      font-size: clamp(15px, 2vw, 19px);
+      line-height: 1.8;
+    }
+    .content { padding: 0 24px 54px; }
+    .chart-card {
+      border: 1px solid rgba(27, 136, 238, .16);
+      border-radius: 24px;
+      background: rgba(255,255,255,.96);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: end;
+      gap: 12px;
+      padding: 22px 24px 18px;
+      background: var(--soft-blue);
+      border-bottom: 1px solid #dfeafb;
+    }
+    .field { display: grid; gap: 7px; }
+    .field label { color: var(--body); font-size: 12px; font-weight: 650; }
+    .field select {
+      width: 100%;
+      height: 44px;
+      border: 1px solid #a9ccef;
+      border-radius: 10px;
+      padding: 0 36px 0 12px;
+      color: var(--ink);
+      outline: none;
+      background: #fff;
+    }
+    .field select:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(27,136,238,.14); }
+    .swap {
+      height: 44px;
+      border: 1px solid #a9ccef;
+      border-radius: 10px;
+      padding: 0 14px;
+      color: var(--brand-deep);
+      background: #fff;
+      cursor: pointer;
+      font-weight: 650;
+    }
+    .swap:hover { border-color: var(--brand); background: #f7fbff; }
+    .chart-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px 24px 0;
+    }
+    .legend { display: flex; flex-wrap: wrap; gap: 16px; color: var(--body); font-size: 13px; }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); }
+    .dot.orange { border-radius: 2px; background: var(--orange); transform: rotate(45deg); }
+    .chart-stat { color: var(--muted); font-size: 13px; text-align: right; }
+    .chart-scroll { padding: 4px 12px 0; overflow-x: auto; }
+    .chart-wrap { position: relative; min-width: 760px; }
+    #chart { display: block; width: 100%; height: auto; min-height: 520px; }
+    #chart .strategy-point {
+      transition: transform 320ms ease, opacity 180ms ease;
+    }
+    #chart .strategy-point text { pointer-events: none; }
+    .initial #chart .strategy-point { transition: none; }
+    .tooltip {
+      position: absolute;
+      z-index: 5;
+      width: max-content;
+      max-width: 285px;
+      pointer-events: none;
+      border: 1px solid rgba(27, 136, 238, .18);
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: var(--ink);
+      background: rgba(255,255,255,.98);
+      box-shadow: 0 12px 36px rgba(38, 83, 120, .18);
+      font-size: 12px;
+      line-height: 1.65;
+      transform: translate(12px, -50%);
+    }
+    .tooltip strong { display: block; margin-bottom: 2px; font-size: 13px; }
+    .axis-note {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      border-top: 1px solid #edf1f5;
+      padding: 15px 24px 18px;
+      color: var(--body);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .axis-note strong { color: var(--ink); }
+    .selected {
+      min-height: 24px;
+      color: var(--brand-deep);
+      font-weight: 650;
+      text-align: right;
+    }
+    .dynamic-read {
+      margin-top: 16px;
+      border: 1px solid #9ccbf8;
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: var(--body);
+      background: #f0f6ff;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .dynamic-read strong { color: var(--ink); }
+    details {
+      margin-top: 16px;
+      border: 1px solid #e6edf5;
+      border-radius: 16px;
+      padding: 0 18px;
+      background: var(--card);
+    }
+    summary { padding: 16px 0; cursor: pointer; color: var(--ink); font-weight: 650; }
+    .method {
+      border-top: 1px solid #edf1f5;
+      padding: 15px 0 18px;
+      color: var(--body);
+      font-size: 13px;
+      line-height: 1.75;
+    }
+    .method p { margin: 0 0 9px; }
+    footer { border-top: 1px solid #e4eaf0; padding: 24px; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .footer-inner p { margin: 0; }
+    @media (max-width: 760px) {
+      .hero { padding-top: 40px; }
+      .controls { grid-template-columns: 1fr 1fr; }
+      .swap { grid-column: 1 / -1; }
+      .chart-head, .axis-note, .footer-inner { align-items: flex-start; grid-template-columns: 1fr; flex-direction: column; }
+      .chart-stat, .selected { text-align: left; }
+      .chart-scroll { padding-left: 4px; padding-right: 4px; }
+    }
+    @media (max-width: 480px) {
+      .gate-card { padding: 26px 22px; }
+      .gate-form, .controls { grid-template-columns: 1fr; }
+      .swap { grid-column: auto; }
+      .hero, .content { padding-left: 16px; padding-right: 16px; }
+      .controls, .chart-head, .axis-note { padding-left: 16px; padding-right: 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #chart .strategy-point { transition: none; }
+    }
+    @media print {
+      .gate { display: none !important; }
+      #report { display: block !important; }
+      body { background: #fff; }
+      .chart-card, details { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <section class="gate" id="gate" aria-labelledby="gate-title">
+    <div class="gate-card">
+      <div class="gate-mark" aria-hidden="true">且</div>
+      <h1 id="gate-title">策略双轴探索器</h1>
+      <p>请输入访问密码，自由组合关键指标观察策略定位。</p>
+      <form class="gate-form" id="gate-form">
+        <input id="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="访问密码" aria-label="访问密码" required>
+        <button type="submit">进入</button>
+      </form>
+      <p class="gate-error" id="gate-error" role="alert" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <main id="report" hidden>
+    <header class="hero">
+      <div class="hero-inner">
+        <p class="eyebrow">Qieman · Strategy Metric Explorer</p>
+        <h1>公募策略多指标双轴探索器</h1>
+        <p class="hero-copy">自由选择 X、Y 轴，在风险、评分、收益、回撤和风险等级之间切换。每次切换都会按当前双轴数据重新计算有效样本、坐标范围与中位数象限。</p>
+      </div>
+    </header>
+
+    <section class="content" aria-label="策略多指标双轴图">
+      <article class="chart-card">
+        <div class="controls" aria-label="坐标轴选择">
+          <div class="field">
+            <label for="x-axis">X 轴指标</label>
+            <select id="x-axis">
+              <option value="morningstarRisk">晨星风险分</option>
+              <option value="score3y">3年期评分</option>
+              <option value="return1y">近1年收益率（%）</option>
+              <option value="maxDrawdown">成立以来最大回撤（%）</option>
+              <option value="riskLevel">策略风险等级（R1-R4）</option>
+            </select>
+          </div>
+          <button class="swap" id="swap-axis" type="button" aria-label="交换 X 轴和 Y 轴">⇄ 交换</button>
+          <div class="field">
+            <label for="y-axis">Y 轴指标</label>
+            <select id="y-axis">
+              <option value="score3y">3年期评分</option>
+              <option value="morningstarRisk">晨星风险分</option>
+              <option value="return1y">近1年收益率（%）</option>
+              <option value="maxDrawdown">成立以来最大回撤（%）</option>
+              <option value="riskLevel">策略风险等级（R1-R4）</option>
+            </select>
+          </div>
+        </div>
+        <div class="chart-head">
+          <div class="legend" aria-label="图例">
+            <span><i class="dot" aria-hidden="true"></i>稳钱</span>
+            <span><i class="dot orange" aria-hidden="true"></i>长钱</span>
+            <span>虚线：当前样本中位数</span>
+          </div>
+          <div class="chart-stat" id="chart-stat">正在计算有效样本…</div>
+        </div>
+        <div class="chart-scroll">
+          <div class="chart-wrap">
+            <svg id="chart" viewBox="0 0 1120 620" role="img" aria-labelledby="chart-title chart-desc">
+              <title id="chart-title">四笔钱策略双轴散点图</title>
+              <desc id="chart-desc">可切换关键指标作为横轴和纵轴，蓝色圆点代表稳钱，橙色菱形代表长钱。</desc>
+              <g id="axis-layer"></g>
+              <g id="point-layer"></g>
+            </svg>
+            <div class="tooltip" id="tooltip" hidden></div>
+          </div>
+        </div>
+        <div class="axis-note">
+          <span id="axis-guide"><strong>坐标方向：</strong>正在计算…</span>
+          <span class="selected" id="selected" aria-live="polite">悬停或轻触策略点查看精确值</span>
+        </div>
+      </article>
+
+      <div class="dynamic-read" id="dynamic-read" aria-live="polite"></div>
+
+      <details>
+        <summary>指标口径与数据缺失</summary>
+        <div class="method">
+          <p>可选指标：晨星风险分、3年期评分、近1年收益率、成立以来最大回撤、策略风险等级。风险等级按 R1=1、R2=2、R3=3、R4=4 映射，仅用于坐标定位。</p>
+          <p>每次只纳入当前 X、Y 两个指标均有数值的策略；缺失值不会按 0 处理。因此更换坐标轴后，有效样本数可能变化。</p>
+          <p>最大回撤保留原表负值：数值越接近 0，代表历史最大回撤越小。本图是策略定位辅助，不构成收益预测或投资建议。</p>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <footer id="footer" hidden>
+    <div class="footer-inner">
+      <p>来源：Clair 提供的《公募策略体系》表 · 数据截止 2026-06-15</p>
+      <p>交互版更新：2026-07-27 · 内部研究使用</p>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const gate = document.getElementById("gate");
+      const report = document.getElementById("report");
+      const footer = document.getElementById("footer");
+      const form = document.getElementById("gate-form");
+      const password = document.getElementById("password");
+      const error = document.getElementById("gate-error");
+      const xSelect = document.getElementById("x-axis");
+      const ySelect = document.getElementById("y-axis");
+      const swapButton = document.getElementById("swap-axis");
+      const svg = document.getElementById("chart");
+      const axisLayer = document.getElementById("axis-layer");
+      const pointLayer = document.getElementById("point-layer");
+      const tooltip = document.getElementById("tooltip");
+      const selected = document.getElementById("selected");
+      const chartStat = document.getElementById("chart-stat");
+      const axisGuide = document.getElementById("axis-guide");
+      const dynamicRead = document.getElementById("dynamic-read");
+      const chartDesc = document.getElementById("chart-desc");
+      const ns = "http://www.w3.org/2000/svg";
+
+      const metrics = {
+        morningstarRisk: { label: "晨星风险分", unit: "", digits: 0, direction: "分数越高，表内风险定位越高" },
+        score3y: { label: "3年期评分", unit: "", digits: 0, direction: "分数越高，表内综合评分越高" },
+        return1y: { label: "近1年收益率", unit: "%", digits: 2, direction: "数值越高，近1年收益率越高" },
+        maxDrawdown: { label: "成立以来最大回撤", unit: "%", digits: 2, direction: "保留负值；越接近 0，历史最大回撤越小" },
+        riskLevel: { label: "策略风险等级", unit: "", digits: 0, direction: "R1 至 R4 依次升高", ordinal: true }
+      };
+
+      const data = [
+        { name:"花好月圆", short:"花好月圆", group:"稳钱", morningstarRisk:3, score3y:82, return1y:1.63, maxDrawdown:-0.29, riskLevel:1 },
+        { name:"债基优等生", short:"债基优等生", group:"稳钱", morningstarRisk:6, score3y:66, return1y:1.19, maxDrawdown:-1.04, riskLevel:1 },
+        { name:"息息相关", short:"息息相关", group:"稳钱", morningstarRisk:9, score3y:71, return1y:3.44, maxDrawdown:-0.91, riskLevel:2 },
+        { name:"我要稳稳的幸福", short:"稳稳的幸福", group:"稳钱", morningstarRisk:11, score3y:64, return1y:6.08, maxDrawdown:-2.79, riskLevel:2 },
+        { name:"锦上添花", short:"锦上添花", group:"稳钱", morningstarRisk:10, score3y:null, return1y:null, maxDrawdown:null, riskLevel:null },
+        { name:"生生不息", short:"生生不息", group:"稳钱", morningstarRisk:21, score3y:78, return1y:null, maxDrawdown:null, riskLevel:2 },
+        { name:"风和日丽", short:"风和日丽", group:"稳钱", morningstarRisk:15, score3y:75, return1y:7.91, maxDrawdown:-4.21, riskLevel:2 },
+        { name:"全球丰收", short:"全球丰收", group:"稳钱", morningstarRisk:18, score3y:72, return1y:6.35, maxDrawdown:-4.04, riskLevel:2 },
+        { name:"稳健（3070）", short:"稳健3070", group:"长钱", morningstarRisk:33, score3y:null, return1y:null, maxDrawdown:null, riskLevel:null },
+        { name:"天颐五剑", short:"天颐五剑", group:"长钱", morningstarRisk:30, score3y:72, return1y:13.11, maxDrawdown:-12.77, riskLevel:2 },
+        { name:"守恒（5050）", short:"守恒5050", group:"长钱", morningstarRisk:44, score3y:null, return1y:null, maxDrawdown:null, riskLevel:null },
+        { name:"春华秋实", short:"春华秋实", group:"长钱", morningstarRisk:21, score3y:63, return1y:7.70, maxDrawdown:-12.83, riskLevel:3 },
+        { name:"全天候-永久", short:"全天候-永久", group:"长钱", morningstarRisk:25, score3y:78, return1y:9.94, maxDrawdown:-9.16, riskLevel:2 },
+        { name:"周周同行（国内陪伴）", short:"周周同行", group:"长钱", morningstarRisk:60, score3y:70, return1y:27.80, maxDrawdown:-34.93, riskLevel:4 },
+        { name:"简慢", short:"简慢", group:"长钱", morningstarRisk:null, score3y:null, return1y:24.11, maxDrawdown:-25.48, riskLevel:3 },
+        { name:"思远定投全球好资产（全球陪伴）", short:"思远全球好资产", group:"长钱", morningstarRisk:67, score3y:84, return1y:29.01, maxDrawdown:-10.55, riskLevel:3 },
+        { name:"月月分红", short:"月月分红", group:"长钱", morningstarRisk:46, score3y:null, return1y:null, maxDrawdown:null, riskLevel:3 },
+        { name:"中西合璧", short:"中西合璧", group:"长钱", morningstarRisk:59, score3y:86, return1y:30.53, maxDrawdown:-12.79, riskLevel:4 },
+        { name:"U定投（行业左侧）", short:"U定投", group:"长钱", morningstarRisk:74, score3y:76, return1y:26.19, maxDrawdown:-31.35, riskLevel:4 },
+        { name:"进取派优选", short:"进取派优选", group:"长钱", morningstarRisk:73, score3y:null, return1y:36.68, maxDrawdown:-28.56, riskLevel:4 },
+        { name:"全球优选", short:"全球优选", group:"长钱", morningstarRisk:61, score3y:69, return1y:16.86, maxDrawdown:-17.27, riskLevel:4 },
+        { name:"二八轮动", short:"二八轮动", group:"长钱", morningstarRisk:62, score3y:68, return1y:null, maxDrawdown:null, riskLevel:null }
+      ];
+
+      const left = 88, right = 1070, top = 42, bottom = 548;
+      let initialized = false;
+      let previousX = xSelect.value;
+      let previousY = ySelect.value;
+      const points = new Map();
+
+      const make = (tag, attrs = {}, text = "") => {
+        const node = document.createElementNS(ns, tag);
+        Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+        if (text !== "") node.textContent = text;
+        return node;
+      };
+      const finite = value => typeof value === "number" && Number.isFinite(value);
+      const median = values => {
+        const sorted = [...values].sort((a,b) => a-b);
+        const middle = Math.floor(sorted.length / 2);
+        return sorted.length % 2 ? sorted[middle] : (sorted[middle-1] + sorted[middle]) / 2;
+      };
+      const format = (key, value) => {
+        const metric = metrics[key];
+        if (metric.ordinal) return `R${Math.round(value)}`;
+        return `${Number(value).toFixed(metric.digits)}${metric.unit}`;
+      };
+      const domain = (key, values) => {
+        if (metrics[key].ordinal) return [0.5, 4.5];
+        let min = Math.min(...values), max = Math.max(...values);
+        if (min === max) return [min - 1, max + 1];
+        const pad = (max - min) * 0.09;
+        return [min - pad, max + pad];
+      };
+      const ticks = (key, extent) => {
+        if (metrics[key].ordinal) return [1,2,3,4];
+        return Array.from({length:6}, (_,index) => extent[0] + (extent[1]-extent[0]) * index / 5);
+      };
+      const tickText = (key, value, extent) => {
+        if (metrics[key].ordinal) return `R${Math.round(value)}`;
+        const span = Math.abs(extent[1] - extent[0]);
+        const digits = span < 10 ? 1 : 0;
+        return `${value.toFixed(digits)}${metrics[key].unit}`;
+      };
+
+      function ensurePoints() {
+        if (initialized) return;
+        data.forEach((item, index) => {
+          const group = make("g", { class:"strategy-point", opacity:"0", "data-name":item.name });
+          const mark = item.group === "稳钱"
+            ? make("circle", { cx:0, cy:0, r:8, fill:"#69b1f4", stroke:"#fff", "stroke-width":"2.5" })
+            : make("rect", { x:-7, y:-7, width:14, height:14, rx:2, fill:"#f88d72", stroke:"#fff", "stroke-width":"2.5", transform:"rotate(45)" });
+          const label = make("text", {
+            class:"point-label", x:10, y:-11, fill:"#333", "font-size":item.short.length>8?"10.5":"11.5",
+            "font-weight":"600", stroke:"#fff", "stroke-width":"3.5", "paint-order":"stroke", "stroke-linejoin":"round"
+          }, item.short);
+          group.append(mark, label);
+          group.addEventListener("pointerenter", event => showTip(event, item));
+          group.addEventListener("pointermove", event => showTip(event, item));
+          group.addEventListener("pointerleave", () => { tooltip.hidden = true; });
+          group.addEventListener("click", event => showTip(event, item));
+          pointLayer.appendChild(group);
+          points.set(item.name, { group, label, index });
+        });
+        initialized = true;
+      }
+
+      function showTip(event, item) {
+        const xKey = xSelect.value, yKey = ySelect.value;
+        if (!finite(item[xKey]) || !finite(item[yKey])) return;
+        const message = `${item.name}｜${item.group}｜${metrics[xKey].label} ${format(xKey,item[xKey])}｜${metrics[yKey].label} ${format(yKey,item[yKey])}`;
+        selected.textContent = message;
+        tooltip.innerHTML = `<strong>${item.name}</strong>${item.group}<br>${metrics[xKey].label}：${format(xKey,item[xKey])}<br>${metrics[yKey].label}：${format(yKey,item[yKey])}`;
+        tooltip.hidden = false;
+        const box = document.querySelector(".chart-wrap").getBoundingClientRect();
+        tooltip.style.left = `${Math.max(0, Math.min(event.clientX-box.left, box.width-300))}px`;
+        tooltip.style.top = `${Math.max(24, event.clientY-box.top)}px`;
+      }
+
+      function render() {
+        ensurePoints();
+        const xKey = xSelect.value, yKey = ySelect.value;
+        const xMetric = metrics[xKey], yMetric = metrics[yKey];
+        const valid = data.filter(item => finite(item[xKey]) && finite(item[yKey]));
+        const xValues = valid.map(item => item[xKey]);
+        const yValues = valid.map(item => item[yKey]);
+        const xDomain = domain(xKey, xValues);
+        const yDomain = domain(yKey, yValues);
+        const xScale = value => left + (value-xDomain[0])/(xDomain[1]-xDomain[0])*(right-left);
+        const yScale = value => bottom - (value-yDomain[0])/(yDomain[1]-yDomain[0])*(bottom-top);
+        const xMedian = median(xValues), yMedian = median(yValues);
+        axisLayer.replaceChildren();
+        tooltip.hidden = true;
+        selected.textContent = "悬停或轻触策略点查看精确值";
+
+        ticks(yKey, yDomain).forEach(value => {
+          const py = yScale(value);
+          axisLayer.appendChild(make("line",{x1:left,y1:py,x2:right,y2:py,stroke:"#dde4eb","stroke-width":"1"}));
+          axisLayer.appendChild(make("text",{x:left-13,y:py+4,"text-anchor":"end",fill:"#7a838d","font-size":"11.5"},tickText(yKey,value,yDomain)));
+        });
+        ticks(xKey, xDomain).forEach(value => {
+          const px = xScale(value);
+          axisLayer.appendChild(make("line",{x1:px,y1:top,x2:px,y2:bottom,stroke:"#edf1f5","stroke-width":"1"}));
+          axisLayer.appendChild(make("text",{x:px,y:bottom+24,"text-anchor":"middle",fill:"#7a838d","font-size":"11.5"},tickText(xKey,value,xDomain)));
+        });
+        axisLayer.appendChild(make("line",{x1:xScale(xMedian),y1:top,x2:xScale(xMedian),y2:bottom,stroke:"#7a838d","stroke-width":"1.5","stroke-dasharray":"6 6"}));
+        axisLayer.appendChild(make("line",{x1:left,y1:yScale(yMedian),x2:right,y2:yScale(yMedian),stroke:"#7a838d","stroke-width":"1.5","stroke-dasharray":"6 6"}));
+        axisLayer.appendChild(make("line",{x1:left,y1:bottom,x2:right,y2:bottom,stroke:"#69747e","stroke-width":"1.5"}));
+        axisLayer.appendChild(make("line",{x1:left,y1:top,x2:left,y2:bottom,stroke:"#69747e","stroke-width":"1.5"}));
+        axisLayer.appendChild(make("text",{x:(left+right)/2,y:602,"text-anchor":"middle",fill:"#333","font-size":"14","font-weight":"600"},`${xMetric.label} →`));
+        axisLayer.appendChild(make("text",{x:20,y:(top+bottom)/2,"text-anchor":"middle",fill:"#333","font-size":"14","font-weight":"600",transform:`rotate(-90 20 ${(top+bottom)/2})`},`${yMetric.label} →`));
+
+        data.forEach(item => {
+          const point = points.get(item.name);
+          const isValid = finite(item[xKey]) && finite(item[yKey]);
+          if (!isValid) {
+            point.group.setAttribute("opacity","0");
+            point.group.style.pointerEvents = "none";
+            return;
+          }
+          let px = xScale(item[xKey]), py = yScale(item[yKey]);
+          if (xMetric.ordinal) px += (point.index % 5 - 2) * 4;
+          if (yMetric.ordinal) py += (point.index % 5 - 2) * 4;
+          const rightSide = px > (left+right)/2;
+          point.label.setAttribute("x", rightSide ? "-10" : "10");
+          point.label.setAttribute("text-anchor", rightSide ? "end" : "start");
+          point.label.setAttribute("y", point.index % 3 === 0 ? "18" : "-11");
+          point.group.style.pointerEvents = "auto";
+          point.group.setAttribute("opacity","1");
+          point.group.setAttribute("transform",`translate(${px} ${py})`);
+        });
+
+        const upperRight = valid.filter(item => item[xKey] >= xMedian && item[yKey] >= yMedian).length;
+        chartStat.textContent = `有效样本 ${valid.length}/${data.length} · X中位数 ${format(xKey,xMedian)} · Y中位数 ${format(yKey,yMedian)}`;
+        axisGuide.innerHTML = `<strong>坐标方向：</strong>X：${xMetric.direction}；Y：${yMetric.direction}。`;
+        dynamicRead.innerHTML = `<strong>当前组合：</strong>${xMetric.label} × ${yMetric.label}，共有 ${valid.length} 个双轴数据完整的策略；其中 ${upperRight} 个位于两个指标均不低于样本中位数的右上象限。切换指标后，样本和中位数会同步变化。`;
+        chartDesc.textContent = `${valid.length}个策略按${xMetric.label}和${yMetric.label}定位，蓝色圆点代表稳钱，橙色菱形代表长钱。`;
+        previousX = xKey;
+        previousY = yKey;
+      }
+
+      function unlock() {
+        gate.hidden = true;
+        report.hidden = false;
+        footer.hidden = false;
+        sessionStorage.setItem("qieman-risk-map-unlocked", "1");
+        requestAnimationFrame(() => {
+          render();
+          requestAnimationFrame(() => report.classList.remove("initial"));
+        });
+      }
+
+      form.addEventListener("submit", event => {
+        event.preventDefault();
+        if (password.value === "2026") {
+          error.textContent = "";
+          unlock();
+        } else {
+          error.textContent = "密码不正确，请重试。";
+          password.select();
+        }
+      });
+      xSelect.addEventListener("change", () => {
+        if (xSelect.value === ySelect.value) ySelect.value = previousX;
+        render();
+      });
+      ySelect.addEventListener("change", () => {
+        if (ySelect.value === xSelect.value) xSelect.value = previousY;
+        render();
+      });
+      swapButton.addEventListener("click", () => {
+        const currentX = xSelect.value;
+        xSelect.value = ySelect.value;
+        ySelect.value = currentX;
+        render();
+      });
+
+      report.classList.add("initial");
+      if (sessionStorage.getItem("qieman-risk-map-unlocked") === "1") unlock();
+      else password.focus();
+    })();
+  </script>
+</body>
+</html>
