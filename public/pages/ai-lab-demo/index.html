@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="盈米 AI 实验室产品概念 Demo：把一句想法，变成一项长期金融服务。">
+  <meta name="theme-color" content="#f5f8fb">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%231B88EE'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='34' font-family='Arial' fill='white'%3EAI%3C/text%3E%3C/svg%3E">
+  <meta property="og:title" content="盈米 AI 实验室｜产品 Demo">
+  <meta property="og:description" content="人人都能创建、享有和分享自己的个性化金融服务。">
+  <title>盈米 AI 实验室｜产品 Demo</title>
+  <style>
+    :root{
+      --brand:#1B88EE;--brand-dark:#1169b8;--poster:#3180EC;--ink:#17324a;--text:#333;
+      --muted:#687b8c;--subtle:#99a7b3;--line:#dce6ee;--line-soft:#e9eff4;--paper:#fff;
+      --canvas:#f5f8fb;--blue:#f0f6ff;--blue-2:#dbeeff;--blue-line:#9ccbf8;
+      --mint:#07ad8f;--mint-soft:#eaf8f5;--violet:#7357cc;--violet-soft:#f2effc;
+      --amber:#ea9500;--amber-soft:#fff7e8;--error:#fa440c;--error-soft:#feede9;
+      --shadow:0 20px 60px rgba(17,55,84,.10);--soft:0 8px 28px rgba(17,55,84,.07);
+      --r-xl:28px;--r-lg:20px;--r-md:14px;--r-sm:10px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:var(--canvas)}
+    body{margin:0;background:
+      radial-gradient(circle at 8% 8%,rgba(105,177,244,.12),transparent 22rem),
+      radial-gradient(circle at 96% 88%,rgba(125,212,196,.10),transparent 24rem),var(--canvas);
+      color:var(--text);font-family:"PingFang SC","SF Pro Display","Microsoft YaHei",Arial,sans-serif;
+      -webkit-font-smoothing:antialiased}
+    button,input,textarea{font:inherit}button{color:inherit}
+    button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid rgba(27,136,238,.25);outline-offset:2px}
+    button{cursor:pointer}.hidden{display:none!important}.muted{color:var(--muted)}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    /* password gate */
+    .gate{position:fixed;z-index:999;inset:0;display:grid;place-items:center;overflow:hidden;padding:24px;
+      background:linear-gradient(140deg,#071b2d 0%,#0f3556 55%,#176fab 130%);color:#fff}
+    .gate:before,.gate:after{position:absolute;border:1px solid rgba(151,213,255,.18);border-radius:50%;content:""}
+    .gate:before{width:620px;height:620px;right:-200px;top:-240px;box-shadow:0 0 0 80px rgba(103,187,247,.03),0 0 0 160px rgba(103,187,247,.02)}
+    .gate:after{width:460px;height:460px;left:-180px;bottom:-220px}
+    .gate-card{position:relative;z-index:2;width:min(430px,100%);padding:34px;border:1px solid rgba(255,255,255,.14);
+      border-radius:26px;background:rgba(255,255,255,.08);box-shadow:0 28px 90px rgba(0,0,0,.25);backdrop-filter:blur(22px)}
+    .gate-brand{height:29px;width:auto;object-fit:contain;object-position:left;margin-bottom:44px}
+    .gate-kicker{display:inline-flex;align-items:center;gap:8px;color:#8ecbfa;font-size:10px;font-weight:800;letter-spacing:.18em}
+    .gate-kicker:before{width:7px;height:7px;border-radius:50%;background:#70d5c1;box-shadow:0 0 0 5px rgba(112,213,193,.12);content:""}
+    .gate h1{margin:14px 0 12px;font-size:33px;letter-spacing:-.045em}.gate p{margin:0;color:#b9cddd;font-size:13px;line-height:1.75}
+    .gate-form{display:flex;gap:8px;margin-top:29px}.gate input{min-width:0;flex:1;padding:13px 14px;border:1px solid rgba(255,255,255,.18);
+      border-radius:11px;background:rgba(255,255,255,.08);color:#fff;font-size:14px;letter-spacing:.15em}
+    .gate input::placeholder{color:#86a1b7;letter-spacing:0}.gate button{padding:13px 20px;border:0;border-radius:11px;background:#fff;color:#1265a8;font-weight:750}
+    .gate-error{height:20px;margin-top:10px!important;color:#ffc2b3!important;font-size:11px!important}.shake{animation:shake .35s ease}
+    @keyframes shake{25%{transform:translateX(-7px)}50%{transform:translateX(7px)}75%{transform:translateX(-4px)}}
+
+    /* global shell */
+    .app{min-height:100vh}.topbar{position:sticky;z-index:80;top:0;height:70px;border-bottom:1px solid rgba(220,230,238,.88);
+      background:rgba(249,251,253,.86);backdrop-filter:blur(22px)}
+    .topbar-inner{display:flex;align-items:center;gap:28px;max-width:1240px;height:100%;margin:auto;padding:0 26px}
+    .brand{display:flex;align-items:center;gap:12px;min-width:max-content}.brand img{width:92px;height:28px;object-fit:contain;object-position:left}
+    .brand-divider{width:1px;height:22px;background:#d4dee6}.brand-title b,.brand-title small{display:block}.brand-title b{color:var(--ink);font-size:13px}
+    .brand-title small{margin-top:2px;color:var(--subtle);font-size:8px;letter-spacing:.08em}
+    .nav{display:flex;align-self:stretch;gap:4px;margin-left:auto}.nav button{position:relative;padding:0 14px;border:0;background:transparent;color:#738492;font-size:12px}
+    .nav button.active{color:var(--brand-dark);font-weight:750}.nav button.active:after{position:absolute;right:14px;bottom:0;left:14px;height:3px;border-radius:3px 3px 0 0;background:var(--brand);content:""}
+    .create-top{display:flex;align-items:center;gap:7px;padding:10px 14px;border:0;border-radius:10px;background:var(--brand);color:#fff;font-size:11px;font-weight:750;box-shadow:0 8px 22px rgba(27,136,238,.2)}
+    .avatar{display:grid;width:34px;height:34px;place-items:center;border:1px solid #d4e2ec;border-radius:50%;background:#fff;color:#4e6b82;font-size:10px;font-weight:800}
+    .view{display:none}.view.active{display:block;animation:fade .32s ease both}@keyframes fade{from{opacity:0;transform:translateY(5px)}}
+    .shell{max-width:1240px;margin:auto;padding:28px 26px 80px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 16px;border-radius:10px;font-size:11px;font-weight:750;transition:.18s}
+    .btn:hover{transform:translateY(-1px)}.btn.primary{border:1px solid var(--brand);background:var(--brand);color:#fff;box-shadow:0 8px 20px rgba(27,136,238,.17)}
+    .btn.secondary{border:1px solid #d8e4ec;background:#fff;color:#526b7e}.btn.ghost{border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.06);color:#fff}
+    .btn.success{border:1px solid var(--mint);background:var(--mint);color:#fff}.btn.block{width:100%}
+    .eyebrow{color:var(--brand-dark);font-size:9px;font-weight:850;letter-spacing:.16em}.tag{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;background:var(--blue);color:var(--brand-dark);font-size:8px;font-weight:800}
+    .tag:before{width:5px;height:5px;border-radius:50%;background:currentColor;content:""}.tag.violet{background:var(--violet-soft);color:var(--violet)}.tag.mint{background:var(--mint-soft);color:#087f6c}
+
+    /* discovery */
+    .hero{position:relative;overflow:hidden;min-height:410px;border-radius:var(--r-xl);background:linear-gradient(135deg,#0b263d 0%,#10446d 64%,#166aa7 130%);color:#fff;box-shadow:var(--shadow)}
+    .hero:before{position:absolute;width:540px;height:540px;right:-150px;top:-240px;border:1px solid rgba(152,213,255,.16);border-radius:50%;
+      box-shadow:0 0 0 64px rgba(113,190,244,.03),0 0 0 128px rgba(113,190,244,.02);content:""}
+    .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr .9fr;gap:46px;align-items:center;min-height:410px;padding:48px 56px}
+    .hero h1{max-width:650px;margin:14px 0 14px;font-size:clamp(36px,4.3vw,58px);font-weight:650;line-height:1.12;letter-spacing:-.055em}
+    .hero h1 span{color:#87caff}.hero-copy>p{max-width:610px;margin:0;color:#bcd2e2;font-size:13px;line-height:1.78}
+    .prompt-box{margin-top:28px;padding:8px;border:1px solid rgba(255,255,255,.16);border-radius:15px;background:rgba(255,255,255,.09);box-shadow:0 14px 36px rgba(0,0,0,.1);backdrop-filter:blur(14px)}
+    .prompt-line{display:flex;align-items:flex-end;gap:8px}.prompt-line textarea{min-height:58px;max-height:110px;flex:1;resize:none;padding:11px 12px;border:0;background:transparent;color:#fff;font-size:12px;line-height:1.6}
+    .prompt-line textarea::placeholder{color:#91adc1}.prompt-line textarea:focus{outline:0}.prompt-submit{display:grid;width:42px;height:42px;flex:none;place-items:center;border:0;border-radius:11px;background:#fff;color:#1267a9;font-size:18px;font-weight:800}
+    .quick-ideas{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}.quick-ideas button{padding:7px 9px;border:1px solid rgba(255,255,255,.13);border-radius:999px;background:rgba(255,255,255,.06);color:#b9d2e4;font-size:8px}
+    .hero-visual{position:relative;min-height:305px}.service-orbit{position:absolute;inset:0;display:grid;place-items:center}
+    .core{position:relative;z-index:3;display:grid;width:126px;height:126px;place-items:center;align-content:center;border:1px solid rgba(154,216,255,.38);border-radius:38px;
+      background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.055));box-shadow:0 18px 55px rgba(0,0,0,.14),0 0 0 20px rgba(105,177,244,.04);backdrop-filter:blur(14px)}
+    .core b{font-size:15px}.core small{margin-top:6px;color:#8fc3e8;font-size:8px}.orbit-ring{position:absolute;width:270px;height:270px;border:1px dashed rgba(157,213,253,.21);border-radius:50%}
+    .orbit-chip{position:absolute;z-index:4;display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.08);color:#dcebf5;font-size:9px;backdrop-filter:blur(10px)}
+    .orbit-chip i{display:grid;width:24px;height:24px;place-items:center;border-radius:8px;background:rgba(121,195,248,.16);color:#85c8f8;font-style:normal}.oc1{top:8px;left:12px}.oc2{right:0;top:70px}.oc3{bottom:22px;right:25px}.oc4{bottom:32px;left:0}
+    .trustline{display:flex;align-items:center;gap:14px;margin-top:14px;color:#8faabd;font-size:8px}.trustline span{display:flex;align-items:center;gap:5px}.trustline b{color:#70d5c1}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.stat{padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.9);box-shadow:var(--soft)}
+    .stat b{display:block;color:var(--ink);font-size:17px}.stat small{display:block;margin-top:5px;color:var(--muted);font-size:9px}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:25px;margin:52px 0 18px}.section-head h2{margin:7px 0 0;color:var(--ink);font-size:27px;letter-spacing:-.035em}
+    .section-head p{max-width:470px;margin:0;color:var(--muted);font-size:10px;line-height:1.65}
+    .filters{display:flex;gap:7px;overflow:auto;padding-bottom:5px}.filters button{padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#71818e;font-size:9px;white-space:nowrap}
+    .filters button.active{border-color:#a9d0f1;background:var(--blue);color:var(--brand-dark);font-weight:800}
+    .gallery-tools{display:flex;gap:9px;align-items:center;margin-bottom:13px}.search{display:flex;align-items:center;flex:1;max-width:350px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+    .search input{width:100%;border:0;outline:0;color:var(--ink);font-size:10px}.search span{color:#9aa8b4;font-size:12px}
+    .service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.service-card{position:relative;display:flex;min-height:240px;flex-direction:column;padding:20px;border:1px solid var(--line);
+      border-radius:18px;background:#fff;box-shadow:var(--soft);transition:.2s}.service-card:hover{transform:translateY(-3px);border-color:#bcd9f0;box-shadow:0 18px 44px rgba(17,55,84,.11)}
+    .service-card button.card-hit{position:absolute;z-index:2;inset:0;border:0;background:transparent}.card-top{display:flex;align-items:center;justify-content:space-between}
+    .app-icon{display:grid;width:44px;height:44px;place-items:center;border-radius:14px;background:linear-gradient(145deg,#e8f4ff,#d9ebff);color:var(--brand-dark);font-size:14px;font-weight:850}
+    .app-icon.mint{background:linear-gradient(145deg,#eaf9f6,#d8f1eb);color:#087f6c}.app-icon.violet{background:linear-gradient(145deg,#f3f0fc,#e7e0fb);color:var(--violet)}
+    .app-icon.amber{background:linear-gradient(145deg,#fff8e9,#ffedc8);color:#b87600}.creator{display:flex;align-items:center;gap:5px;color:#8b9aa6;font-size:8px}.creator i{display:grid;width:18px;height:18px;place-items:center;border-radius:50%;background:#eaf3fa;color:#50718b;font-style:normal;font-weight:800}
+    .service-card h3{margin:20px 0 7px;color:var(--ink);font-size:16px}.service-card p{margin:0;color:var(--muted);font-size:10px;line-height:1.62}
+    .card-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:20px;color:#8c9aa6;font-size:8px}.card-bottom b{color:var(--brand-dark);font-size:9px}
+    .path{display:grid;grid-template-columns:1fr 38px 1fr 38px 1fr;align-items:center;padding:28px;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:var(--soft)}
+    .path article{min-height:150px;padding:18px;border-radius:15px;background:#f8fafc}.path article:nth-of-type(2){background:var(--blue)}.path article:nth-of-type(3){background:var(--mint-soft)}
+    .path .n{color:#a0adb8;font-size:9px;font-weight:850}.path h3{margin:23px 0 7px;color:var(--ink);font-size:14px}.path p{margin:0;color:var(--muted);font-size:9px;line-height:1.6}.path>i{text-align:center;color:#9fc0d9;font-style:normal}
+
+    /* creator */
+    .creator-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.creator-copy{padding:36px;border-radius:22px;background:linear-gradient(135deg,#173c5b,#0d263b);color:#fff}
+    .creator-copy h1{margin:10px 0 12px;font-size:34px;letter-spacing:-.045em}.creator-copy p{max-width:620px;margin:0;color:#b8ccda;font-size:11px;line-height:1.75}
+    .creator-copy .btn{margin-top:24px}.creator-side{display:grid;grid-template-columns:1fr 1fr;gap:10px}.creator-side article{padding:20px;border:1px solid var(--line);border-radius:18px;background:#fff}
+    .creator-side b{display:block;color:var(--brand-dark);font-size:24px}.creator-side small{display:block;margin-top:8px;color:var(--muted);font-size:9px;line-height:1.5}
+    .people-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.person{padding:19px;border:1px solid var(--line);border-radius:17px;background:#fff}.person .avatar-lg{display:grid;width:42px;height:42px;place-items:center;border-radius:13px;background:var(--blue);color:var(--brand-dark);font-weight:850}
+    .person h3{margin:20px 0 6px;color:var(--ink);font-size:14px}.person p{margin:0;color:var(--muted);font-size:9px;line-height:1.6}
+
+    /* create wizard */
+    .wizard-shell{display:grid;grid-template-columns:230px 1fr;min-height:760px;overflow:hidden;border:1px solid var(--line);border-radius:24px;background:#fff;box-shadow:var(--shadow)}
+    .wizard-side{padding:28px 22px;border-right:1px solid var(--line);background:#f7fafc}.wizard-side h2{margin:8px 0 6px;color:var(--ink);font-size:22px}.wizard-side>p{margin:0 0 28px;color:var(--muted);font-size:9px;line-height:1.6}
+    .steps{display:flex;flex-direction:column;gap:5px}.step{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:center;padding:11px;border-radius:11px;color:#8796a2;font-size:10px}
+    .step i{display:grid;width:30px;height:30px;place-items:center;border:1px solid #d7e2ea;border-radius:10px;background:#fff;font-style:normal;font-size:9px}.step b{display:block;font-size:10px}.step small{display:block;margin-top:2px;font-size:7px}
+    .step.active{background:#fff;color:var(--brand-dark);box-shadow:var(--soft)}.step.active i{border-color:var(--brand);background:var(--brand);color:#fff}.step.done{color:#437266}.step.done i{border-color:#a7ddd2;background:var(--mint-soft);color:#087f6c}
+    .side-note{margin-top:30px;padding:13px;border:1px solid #bfe4dc;border-radius:12px;background:var(--mint-soft);color:#4f766e;font-size:8px;line-height:1.65}
+    .wizard-main{position:relative;min-width:0;padding:35px}.wizard-panel{display:none}.wizard-panel.active{display:block;animation:fade .25s ease}
+    .wizard-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:25px}.wizard-head h1{margin:7px 0 6px;color:var(--ink);font-size:30px;letter-spacing:-.04em}.wizard-head p{margin:0;color:var(--muted);font-size:10px}
+    .field-label{display:block;margin:0 0 8px;color:var(--ink);font-size:11px;font-weight:750}.intent-box{padding:16px;border:1px solid #c8dfef;border-radius:16px;background:linear-gradient(145deg,#fff,#f3f8fd)}
+    .intent-box textarea{width:100%;min-height:132px;padding:15px;border:1px solid #d7e4ed;border-radius:12px;background:#fff;color:#3b5264;resize:vertical;font-size:12px;line-height:1.75}
+    .suggestions{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}.suggestions button{padding:7px 9px;border:1px solid #d8e4ec;border-radius:999px;background:#fff;color:#6e8190;font-size:8px}
+    .option-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:22px 0}.option{padding:15px;border:1px solid var(--line);border-radius:13px;background:#fff}.option small{display:block;color:#96a4af;font-size:8px}.option b{display:block;margin-top:6px;color:var(--ink);font-size:10px}.option em{display:inline-block;margin-top:8px;color:var(--brand-dark);font-size:7px;font-style:normal}
+    .ai-note{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px;border-radius:12px;background:var(--blue);color:#537085;font-size:8px;line-height:1.65}.ai-dot{display:grid;width:22px;height:22px;flex:none;place-items:center;border-radius:8px;background:var(--brand);color:#fff;font-size:9px;font-weight:850}
+    .blueprint-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:12px}.blueprint-card{padding:19px;border:1px solid var(--line);border-radius:16px;background:#fff}.blueprint-card.hero-card{grid-column:1/-1;border-color:#b7d8f3;background:linear-gradient(145deg,#fff,#eff7ff)}
+    .bp-title{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.bp-title h2{margin:7px 0 6px;color:var(--ink);font-size:23px}.bp-title p{margin:0;color:var(--muted);font-size:9px}
+    .bp-icon{display:grid;width:50px;height:50px;flex:none;place-items:center;border-radius:16px;background:var(--brand);color:#fff;font-size:17px;font-weight:850;box-shadow:0 10px 25px rgba(27,136,238,.2)}
+    .blueprint-card h3{margin:0 0 13px;color:var(--ink);font-size:12px}.chip-list{display:flex;flex-wrap:wrap;gap:6px}.chip-list span{padding:7px 8px;border-radius:8px;background:#f3f6f8;color:#627685;font-size:8px}.chip-list span.strong{background:var(--blue);color:var(--brand-dark);font-weight:750}
+    .flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.flow span{padding:8px;border-radius:9px;background:#f3f6f8;color:#607483;font-size:8px}.flow i{color:#9babb7;font-style:normal;font-size:8px}
+    .risk-list{display:grid;gap:7px}.risk-list span{display:flex;align-items:center;gap:7px;color:#5e7483;font-size:8px}.risk-list span:before{display:grid;width:17px;height:17px;place-items:center;border-radius:6px;background:var(--mint-soft);color:#087f6c;content:"✓";font-size:8px}
+    .wizard-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}.loading{position:absolute;z-index:10;inset:0;display:none;place-items:center;background:rgba(255,255,255,.88);backdrop-filter:blur(6px)}
+    .loading.show{display:grid}.loader-card{text-align:center}.loader{position:relative;width:70px;height:70px;margin:auto;border:1px solid #b9daf4;border-radius:22px;background:var(--blue)}
+    .loader:before{position:absolute;inset:20px;border:3px solid var(--brand);border-top-color:transparent;border-radius:50%;content:"";animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    .loader-card h3{margin:18px 0 7px;color:var(--ink);font-size:16px}.loader-card p{margin:0;color:var(--muted);font-size:9px}
+    .run-result{display:grid;grid-template-columns:1.25fr .75fr;gap:12px}.result-main,.result-side{padding:20px;border:1px solid var(--line);border-radius:17px;background:#fff}
+    .result-main{background:linear-gradient(145deg,#fff,#f7fbff)}.result-title{display:flex;align-items:flex-start;justify-content:space-between;gap:15px}.result-title h2{margin:7px 0 5px;color:var(--ink);font-size:21px}.result-title p{margin:0;color:var(--muted);font-size:9px}
+    .chart-box{margin-top:18px;padding:15px;border:1px solid var(--line-soft);border-radius:13px;background:#fff}.chart-meta{display:flex;justify-content:space-between;align-items:flex-end}.chart-meta b{color:var(--ink);font-size:18px}.chart-meta small{color:var(--muted);font-size:8px}.line-chart{width:100%;height:150px;margin-top:8px}
+    .insight-list{display:grid;gap:7px;margin-top:15px}.insight{display:grid;grid-template-columns:28px 1fr;gap:9px;padding:11px;border-radius:11px;background:#f5f8fa}.insight i{display:grid;width:28px;height:28px;place-items:center;border-radius:9px;background:var(--blue);color:var(--brand-dark);font-size:9px;font-style:normal;font-weight:850}
+    .insight b{display:block;color:var(--ink);font-size:9px}.insight small{display:block;margin-top:4px;color:var(--muted);font-size:8px;line-height:1.5}.result-side h3{margin:0 0 15px;color:var(--ink);font-size:13px}
+    .check-list{display:grid;gap:8px}.check{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:10px;background:#f5f8fa;font-size:8px}.check b{color:#087f6c}.run-log{margin-top:14px;padding:12px;border-radius:10px;background:#102d45;color:#9fc3dd;font:8px/1.8 "SFMono-Regular",Consolas,monospace}
+    .publish-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.publish-card{padding:18px;border:1px solid var(--line);border-radius:16px;background:#fff}.publish-card h3{margin:0 0 13px;color:var(--ink);font-size:12px}
+    .visibility{display:grid;gap:7px}.radio{display:flex;align-items:flex-start;gap:9px;padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff;cursor:pointer}.radio.active{border-color:#a8d0f2;background:var(--blue)}
+    .radio i{display:grid;width:18px;height:18px;flex:none;place-items:center;border:1px solid #c9d7e1;border-radius:50%;font-style:normal;font-size:8px}.radio.active i{border-color:var(--brand);background:var(--brand);color:#fff}
+    .radio b,.radio small{display:block}.radio b{color:var(--ink);font-size:9px}.radio small{margin-top:3px;color:var(--muted);font-size:7px;line-height:1.5}
+    .publish-preview{padding:16px;border-radius:14px;background:linear-gradient(145deg,#173c5b,#0d263b);color:#fff}.publish-preview .mini-brand{color:#8fc7ef;font-size:8px;font-weight:800;letter-spacing:.12em}
+    .publish-preview h2{margin:18px 0 7px;font-size:20px}.publish-preview p{margin:0;color:#a9c0d1;font-size:8px;line-height:1.6}.publish-preview .btn{margin-top:20px}
+    .success-box{max-width:640px;margin:35px auto;text-align:center}.success-mark{display:grid;width:72px;height:72px;place-items:center;margin:auto;border-radius:24px;background:var(--mint-soft);color:#07826c;font-size:28px}
+    .success-box h1{margin:22px 0 9px;color:var(--ink);font-size:29px}.success-box>p{margin:0;color:var(--muted);font-size:10px;line-height:1.7}
+    .share-link{display:flex;gap:7px;margin:22px 0 12px;padding:8px;border:1px solid var(--line);border-radius:12px;background:#fff}.share-link input{min-width:0;flex:1;padding:7px;border:0;outline:0;color:#5f7382;font-size:9px}
+
+    /* my services */
+    .dashboard-head{display:flex;justify-content:space-between;gap:22px;align-items:flex-end}.dashboard-head h1{margin:7px 0 6px;color:var(--ink);font-size:32px;letter-spacing:-.04em}.dashboard-head p{margin:0;color:var(--muted);font-size:10px}
+    .dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:22px 0}.dash-card{padding:17px;border:1px solid var(--line);border-radius:15px;background:#fff}.dash-card small{display:block;color:var(--muted);font-size:8px}
+    .dash-card b{display:block;margin-top:9px;color:var(--ink);font-size:20px}.dash-card em{display:block;margin-top:6px;color:#07826c;font-size:7px;font-style:normal}
+    .service-table{overflow:hidden;border:1px solid var(--line);border-radius:18px;background:#fff}.service-row{display:grid;grid-template-columns:46px 1.35fr .75fr .7fr 95px;gap:12px;align-items:center;padding:15px 18px;border-bottom:1px solid var(--line-soft)}
+    .service-row:last-child{border-bottom:0}.service-row h3{margin:0 0 5px;color:var(--ink);font-size:11px}.service-row p{margin:0;color:var(--muted);font-size:8px}.state{display:flex;align-items:center;gap:6px;color:#527066;font-size:8px}.state:before{width:6px;height:6px;border-radius:50%;background:var(--mint);content:""}
+    .run-time{color:var(--muted);font-size:8px}.row-actions{display:flex;gap:5px}.row-actions button{padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#687d8c;font-size:8px}
+    .empty-new{border-style:dashed;background:#fbfcfd}.empty-new .app-icon{background:#fff;border:1px dashed #afcde3}
+
+    /* modal / footer */
+    .modal-layer{position:fixed;z-index:200;inset:0;display:none;place-items:center;padding:22px;background:rgba(8,28,44,.56);backdrop-filter:blur(7px)}
+    .modal-layer.show{display:grid}.modal{position:relative;width:min(730px,100%);max-height:calc(100vh - 44px);overflow:auto;padding:30px;border-radius:23px;background:#fff;box-shadow:0 30px 100px rgba(0,0,0,.27)}
+    .modal-close{position:absolute;right:17px;top:17px;display:grid;width:32px;height:32px;place-items:center;border:1px solid var(--line);border-radius:50%;background:#fff;color:#718390}
+    .modal-cover{display:flex;align-items:center;gap:14px;padding:18px;border-radius:17px;background:linear-gradient(145deg,#f7fbff,#eaf4ff)}.modal-cover .app-icon{width:55px;height:55px;font-size:17px}.modal-cover h2{margin:0 0 6px;color:var(--ink);font-size:22px}
+    .modal-cover p{margin:0;color:var(--muted);font-size:9px}.modal-body{display:grid;grid-template-columns:1.1fr .9fr;gap:11px;margin-top:12px}.modal-block{padding:16px;border:1px solid var(--line);border-radius:14px}
+    .modal-block h3{margin:0 0 12px;color:var(--ink);font-size:11px}.modal-block p{margin:0;color:var(--muted);font-size:9px;line-height:1.7}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+    .toast{position:fixed;z-index:300;right:24px;bottom:24px;display:none;max-width:390px;padding:13px 16px;border:1px solid #b6e0d7;border-radius:12px;background:#f3fffc;color:#176e60;box-shadow:var(--soft);font-size:9px}
+    .toast.show{display:block;animation:fade .22s ease}.footer{padding:27px;text-align:center;color:#8797a3;font-size:8px}
+
+    @media(max-width:980px){
+      .topbar-inner{gap:15px}.brand-title,.brand-divider{display:none}.nav button{padding-inline:9px}.hero-grid,.creator-hero,.blueprint-grid,.run-result{grid-template-columns:1fr}.hero-visual{display:none}
+      .hero-grid{padding:48px}.stats,.dash-grid{grid-template-columns:repeat(2,1fr)}.service-grid{grid-template-columns:repeat(2,1fr)}.people-grid{grid-template-columns:repeat(2,1fr)}
+      .wizard-shell{grid-template-columns:190px 1fr}.blueprint-card.hero-card{grid-column:auto}.service-row{grid-template-columns:42px 1fr 90px}.service-row .run-time,.service-row .row-actions{grid-column:2}.path{grid-template-columns:1fr}.path>i{transform:rotate(90deg)}
+    }
+    @media(max-width:680px){
+      .topbar{height:auto}.topbar-inner{display:grid;grid-template-columns:1fr auto;height:auto;padding:12px 14px}.brand img{width:82px}.avatar{display:none}.create-top{font-size:9px}
+      .nav{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,1fr);width:100%;height:40px}.nav button{font-size:9px}.nav button.active:after{right:20%;left:20%}
+      .shell{padding:18px 13px 60px}.hero{border-radius:20px}.hero-grid{min-height:440px;padding:34px 24px}.hero h1{font-size:38px}.prompt-line{align-items:center}.quick-ideas{display:none}
+      .stats,.service-grid,.people-grid,.creator-side,.publish-grid,.option-grid{grid-template-columns:1fr}.section-head{display:block;margin-top:42px}.section-head p{margin-top:9px}.gallery-tools{align-items:flex-start;flex-direction:column}.search{width:100%;max-width:none}
+      .wizard-shell{display:block;min-height:0;border-radius:18px}.wizard-side{border-right:0;border-bottom:1px solid var(--line);padding:17px}.wizard-side h2,.wizard-side>p,.side-note{display:none}.steps{display:grid;grid-template-columns:repeat(4,1fr)}
+      .step{display:block;padding:8px;text-align:center}.step i{margin:auto}.step b{margin-top:4px;font-size:8px}.step small{display:none}.wizard-main{padding:22px 15px}.wizard-head{display:block}.wizard-head h1{font-size:25px}
+      .blueprint-grid,.run-result{display:block}.blueprint-card,.result-main,.result-side{margin-bottom:9px}.bp-title h2{font-size:19px}.wizard-actions{flex-direction:column-reverse}.wizard-actions .btn{width:100%}
+      .dashboard-head{display:block}.dashboard-head .btn{margin-top:13px}.dash-grid{grid-template-columns:1fr 1fr}.service-row{grid-template-columns:40px 1fr}.service-row .state,.service-row .run-time,.service-row .row-actions{grid-column:2}
+      .modal{padding:24px 16px}.modal-body{grid-template-columns:1fr}.footer{padding-inline:18px}.gate-card{padding:26px}.gate-form{display:block}.gate button{width:100%;margin-top:8px}
+    }
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <section class="gate" id="gate" aria-label="访问验证">
+    <div class="gate-card" id="gateCard">
+      <img class="gate-brand" src="assets/yingmi-logo-white.png" alt="盈米基金">
+      <span class="gate-kicker">PRODUCT CONCEPT DEMO</span>
+      <h1>盈米 AI 实验室</h1>
+      <p>人人都能创建、享有和分享自己的个性化金融服务。</p>
+      <form class="gate-form" id="gateForm">
+        <label class="sr-only" for="password">访问密码</label>
+        <input id="password" type="password" autocomplete="current-password" inputmode="numeric" placeholder="请输入访问密码">
+        <button type="submit">进入 Demo</button>
+      </form>
+      <p class="gate-error" id="gateError" role="alert"></p>
+    </div>
+  </section>
+
+  <div class="app" id="app" aria-hidden="true">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <img src="assets/yingmi-logo.png" alt="盈米基金">
+          <span class="brand-divider"></span>
+          <span class="brand-title"><b>AI 实验室</b><small>YINGMI AI LAB</small></span>
+        </div>
+        <nav class="nav" aria-label="主导航">
+          <button class="active" data-view="discover">发现服务</button>
+          <button data-view="creator">创作者生态</button>
+          <button data-view="mine">我的服务</button>
+        </nav>
+        <button class="create-top" data-view-jump="create"><span>＋</span> 创建服务</button>
+        <span class="avatar" aria-label="当前用户">C</span>
+      </div>
+    </header>
+
+    <main id="discover" class="view active">
+      <div class="shell">
+        <section class="hero">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <span class="eyebrow" style="color:#8ecbfa">YINGMI AI LAB · OPEN CREATION</span>
+              <h1>把一句想法，<br><span>变成一项长期服务</span></h1>
+              <p>不需要画流程，也不用理解 Prompt 或 Agent。告诉小顾目标，实验室会自动组合数据、工具与金融能力，生成可运行、可分享的服务。</p>
+              <div class="prompt-box">
+                <div class="prompt-line">
+                  <textarea id="heroIntent" aria-label="描述你想创建的服务" placeholder="例如：每天收盘后，只告诉我和持仓真正相关的市场变化…"></textarea>
+                  <button class="prompt-submit" id="heroCreate" aria-label="开始创建">→</button>
+                </div>
+              </div>
+              <div class="quick-ideas">
+                <button data-idea="每周五复盘我的账户，只告诉我真正需要关注的变化。">每周账户复盘</button>
+                <button data-idea="帮我筛选低费率、长期业绩稳定的主动权益基金。">基金条件筛选</button>
+                <button data-idea="对比我的持仓和沪深300，只在偏离明显时提醒我。">持仓指数对比</button>
+              </div>
+              <div class="trustline"><span><b>✓</b> 关键行动由你确认</span><span><b>✓</b> 数据授权可撤回</span><span><b>✓</b> 服务运行可追溯</span></div>
+            </div>
+            <div class="hero-visual" aria-hidden="true">
+              <div class="service-orbit">
+                <div class="orbit-ring"></div>
+                <div class="core"><b>AI 实验室</b><small>自动组装服务</small></div>
+                <div class="orbit-chip oc1"><i>数</i>金融数据</div>
+                <div class="orbit-chip oc2"><i>技</i>Skills / Agent</div>
+                <div class="orbit-chip oc3"><i>图</i>图表与报告</div>
+                <div class="orbit-chip oc4"><i>顾</i>投顾服务能力</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="stats" aria-label="平台演示指标">
+          <div class="stat"><b>一句话</b><small>自然语言创建服务</small></div>
+          <div class="stat"><b>3 分钟</b><small>概念 Demo 首次试运行</small></div>
+          <div class="stat"><b>持续运行</b><small>定时、事件或条件触发</small></div>
+          <div class="stat"><b>一键分享</b><small>自用、邀请或公开发布</small></div>
+        </div>
+
+        <div class="section-head">
+          <div><span class="eyebrow">SERVICE DISCOVERY</span><h2>先用起来，再创造下一项服务</h2></div>
+          <p>种子服务来自盈米产品、投研和 AI 大赛，也欢迎专业投资者、投顾、内容创作者与开发者共建。</p>
+        </div>
+        <div class="gallery-tools">
+          <div class="filters" id="filters">
+            <button class="active" data-filter="all">全部</button><button data-filter="account">我的账户</button><button data-filter="market">市场研究</button>
+            <button data-filter="fund">基金工具</button><button data-filter="fun">有趣实验</button>
+          </div>
+          <label class="search"><input id="searchInput" type="search" placeholder="搜索服务、创作者或场景"><span>⌕</span></label>
+        </div>
+
+        <section class="service-grid" id="serviceGrid">
+          <article class="service-card" data-category="account market" data-search="每周账户复盘 持仓 市场 且慢官方">
+            <button class="card-hit" data-service="weekly" aria-label="查看每周账户复盘"></button>
+            <div class="card-top"><span class="app-icon">周</span><span class="tag">官方认证</span></div>
+            <h3>每周账户复盘</h3><p>结合账户、市场和目标，过滤噪声，只告诉你真正需要关注的变化。</p>
+            <div class="card-bottom"><span class="creator"><i>且</i>且慢官方</span><b>8,624 人使用 →</b></div>
+          </article>
+          <article class="service-card" data-category="market" data-search="市场影响雷达 每日 报告 研究员 林一">
+            <button class="card-hit" data-service="market" aria-label="查看市场影响雷达"></button>
+            <div class="card-top"><span class="app-icon violet">雷</span><span class="tag violet">生态共建</span></div>
+            <h3>市场影响雷达</h3><p>每天收盘后，把市场事件翻译成与你关注方向相关的影响与行动观察。</p>
+            <div class="card-bottom"><span class="creator"><i>林</i>研究员 林一</span><b>4,119 人使用 →</b></div>
+          </article>
+          <article class="service-card" data-category="fund" data-search="主动基金筛选器 基金 条件 筛选 低费率">
+            <button class="card-hit" data-service="fund" aria-label="查看主动基金筛选器"></button>
+            <div class="card-top"><span class="app-icon mint">筛</span><span class="tag">官方认证</span></div>
+            <h3>主动基金筛选器</h3><p>用自然语言组合业绩、风险、规模、风格与费率条件，保存后持续跟踪。</p>
+            <div class="card-bottom"><span class="creator"><i>盈</i>盈米投研</span><b>3,607 人使用 →</b></div>
+          </article>
+          <article class="service-card" data-category="account market" data-search="持仓指数对比 沪深300 走势图 回撤">
+            <button class="card-hit" data-service="index" aria-label="查看持仓指数对比"></button>
+            <div class="card-top"><span class="app-icon">比</span><span class="tag">官方认证</span></div>
+            <h3>持仓 × 指数对比</h3><p>自选指数与组合并排观察，用收益、回撤与结构差异理解偏离来自哪里。</p>
+            <div class="card-bottom"><span class="creator"><i>且</i>且慢官方</span><b>2,985 人使用 →</b></div>
+          </article>
+          <article class="service-card" data-category="account fun" data-search="投资行为复盘 交易 最成功 最失败 行为诊断">
+            <button class="card-hit" data-service="behavior" aria-label="查看投资行为复盘"></button>
+            <div class="card-top"><span class="app-icon amber">省</span><span class="tag violet">AI 大赛</span></div>
+            <h3>投资行为复盘</h3><p>回看最成功与最遗憾的决策，识别追涨、过度交易与真正有效的投资纪律。</p>
+            <div class="card-bottom"><span class="creator"><i>陈</i>产品经理 陈序</span><b>1,836 人使用 →</b></div>
+          </article>
+          <article class="service-card" data-category="fun" data-search="投资MBTI 性格 有趣实验 投教">
+            <button class="card-hit" data-service="mbti" aria-label="查看投资 MBTI"></button>
+            <div class="card-top"><span class="app-icon violet">型</span><span class="tag violet">生态共建</span></div>
+            <h3>我的投资 MBTI</h3><p>从真实决策与风险偏好生成投资人格画像，也给出可能误导你的性格盲区。</p>
+            <div class="card-bottom"><span class="creator"><i>周</i>投教作者 周予</span><b>12,420 人使用 →</b></div>
+          </article>
+        </section>
+
+        <div class="section-head"><div><span class="eyebrow">ONE IDEA, ONE SERVICE</span><h2>从想法到服务，只需三步</h2></div></div>
+        <section class="path">
+          <article><span class="n">01 · DESCRIBE</span><h3>像对顾问一样说</h3><p>描述目标、对象和你希望收到结果的时机。实验室会主动补齐关键选项。</p></article><i>→</i>
+          <article><span class="n">02 · TEST</span><h3>先看一次真实效果</h3><p>自动组合数据、工具、工作流和输出组件，完成权限与风险检查。</p></article><i>→</i>
+          <article><span class="n">03 · PUBLISH</span><h3>自用，或分享给更多人</h3><p>加入 AI 小顾持续运行，也可生成链接邀请使用或发布到服务广场。</p></article>
+        </section>
+      </div>
+    </main>
+
+    <main id="creator" class="view">
+      <div class="shell">
+        <section class="creator-hero">
+          <div class="creator-copy"><span class="eyebrow" style="color:#8ecbfa">CREATOR ECOSYSTEM</span><h1>让专业能力，成为可复用的金融服务</h1><p>大 V、投资顾问、投研人员、内容创作者、产品经理和开发者，都能把自己的方法沉淀成服务。平台负责运行、权限、评测与分发。</p><button class="btn primary" data-view-jump="create">创建我的第一项服务</button></div>
+          <div class="creator-side"><article><b>自用</b><small>先解决自己的真实问题，持续运行并迭代。</small></article><article><b>分享</b><small>生成邀请链接，让朋友或客户复用。</small></article><article><b>共建</b><small>通过审核后，进入服务广场获得分发。</small></article><article><b>激励</b><small>优质服务获得认证、榜单与创作者权益。</small></article></div>
+        </section>
+        <div class="section-head"><div><span class="eyebrow">WHO CAN CREATE</span><h2>每一种专业，都可以成为服务</h2></div><p>平台不是只面向程序员的开发工具，而是专业想法的生成与交付平台。</p></div>
+        <section class="people-grid">
+          <article class="person"><span class="avatar-lg">投</span><h3>专业投资者</h3><p>把自己的筛选、观察与复盘方法，变成持续运行的工具。</p></article>
+          <article class="person"><span class="avatar-lg">顾</span><h3>投顾与顾问团队</h3><p>把高频服务标准化，同时保留人工判断与确认边界。</p></article>
+          <article class="person"><span class="avatar-lg">创</span><h3>投教内容创作者</h3><p>从一次内容表达，升级为可互动、可订阅的长期服务。</p></article>
+          <article class="person"><span class="avatar-lg">研</span><h3>研究员与工程师</h3><p>把数据模型、指标与工作流封装成更易用的金融能力。</p></article>
+        </section>
+        <div class="section-head"><div><span class="eyebrow">PLATFORM RESPONSIBILITY</span><h2>创作者负责专业，平台负责可信运行</h2></div></div>
+        <section class="path">
+          <article><span class="n">能力底座</span><h3>数据 · 工具 · RAG</h3><p>基金、指数、策略、用户授权数据，以及且慢内容、投研观点和业务知识。</p></article><i>→</i>
+          <article><span class="n">服务工厂</span><h3>编排 · 试运行 · 版本</h3><p>自然语言理解、服务蓝图、组件输出、运行调度和版本管理。</p></article><i>→</i>
+          <article><span class="n">可信生态</span><h3>权限 · 评测 · 审计</h3><p>适当性、合规检查、用户授权、运行留痕、质量分级和传播归因。</p></article>
+        </section>
+      </div>
+    </main>
+
+    <main id="create" class="view">
+      <div class="shell">
+        <section class="wizard-shell">
+          <aside class="wizard-side">
+            <span class="eyebrow">SERVICE BUILDER</span><h2>创建新服务</h2><p>从一句话开始，实验室会把复杂设置翻译成你能理解的选择。</p>
+            <div class="steps">
+              <div class="step active" data-step-indicator="1"><i>1</i><span><b>描述想法</b><small>说清目标即可</small></span></div>
+              <div class="step" data-step-indicator="2"><i>2</i><span><b>服务蓝图</b><small>确认运行方式</small></span></div>
+              <div class="step" data-step-indicator="3"><i>3</i><span><b>试运行</b><small>先看一次结果</small></span></div>
+              <div class="step" data-step-indicator="4"><i>4</i><span><b>发布</b><small>自用或分享</small></span></div>
+            </div>
+            <div class="side-note">✓ 系统只申请必要权限<br>✓ 涉及交易必须再次确认<br>✓ 可随时暂停、撤回或删除</div>
+          </aside>
+          <div class="wizard-main">
+            <div class="loading" id="loading"><div class="loader-card"><div class="loader"></div><h3 id="loadingTitle">正在理解你的想法</h3><p id="loadingText">分析目标、数据、触发条件与交付方式…</p></div></div>
+
+            <section class="wizard-panel active" data-step-panel="1">
+              <div class="wizard-head"><div><span class="eyebrow">STEP 01 · DESCRIBE</span><h1>你想让小顾持续帮你做什么？</h1><p>像和顾问沟通一样描述，不需要写 Prompt，也不用选择 Agent。</p></div></div>
+              <div class="intent-box">
+                <label class="field-label" for="createIntent">我的服务想法</label>
+                <textarea id="createIntent">每周五帮我复盘账户，结合市场和我的目标，只告诉我真正需要关注的变化。</textarea>
+                <div class="suggestions">
+                  <button data-suggestion="每天收盘后，告诉我持仓受到哪些市场事件影响。">每日市场影响</button>
+                  <button data-suggestion="筛选低费率、长期业绩稳定、回撤控制较好的主动基金。">主动基金筛选</button>
+                  <button data-suggestion="每月复盘我的交易行为，提醒我可能存在的追涨杀跌。">交易行为复盘</button>
+                </div>
+              </div>
+              <div class="option-grid">
+                <div class="option"><small>服务对象</small><b>我的账户</b><em>已根据描述识别</em></div>
+                <div class="option"><small>触发方式</small><b>每周五 18:00</b><em>可在蓝图中调整</em></div>
+                <div class="option"><small>交付位置</small><b>AI 小顾服务卡</b><em>重要变化才提醒</em></div>
+              </div>
+              <div class="ai-note"><span class="ai-dot">AI</span><span>我会优先使用你已经授权的账户和偏好数据；若需要新权限，会在试运行前单独说明。所有交易类行动只生成建议，不会自动下单。</span></div>
+              <div class="wizard-actions"><button class="btn primary" id="generateBlueprint">让实验室生成服务蓝图 →</button></div>
+            </section>
+
+            <section class="wizard-panel" data-step-panel="2">
+              <div class="wizard-head"><div><span class="eyebrow">STEP 02 · BLUEPRINT</span><h1>实验室已生成服务蓝图</h1><p>你看到的是服务承诺，底层 Prompt、工具和工作流由系统自动管理。</p></div><span class="tag mint">可安全试运行</span></div>
+              <div class="blueprint-grid">
+                <article class="blueprint-card hero-card">
+                  <div class="bp-title"><div><span class="tag violet">我的定制</span><h2 id="serviceTitle">每周账户复盘</h2><p id="serviceSummary">过滤市场噪声，只呈现与你的账户和目标真正相关的变化。</p></div><span class="bp-icon">周</span></div>
+                </article>
+                <article class="blueprint-card"><h3>何时运行</h3><div class="chip-list"><span class="strong">每周五 18:00</span><span>重大变化时加急</span><span>可随时手动运行</span></div></article>
+                <article class="blueprint-card"><h3>需要的数据</h3><div class="chip-list"><span class="strong">账户持仓</span><span>收益与交易</span><span>风险偏好</span><span>基金与指数</span><span>市场事件</span></div></article>
+                <article class="blueprint-card"><h3>系统自动组装</h3><div class="flow"><span>读取账户</span><i>→</i><span>识别变化</span><i>→</i><span>分析影响</span><i>→</i><span>生成服务卡</span></div></article>
+                <article class="blueprint-card"><h3>行动与风险边界</h3><div class="risk-list"><span>只提供解释与建议，不自动交易</span><span>数据仅用于本服务，可随时撤回</span><span>高风险或不确定结论转人工确认</span></div></article>
+              </div>
+              <div class="wizard-actions"><button class="btn secondary" data-wizard-back="1">返回修改</button><button class="btn primary" id="startTest">用演示数据试运行 →</button></div>
+            </section>
+
+            <section class="wizard-panel" data-step-panel="3">
+              <div class="wizard-head"><div><span class="eyebrow">STEP 03 · TEST RUN</span><h1>这就是用户会收到的结果</h1><p>以下账户、金额、收益和结论均为产品演示数据，不构成投资建议。</p></div><span class="tag mint">试运行通过</span></div>
+              <div class="run-result">
+                <article class="result-main">
+                  <div class="result-title"><div><span class="tag">7月27日 · 周度更新</span><h2>账户整体稳定，1 个变化值得关注</h2><p>你的长期目标没有偏离，本周不需要调整主方案。</p></div><span class="app-icon">周</span></div>
+                  <div class="chart-box">
+                    <div class="chart-meta"><span><small>近 90 天账户变化</small><br><b>+3.6%</b></span><small>演示数据 · 2026/04/28—07/27</small></div>
+                    <svg class="line-chart" viewBox="0 0 620 150" role="img" aria-label="演示账户走势">
+                      <defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#69b1f4" stop-opacity=".28"/><stop offset="1" stop-color="#69b1f4" stop-opacity="0"/></linearGradient></defs>
+                      <g stroke="#e8eef3" stroke-width="1"><line x1="0" y1="30" x2="620" y2="30"/><line x1="0" y1="75" x2="620" y2="75"/><line x1="0" y1="120" x2="620" y2="120"/></g>
+                      <path d="M0,116 C45,105 56,109 96,94 C140,78 160,98 205,83 C250,68 270,74 312,61 C352,48 372,70 420,54 C465,39 490,55 530,35 C563,20 590,25 620,16 L620,150 L0,150 Z" fill="url(#area)"/>
+                      <path d="M0,116 C45,105 56,109 96,94 C140,78 160,98 205,83 C250,68 270,74 312,61 C352,48 372,70 420,54 C465,39 490,55 530,35 C563,20 590,25 620,16" fill="none" stroke="#1b88ee" stroke-width="3" stroke-linecap="round"/>
+                      <circle cx="620" cy="16" r="5" fill="#1b88ee"/><circle cx="620" cy="16" r="10" fill="#1b88ee" opacity=".13"/>
+                    </svg>
+                  </div>
+                  <div class="insight-list">
+                    <div class="insight"><i>1</i><span><b>权益仓位比目标高 3.2 个百分点</b><small>来自本周上涨，不是主动加仓；仍在你的允许区间内，暂不需要动作。</small></span></div>
+                    <div class="insight"><i>✓</i><span><b>下月现金流足以覆盖计划投入</b><small>按当前结余，无需动用应急资金。小顾会在发薪后再次确认。</small></span></div>
+                  </div>
+                </article>
+                <aside class="result-side">
+                  <h3>本次运行检查</h3>
+                  <div class="check-list"><div class="check"><span>数据权限</span><b>通过</b></div><div class="check"><span>工具可用性</span><b>通过</b></div><div class="check"><span>输出完整性</span><b>通过</b></div><div class="check"><span>风险与合规</span><b>通过</b></div></div>
+                  <div class="run-log">18:00 读取授权账户<br>18:01 识别 3 项变化<br>18:01 过滤 2 项低相关噪声<br>18:02 生成服务卡<br>18:02 风险检查通过</div>
+                  <div class="ai-note"><span class="ai-dot">AI</span><span>预计每周 1 次运行；只有偏离目标或重大事件发生时才主动提醒。</span></div>
+                </aside>
+              </div>
+              <div class="wizard-actions"><button class="btn secondary" data-wizard-back="2">调整蓝图</button><button class="btn primary" data-wizard-next="4">试运行符合预期，继续发布 →</button></div>
+            </section>
+
+            <section class="wizard-panel" data-step-panel="4">
+              <div class="wizard-head"><div><span class="eyebrow">STEP 04 · PUBLISH</span><h1>这项服务，先为谁运行？</h1><p>你可以先自己使用，验证有效后再邀请他人或申请进入服务广场。</p></div></div>
+              <div class="publish-grid">
+                <article class="publish-card"><h3>发布范围</h3><div class="visibility" id="visibility">
+                  <div class="radio active"><i>✓</i><span><b>仅自己使用</b><small>加入我的 AI 小顾，使用个人授权数据持续运行。</small></span></div>
+                  <div class="radio"><i></i><span><b>邀请指定用户</b><small>生成邀请链接，每位用户独立授权自己的数据。</small></span></div>
+                  <div class="radio"><i></i><span><b>申请公开发布</b><small>通过质量与合规审核后，进入服务广场。</small></span></div>
+                </div></article>
+                <article class="publish-card"><h3>服务预览</h3><div class="publish-preview"><span class="mini-brand">YINGMI AI LAB</span><h2>每周账户复盘</h2><p>过滤市场噪声，只呈现与你的账户和目标真正相关的变化。</p><button class="btn ghost">查看服务说明</button></div></article>
+              </div>
+              <div class="ai-note"><span class="ai-dot">✓</span><span>发布后仍可修改频率、授权范围和提醒方式；重大版本更新会先通知用户，不会静默改变服务边界。</span></div>
+              <div class="wizard-actions"><button class="btn secondary" data-wizard-back="3">返回试运行</button><button class="btn primary" id="publishService">发布并加入 AI 小顾</button></div>
+            </section>
+
+            <section class="wizard-panel" data-step-panel="5">
+              <div class="success-box"><span class="success-mark">✓</span><h1>“每周账户复盘”已开始服务</h1><p>下一次运行：本周五 18:00。你也可以现在生成邀请链接，让朋友体验同一套服务逻辑。</p>
+                <div class="share-link"><input id="shareUrl" readonly value="https://lab.yingmi.cn/s/demo-weekly-review"><button class="btn secondary" id="copyLink">复制链接</button></div>
+                <div class="wizard-actions" style="justify-content:center"><button class="btn secondary" data-view-jump="mine">查看我的服务</button><button class="btn primary" data-reset-create>再创建一项服务</button></div>
+              </div>
+            </section>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <main id="mine" class="view">
+      <div class="shell">
+        <div class="dashboard-head"><div><span class="eyebrow">MY SERVICES</span><h1>我的服务</h1><p>持续运行、随时可控。所有关键行动仍由你确认。</p></div><button class="btn primary" data-view-jump="create">＋ 创建新服务</button></div>
+        <section class="dash-grid"><article class="dash-card"><small>持续运行</small><b id="serviceCount">3 项</b><em>全部状态正常</em></article><article class="dash-card"><small>本月完成</small><b>11 次</b><em>10 次无需打扰</em></article><article class="dash-card"><small>帮助到我的变化</small><b>4 项</b><em>演示口径</em></article><article class="dash-card"><small>我创建的服务</small><b id="createdCount">1 项</b><em>可分享复用</em></article></section>
+        <div class="section-head"><div><span class="eyebrow">RUNNING NOW</span><h2>正在为你做的事</h2></div></div>
+        <section class="service-table" id="myServiceList">
+          <article class="service-row" id="createdServiceRow"><span class="app-icon violet">周</span><div><h3>每周账户复盘 <span class="tag violet">我的定制</span></h3><p>过滤噪声，只呈现与你真正相关的变化。</p></div><span class="state">守护中</span><span class="run-time">周五 18:00</span><span class="row-actions"><button>设置</button><button>运行</button></span></article>
+          <article class="service-row"><span class="app-icon">健</span><div><h3>账户健康守护 <span class="tag">且慢官方</span></h3><p>配置、风险与目标偏离时再来提醒你。</p></div><span class="state">守护中</span><span class="run-time">事件触发</span><span class="row-actions"><button>设置</button><button>运行</button></span></article>
+          <article class="service-row"><span class="app-icon mint">市</span><div><h3>市场与我 <span class="tag">且慢官方</span></h3><p>只解释与你的持仓和长期目标有关的市场变化。</p></div><span class="state">守护中</span><span class="run-time">每日 18:30</span><span class="row-actions"><button>设置</button><button>运行</button></span></article>
+          <article class="service-row empty-new"><span class="app-icon">＋</span><div><h3>还想让小顾帮你做什么？</h3><p>一句话创建下一项长期服务。</p></div><span></span><span></span><span class="row-actions"><button data-view-jump="create">去创建</button></span></article>
+        </section>
+      </div>
+    </main>
+
+    <div class="modal-layer" id="serviceModal" role="dialog" aria-modal="true" aria-label="服务详情">
+      <section class="modal">
+        <button class="modal-close" aria-label="关闭">×</button>
+        <div class="modal-cover"><span class="app-icon" id="modalIcon">周</span><div><h2 id="modalTitle">每周账户复盘</h2><p id="modalDesc">结合账户、市场和目标，过滤噪声，只告诉你真正需要关注的变化。</p></div></div>
+        <div class="modal-body"><article class="modal-block"><h3>它会怎样服务你</h3><p id="modalHow">每周五自动读取你授权的账户信息，识别结构、风险与目标变化，生成一张小顾服务卡。</p></article><article class="modal-block"><h3>数据与行动边界</h3><div class="risk-list"><span>每位用户独立授权</span><span>默认不执行交易</span><span>可随时暂停服务</span></div></article></div>
+        <div class="modal-actions"><button class="btn secondary modal-close-2">先看看</button><button class="btn primary" id="useService">用它创建我的服务</button></div>
+      </section>
+    </div>
+    <div class="toast" id="toast"></div>
+    <footer class="footer">盈米 AI 实验室 · 产品概念 Demo｜页面中的用户、人数、金额、收益、日期和运行结果均为演示内容，不代表真实数据、已上线功能或投资建议。</footer>
+  </div>
+
+  <script>
+    const gate=document.getElementById('gate');
+    const app=document.getElementById('app');
+    const gateForm=document.getElementById('gateForm');
+    const password=document.getElementById('password');
+    const gateError=document.getElementById('gateError');
+    const gateCard=document.getElementById('gateCard');
+    function unlock(){
+      gate.classList.add('hidden');app.setAttribute('aria-hidden','false');sessionStorage.setItem('yingmi-lab-demo','unlocked');
+    }
+    if(sessionStorage.getItem('yingmi-lab-demo')==='unlocked')unlock();
+    gateForm.addEventListener('submit',e=>{
+      e.preventDefault();
+      if(password.value==='2026'){unlock();}
+      else{gateError.textContent='密码不正确，请重新输入';gateCard.classList.remove('shake');void gateCard.offsetWidth;gateCard.classList.add('shake');password.select();}
+    });
+
+    const views=[...document.querySelectorAll('.view')];
+    const navButtons=[...document.querySelectorAll('.nav button')];
+    function showView(id){
+      views.forEach(v=>v.classList.toggle('active',v.id===id));
+      navButtons.forEach(b=>b.classList.toggle('active',b.dataset.view===id));
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    navButtons.forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+    document.addEventListener('click',e=>{
+      const jump=e.target.closest('[data-view-jump]');
+      if(jump){showView(jump.dataset.viewJump);if(jump.dataset.viewJump==='create'&&jump.hasAttribute('data-reset-create'))resetCreate();}
+    });
+
+    const heroIntent=document.getElementById('heroIntent');
+    const createIntent=document.getElementById('createIntent');
+    document.querySelectorAll('[data-idea]').forEach(b=>b.addEventListener('click',()=>{heroIntent.value=b.dataset.idea;heroIntent.focus()}));
+    document.getElementById('heroCreate').addEventListener('click',()=>{
+      if(heroIntent.value.trim())createIntent.value=heroIntent.value.trim();showView('create');
+    });
+    document.querySelectorAll('[data-suggestion]').forEach(b=>b.addEventListener('click',()=>{createIntent.value=b.dataset.suggestion}));
+
+    const filters=[...document.querySelectorAll('#filters button')];
+    const cards=[...document.querySelectorAll('.service-card')];
+    let currentFilter='all';
+    function filterCards(){
+      const term=document.getElementById('searchInput').value.trim().toLowerCase();
+      cards.forEach(card=>{
+        const category=card.dataset.category.split(' ');
+        const filterMatch=currentFilter==='all'||category.includes(currentFilter);
+        const searchMatch=!term||card.dataset.search.toLowerCase().includes(term);
+        card.classList.toggle('hidden',!(filterMatch&&searchMatch));
+      });
+    }
+    filters.forEach(b=>b.addEventListener('click',()=>{filters.forEach(x=>x.classList.remove('active'));b.classList.add('active');currentFilter=b.dataset.filter;filterCards()}));
+    document.getElementById('searchInput').addEventListener('input',filterCards);
+
+    const serviceData={
+      weekly:{icon:'周',title:'每周账户复盘',desc:'结合账户、市场和目标，过滤噪声，只告诉你真正需要关注的变化。',how:'每周五自动读取你授权的账户信息，识别结构、风险与目标变化，生成一张小顾服务卡。',intent:'每周五帮我复盘账户，结合市场和我的目标，只告诉我真正需要关注的变化。'},
+      market:{icon:'雷',title:'市场影响雷达',desc:'每天收盘后，把市场事件翻译成与你关注方向相关的影响与行动观察。',how:'自动聚合市场事件与关注方向，过滤重复信息，并按影响程度生成每日简报。',intent:'每天收盘后，告诉我关注方向受到哪些市场事件影响，只保留重要变化。'},
+      fund:{icon:'筛',title:'主动基金筛选器',desc:'用自然语言组合业绩、风险、规模、风格与费率条件，保存后持续跟踪。',how:'按你设定的条件筛选基金，并在结果或关键指标发生变化时更新清单。',intent:'筛选低费率、长期业绩稳定、回撤控制较好的主动基金，并持续跟踪。'},
+      index:{icon:'比',title:'持仓 × 指数对比',desc:'自选指数与组合并排观察，用收益、回撤与结构差异理解偏离来自哪里。',how:'定期对比账户与自选指数的收益、回撤和持仓结构，解释显著偏离。',intent:'对比我的持仓和沪深300，只在收益、回撤或结构偏离明显时提醒我。'},
+      behavior:{icon:'省',title:'投资行为复盘',desc:'回看最成功与最遗憾的决策，识别追涨、过度交易与真正有效的投资纪律。',how:'按月聚合交易决策，区分计划动作和情绪动作，用证据复盘行为模式。',intent:'每月复盘我的交易行为，提醒我可能存在的追涨、频繁交易或纪律偏离。'},
+      mbti:{icon:'型',title:'我的投资 MBTI',desc:'从真实决策与风险偏好生成投资人格画像，也给出可能误导你的性格盲区。',how:'结合问答与授权行为数据生成娱乐化画像，并明确事实、推断和替代解释。',intent:'根据我的风险偏好和投资行为，生成投资 MBTI，并指出可能的决策盲区。'}
+    };
+    const modal=document.getElementById('serviceModal');let selectedService=serviceData.weekly;
+    cards.forEach(card=>card.querySelector('.card-hit').addEventListener('click',e=>{
+      selectedService=serviceData[e.currentTarget.dataset.service];
+      document.getElementById('modalIcon').textContent=selectedService.icon;document.getElementById('modalTitle').textContent=selectedService.title;
+      document.getElementById('modalDesc').textContent=selectedService.desc;document.getElementById('modalHow').textContent=selectedService.how;modal.classList.add('show');
+    }));
+    function closeModal(){modal.classList.remove('show')}
+    modal.querySelector('.modal-close').addEventListener('click',closeModal);modal.querySelector('.modal-close-2').addEventListener('click',closeModal);
+    modal.addEventListener('click',e=>{if(e.target===modal)closeModal()});
+    document.getElementById('useService').addEventListener('click',()=>{createIntent.value=selectedService.intent;closeModal();resetCreate();showView('create')});
+
+    const panels=[...document.querySelectorAll('[data-step-panel]')];
+    const indicators=[...document.querySelectorAll('[data-step-indicator]')];
+    function showStep(step){
+      panels.forEach(p=>p.classList.toggle('active',Number(p.dataset.stepPanel)===step));
+      indicators.forEach(i=>{
+        const n=Number(i.dataset.stepIndicator);i.classList.toggle('active',n===Math.min(step,4));i.classList.toggle('done',n<step);
+      });
+      document.querySelector('.wizard-shell').scrollIntoView({behavior:'smooth',block:'start'});
+    }
+    function resetCreate(){showStep(1)}
+    document.querySelectorAll('[data-wizard-back]').forEach(b=>b.addEventListener('click',()=>showStep(Number(b.dataset.wizardBack))));
+    document.querySelectorAll('[data-wizard-next]').forEach(b=>b.addEventListener('click',()=>showStep(Number(b.dataset.wizardNext))));
+    const loading=document.getElementById('loading');
+    function withLoading(title,text,next,delay=1050){
+      document.getElementById('loadingTitle').textContent=title;document.getElementById('loadingText').textContent=text;loading.classList.add('show');
+      setTimeout(()=>{loading.classList.remove('show');showStep(next)},delay);
+    }
+    document.getElementById('generateBlueprint').addEventListener('click',()=>{
+      if(!createIntent.value.trim()){showToast('先告诉实验室你想创建什么服务');createIntent.focus();return}
+      const text=createIntent.value;
+      let title='我的金融服务';
+      if(text.includes('基金'))title='主动基金筛选器';else if(text.includes('市场'))title='市场影响雷达';else if(text.includes('交易'))title='投资行为复盘';else if(text.includes('指数'))title='持仓指数对比';else if(text.includes('复盘')||text.includes('账户'))title='每周账户复盘';
+      document.getElementById('serviceTitle').textContent=title;
+      document.getElementById('serviceSummary').textContent=text.replace(/[。！]$/,'')+'。';
+      withLoading('正在理解你的想法','分析目标、数据、触发条件与交付方式…',2,1100);
+    });
+    document.getElementById('startTest').addEventListener('click',()=>withLoading('正在进行首次试运行','调用演示数据、生成结果并完成风险检查…',3,1250));
+    document.getElementById('visibility').querySelectorAll('.radio').forEach(r=>r.addEventListener('click',()=>{
+      document.getElementById('visibility').querySelectorAll('.radio').forEach(x=>{x.classList.remove('active');x.querySelector('i').textContent=''});
+      r.classList.add('active');r.querySelector('i').textContent='✓';
+    }));
+    document.getElementById('publishService').addEventListener('click',()=>{
+      withLoading('正在发布服务','创建服务版本、写入运行计划并加入 AI 小顾…',5,1200);
+      document.getElementById('createdServiceRow').classList.remove('hidden');
+    });
+    document.querySelector('[data-reset-create]').addEventListener('click',resetCreate);
+
+    const toast=document.getElementById('toast');
+    function showToast(message){toast.textContent=message;toast.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>toast.classList.remove('show'),3300)}
+    document.getElementById('copyLink').addEventListener('click',async()=>{
+      const value=document.getElementById('shareUrl').value;
+      try{await navigator.clipboard.writeText(value);showToast('邀请链接已复制')}catch(e){document.getElementById('shareUrl').select();showToast('已选中链接，请复制')}
+    });
+    document.querySelectorAll('.row-actions button').forEach(b=>b.addEventListener('click',e=>{if(!e.target.hasAttribute('data-view-jump'))showToast('概念 Demo：这里将打开服务运行记录或设置')}));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+  </script>
+</body>
+</html>
