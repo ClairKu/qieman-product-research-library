@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "且慢产品研究页面库｜2026-07",
   description:
-    "OneTab 22 个页面的统一生产入口，包含投顾页改版、产品全景、AI 原生转型、OAP 规划与工具对比。",
+    "产品研究与数据看板的统一生产入口，包含投顾页改版、产品全景、AI 原生转型、OAP 规划与运营趋势。",
 };
 
 type PageItem = {
@@ -135,6 +135,13 @@ const pages: PageItem[] = [
     href: "/pages/oap/oap-progress-and-roadmap-2026-07-24.html",
     kind: "本站生产页",
     topic: "AI 开放平台",
+  },
+  {
+    title: "盈米AI开放平台用户｜增长趋势与区间经营分析",
+    href: "/pages/oap/oap-metrics-trend-2026-07-28.html",
+    kind: "本站生产页",
+    topic: "AI 开放平台",
+    note: "密码访问 · 2026",
   },
   {
     title: "王嘉烨｜2026下半年 AI开放平台目标计划与里程碑",

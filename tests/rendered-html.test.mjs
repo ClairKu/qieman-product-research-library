@@ -30,29 +30,29 @@ async function render() {
   );
 }
 
-test("server-renders the 22-page production catalog", async () => {
+test("server-renders the 23-page production catalog", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
   assert.match(html, /且慢产品研究页面库/);
-  assert.match(html, /22/);
-  assert.match(html, /18/);
+  assert.match(html, /23/);
+  assert.match(html, /19/);
   assert.match(html, /已有生产页/);
   assert.match(html, /飞书文档/);
   assert.match(html, /https:\/\/qieman-pages\.example\/og\.png/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
 
-test("catalog keeps all 22 OneTab entries and 18 hosted pages", async () => {
+test("catalog keeps all 23 entries and 19 hosted pages", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const hrefs = [...source.matchAll(/href:\s*"([^"]+)"/g)].map((match) => match[1]);
   const hosted = hrefs.filter((href) => href.startsWith("/pages/"));
 
-  assert.equal(hrefs.length, 22);
-  assert.equal(hosted.length, 18);
-  assert.equal(new Set(hrefs).size, 22);
+  assert.equal(hrefs.length, 23);
+  assert.equal(hosted.length, 19);
+  assert.equal(new Set(hrefs).size, 23);
 
   await Promise.all(
     hosted.map((href) =>
@@ -96,8 +96,8 @@ test("GitHub Pages artifact is standalone and keeps all hosted routes", async ()
     (match) => match[1],
   );
 
-  assert.equal(hosted.length, 18);
-  assert.equal(new Set(hosted).size, 18);
+  assert.equal(hosted.length, 19);
+  assert.equal(new Set(hosted).size, 19);
   assert.doesNotMatch(html, /<script\b|localhost:|invalid\.invalid|href="\/pages\//);
   assert.match(
     html,
@@ -109,7 +109,9 @@ test("GitHub Pages artifact is standalone and keeps all hosted routes", async ()
       access(new URL(`../docs/${decodeURIComponent(href)}`, import.meta.url)),
     ),
   );
-  await access(new URL("../docs/assets/index-ZS8EjuPg.css", import.meta.url));
+  const stylesheet = html.match(/href="(assets\/index-[^"]+\.css)"/)?.[1];
+  assert.ok(stylesheet);
+  await access(new URL(`../docs/${stylesheet}`, import.meta.url));
   await access(new URL("../docs/og.png", import.meta.url));
   await access(new URL("../docs/.nojekyll", import.meta.url));
 });

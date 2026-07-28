@@ -32,10 +32,10 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s｜且慢产品研究页面库",
     },
     description:
-      "OneTab 22 个页面的统一生产入口：投顾页改版、产品全景、AI 原生转型、OAP 规划与工具对比。",
+      "23 个产品研究与数据看板的统一生产入口：投顾页改版、产品全景、AI 原生转型、OAP 规划与运营趋势。",
     openGraph: {
       title: "且慢产品研究页面库｜2026-07",
-      description: "22 个产品研究、分析与规划页面的统一稳定入口。",
+      description: "23 个产品研究、分析、规划与数据看板的统一稳定入口。",
       type: "website",
       locale: "zh_CN",
       images: [{ url: previewImage, width: 1200, height: 630 }],
@@ -43,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: "且慢产品研究页面库｜2026-07",
-      description: "22 个产品研究、分析与规划页面的统一稳定入口。",
+      description: "23 个产品研究、分析、规划与数据看板的统一稳定入口。",
       images: [previewImage],
     },
   };
