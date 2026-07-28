@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#1B88EE">
+  <meta name="description" content="OAP 累计调用、累计申请用户、每日新增用户和每日调用用户趋势图">
+  <title>OAP 运营趋势｜2026-07-28</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  <style>
+    :root{
+      --primary:#1B88EE;--primary-dark:#0F78D4;--poster:#3180EC;--ink:#263241;
+      --text:#333;--muted:#606060;--subtle:#8a95a3;--line:#E6EBF1;--page:#F7F9FC;
+      --card:#FFF;--blue-faded:#F0F6FF;--error:#FA440C;--success:#07AD8F;
+      --chart1:#69B1F4;--chart2:#F88D72;--chart3:#FBCA74;--chart4:#7DD4C4;
+      --shadow:0 12px 36px rgba(38,50,65,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--page);color:var(--text);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .app{display:none}
+    body.unlocked .app{display:block}
+    .lock{position:fixed;inset:0;z-index:999;display:grid;place-items:center;padding:22px;background:radial-gradient(circle at 78% 4%,rgba(125,212,196,.5),transparent 28%),linear-gradient(145deg,#105fa8,#3180EC 60%,#66B5F4)}
+    body.unlocked .lock{display:none}
+    .lock-card{width:min(430px,100%);padding:30px;background:rgba(255,255,255,.97);border-radius:24px;box-shadow:0 28px 80px rgba(8,48,88,.34)}
+    .brand{display:flex;gap:12px;align-items:center;margin-bottom:24px}
+    .mark{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;color:#fff;font-weight:800;background:linear-gradient(135deg,#1B88EE,#72C6FF)}
+    .brand small{display:block;color:var(--subtle)}
+    .lock h1{margin:0 0 8px;font-size:26px;line-height:1.25;color:var(--ink)}
+    .lock p{margin:0 0 20px;color:var(--muted)}
+    .password-row{display:flex;gap:10px}
+    .password-row input{min-width:0;flex:1;padding:12px 14px;border:1px solid #CFD8E4;border-radius:10px;outline:none}
+    .password-row input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(27,136,238,.12)}
+    .primary-btn{border:0;border-radius:10px;padding:11px 16px;background:var(--primary);color:#fff;font-weight:700}
+    .primary-btn:hover{background:var(--primary-dark)}
+    .lock-error{height:22px;margin-top:8px;color:var(--error);font-size:13px}
+    .lock-note{font-size:12px!important;color:var(--subtle)!important;margin-top:14px!important}
+    .topbar{background:linear-gradient(120deg,#246FC4,#3180EC 62%,#5AA9F0);color:#fff}
+    .topbar-inner{max-width:1280px;margin:auto;padding:22px 24px 26px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+    .eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.76)}
+    h1{margin:6px 0 4px;font-size:30px;line-height:1.2}
+    .subtitle{margin:0;color:rgba(255,255,255,.82)}
+    .soft-btn{border:1px solid var(--line);border-radius:9px;padding:8px 11px;background:#fff;color:var(--muted)}
+    .soft-btn:hover,.soft-btn.active{border-color:#9CCBF8;background:var(--blue-faded);color:var(--primary)}
+    .topbar .soft-btn{border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.12);color:#fff}
+    .page{max-width:1280px;margin:auto;padding:18px 24px 46px}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:-10px}
+    .kpi{min-width:0;padding:15px 16px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+    .kpi-label{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px}
+    .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+    .kpi strong{display:block;margin:8px 0 2px;color:var(--ink);font-size:25px;line-height:1.1;font-variant-numeric:tabular-nums}
+    .kpi small{color:var(--subtle)}
+    .panel{margin-top:14px;padding:16px;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 4px 18px rgba(38,50,65,.04)}
+    .toolbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:2px}
+    .toolbar h2{margin:0;color:var(--ink);font-size:18px}
+    .toolbar p{margin:3px 0 0;color:var(--subtle);font-size:12px}
+    .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .range-group{display:flex;gap:4px;padding:3px;border-radius:10px;background:#F3F6F9}
+    .range-group button{border:0;border-radius:7px;padding:6px 10px;background:transparent;color:var(--muted)}
+    .range-group button.active{background:#fff;color:var(--primary);box-shadow:0 2px 7px rgba(38,50,65,.09)}
+    #chart{width:100%;height:650px}
+    .source-note{display:flex;justify-content:space-between;gap:18px;margin-top:4px;padding:11px 12px;border-radius:10px;background:#F8FAFC;color:var(--subtle);font-size:12px}
+    .source-note b{color:var(--muted)}
+    footer{display:flex;justify-content:space-between;gap:16px;margin-top:14px;color:var(--subtle);font-size:12px}
+    @media(max-width:820px){
+      .topbar-inner{padding:19px 14px 22px;align-items:flex-start}.topbar-inner>.soft-btn{display:none}
+      h1{font-size:26px}.page{padding:14px 12px 34px}.kpis{grid-template-columns:repeat(2,1fr);gap:9px}
+      .kpi{padding:13px}.kpi strong{font-size:21px}.panel{padding:12px}.toolbar{flex-direction:column}
+      .actions{width:100%;justify-content:space-between}.range-group{flex:1}.range-group button{flex:1}
+      #chart{height:590px}.source-note{flex-direction:column;gap:4px}footer{flex-direction:column;gap:4px}
+    }
+    @media(max-width:430px){
+      .password-row{flex-direction:column}.kpi strong{font-size:19px}.toolbar h2{font-size:17px}
+      .actions>.soft-btn{padding:8px 10px}.source-note{font-size:11px}
+    }
+  </style>
+</head>
+<body>
+  <section class="lock" aria-label="密码访问">
+    <div class="lock-card">
+      <div class="brand"><div class="mark">OAP</div><div><strong>AI Open Platform</strong><small>内部运营数据</small></div></div>
+      <h1>OAP 运营趋势</h1>
+      <p>输入访问密码，查看累计调用、累计申请用户与每日用户趋势。</p>
+      <form id="unlockForm">
+        <div class="password-row">
+          <input id="passwordInput" type="password" autocomplete="current-password" placeholder="请输入访问密码" aria-label="访问密码">
+          <button class="primary-btn" type="submit">打开趋势图</button>
+        </div>
+        <div id="lockError" class="lock-error" role="alert"></div>
+      </form>
+      <p class="lock-note">页面内数据已加密；仅用于内部经营分析。</p>
+    </div>
+  </section>
+
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div>
+          <div class="eyebrow">OAP · OPERATIONS PULSE</div>
+          <h1>调用增长与用户采用趋势</h1>
+          <p class="subtitle" id="rangeText">近 30 日 · 累计与每日指标联动查看</p>
+        </div>
+        <button class="soft-btn" id="lockBtn">锁定页面</button>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="kpis" aria-label="最新指标">
+        <article class="kpi"><div class="kpi-label">累计调用数<span class="dot" style="background:var(--chart1)"></span></div><strong id="kpiCalls">—</strong><small id="kpiCallsSub">—</small></article>
+        <article class="kpi"><div class="kpi-label">累计申请用户数<span class="dot" style="background:var(--chart2)"></span></div><strong id="kpiUsers">—</strong><small id="kpiUsersSub">—</small></article>
+        <article class="kpi"><div class="kpi-label">每日调用用户数<span class="dot" style="background:var(--chart4)"></span></div><strong id="kpiCalling">—</strong><small id="kpiCallingSub">—</small></article>
+        <article class="kpi"><div class="kpi-label">每日新增用户<span class="dot" style="background:var(--chart3)"></span></div><strong id="kpiNew">—</strong><small id="kpiNewSub">—</small></article>
+      </section>
+
+      <section class="panel">
+        <div class="toolbar">
+          <div><h2>四指标联动趋势</h2><p>上层看累计增长，下层看每日采用；悬浮同一日期可同时查看四项原值。</p></div>
+          <div class="actions">
+            <div class="range-group" aria-label="时间范围">
+              <button type="button" data-days="7">7 日</button>
+              <button type="button" data-days="14">14 日</button>
+              <button class="active" type="button" data-days="30">30 日</button>
+            </div>
+            <button class="soft-btn" id="downloadBtn" type="button">下载图片</button>
+          </div>
+        </div>
+        <div id="chart" role="img" aria-label="OAP累计调用、累计申请用户、每日新增用户和每日调用用户趋势图"></div>
+        <div class="source-note">
+          <span><b>数据源：</b>OAP 后台「整体数据」只读查询，Asia/Shanghai。</span>
+          <span><b>口径：</b>累计值以 2026-07-28 当日总量为锚点，还原近 30 日每日累计；当日数据可能仍在增长。</span>
+        </div>
+      </section>
+      <footer><span>盈米基金 · AI Open Platform</span><span>数据截点：<b id="asOfText">—</b></span></footer>
+    </main>
+  </div>
+
+  <script>
+    const ENCRYPTED_PAYLOAD = {"salt":"CekV3esWL34LejA4jeYbsw==","iv":"S+vzfjMMlOTp4mCp","data":"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"};
+    const $ = id => document.getElementById(id);
+    const b64ToBytes = value => Uint8Array.from(atob(value), char => char.charCodeAt(0));
+    const fmt = value => Number(value).toLocaleString("zh-CN");
+    let chart;
+    let data;
+
+    async function decryptPayload(password){
+      const material = await crypto.subtle.importKey("raw",new TextEncoder().encode(password),"PBKDF2",false,["deriveKey"]);
+      const key = await crypto.subtle.deriveKey(
+        {name:"PBKDF2",salt:b64ToBytes(ENCRYPTED_PAYLOAD.salt),iterations:150000,hash:"SHA-256"},
+        material,{name:"AES-GCM",length:256},false,["decrypt"]
+      );
+      const packed = b64ToBytes(ENCRYPTED_PAYLOAD.data);
+      const plain = await crypto.subtle.decrypt(
+        {name:"AES-GCM",iv:b64ToBytes(ENCRYPTED_PAYLOAD.iv)},
+        key,
+        packed
+      );
+      return JSON.parse(new TextDecoder().decode(plain));
+    }
+
+    function option(){
+      const rows=data.rows;
+      const mobile=window.innerWidth<=600;
+      const dates=rows.map(row=>row.date.slice(5).replace("-","/"));
+      const calls=rows.map(row=>row.cumulativeCalls);
+      const users=rows.map(row=>row.cumulativeUsers);
+      const active=rows.map(row=>row.dailyCallingUsers);
+      const added=rows.map(row=>row.dailyNewUsers);
+      return {
+        animationDuration:650,
+        color:["#69B1F4","#F88D72","#7DD4C4","#FBCA74"],
+        legend:{
+          top:8,left:mobile?0:"center",right:mobile?0:"auto",itemWidth:mobile?14:18,itemHeight:8,itemGap:mobile?8:18,
+          textStyle:{color:"#606060",fontSize:mobile?11:12},
+          data:["累计调用数","累计申请用户数","每日调用用户数","每日新增用户"]
+        },
+        tooltip:{
+          trigger:"axis",confine:true,backgroundColor:"rgba(38,50,65,.94)",borderWidth:0,padding:[10,12],
+          textStyle:{color:"#fff",fontSize:12},
+          axisPointer:{type:"line",link:[{xAxisIndex:[0,1]}]},
+          formatter:params=>{
+            const index=params[0].dataIndex,row=rows[index];
+            return `<b>${row.date}</b><br>
+              <span style="color:#69B1F4">●</span> 累计调用数　${fmt(row.cumulativeCalls)}<br>
+              <span style="color:#F88D72">●</span> 累计申请用户　${fmt(row.cumulativeUsers)}<br>
+              <span style="color:#7DD4C4">●</span> 每日调用用户　${fmt(row.dailyCallingUsers)}<br>
+              <span style="color:#FBCA74">●</span> 每日新增用户　${fmt(row.dailyNewUsers)}`;
+          }
+        },
+        axisPointer:{link:[{xAxisIndex:"all"}]},
+        grid:[
+          {left:mobile?48:62,right:mobile?56:68,top:mobile?102:62,height:mobile?"38%":"43%"},
+          {left:mobile?48:62,right:mobile?56:68,top:mobile?"66%":"63%",height:mobile?"18%":"21%"}
+        ],
+        xAxis:[
+          {type:"category",gridIndex:0,data:dates,boundaryGap:false,axisLabel:{show:false},axisTick:{show:false},axisLine:{lineStyle:{color:"#DDE4EC"}}},
+          {type:"category",gridIndex:1,data:dates,boundaryGap:true,axisLabel:{color:"#8A95A3",fontSize:11,interval:mobile?6:4},axisTick:{show:false},axisLine:{lineStyle:{color:"#DDE4EC"}}}
+        ],
+        yAxis:[
+          {
+            type:"value",gridIndex:0,name:"累计调用（万次）",nameTextStyle:{color:"#8A95A3",fontSize:11,padding:[0,0,6,0]},
+            scale:true,splitNumber:4,axisLabel:{color:"#8A95A3",formatter:value=>(value/10000).toFixed(0)},
+            splitLine:{lineStyle:{color:"#EEF2F6"}}
+          },
+          {
+            type:"value",gridIndex:0,name:"累计用户（人）",nameTextStyle:{color:"#8A95A3",fontSize:11,padding:[0,0,6,0]},
+            scale:true,splitNumber:4,axisLabel:{color:"#8A95A3",formatter:value=>fmt(value)},
+            splitLine:{show:false}
+          },
+          {
+            type:"value",gridIndex:1,name:"每日用户（人）",nameTextStyle:{color:"#8A95A3",fontSize:11,padding:[0,0,6,0]},
+            min:0,splitNumber:3,axisLabel:{color:"#8A95A3"},splitLine:{lineStyle:{color:"#EEF2F6"}}
+          }
+        ],
+        dataZoom:[
+          {type:"inside",xAxisIndex:[0,1],filterMode:"none",start:0,end:100},
+          {type:"slider",xAxisIndex:[0,1],filterMode:"none",bottom:4,height:18,borderColor:"#DDE4EC",backgroundColor:"#F6F8FA",fillerColor:"rgba(27,136,238,.14)",handleStyle:{color:"#1B88EE"},showDetail:false}
+        ],
+        series:[
+          {
+            name:"累计调用数",type:"line",xAxisIndex:0,yAxisIndex:0,data:calls,symbol:"none",smooth:.18,
+            lineStyle:{width:3,color:"#69B1F4"},areaStyle:{color:{type:"linear",x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:"rgba(105,177,244,.27)"},{offset:1,color:"rgba(105,177,244,.02)"}]}}
+          },
+          {
+            name:"累计申请用户数",type:"line",xAxisIndex:0,yAxisIndex:1,data:users,symbol:"none",smooth:.18,
+            lineStyle:{width:3,color:"#F88D72"}
+          },
+          {name:"每日调用用户数",type:"bar",xAxisIndex:1,yAxisIndex:2,data:active,barGap:"12%",barMaxWidth:18,itemStyle:{color:"#7DD4C4",borderRadius:[3,3,0,0]}},
+          {name:"每日新增用户",type:"bar",xAxisIndex:1,yAxisIndex:2,data:added,barMaxWidth:12,itemStyle:{color:"#FBCA74",borderRadius:[3,3,0,0]}}
+        ]
+      };
+    }
+
+    function render(){
+      const rows=data.rows,last=rows.at(-1),first=rows[0];
+      $("rangeText").textContent=`${data.rangeLabel} · 累计与每日指标联动查看`;
+      $("asOfText").textContent=`${data.asOf} ${data.timezone}`;
+      $("kpiCalls").textContent=fmt(last.cumulativeCalls);
+      $("kpiCallsSub").textContent=`窗口新增 ${fmt(last.cumulativeCalls-first.cumulativeCalls)} 次`;
+      $("kpiUsers").textContent=fmt(last.cumulativeUsers);
+      $("kpiUsersSub").textContent=`窗口净增 ${fmt(last.cumulativeUsers-first.cumulativeUsers)} 人`;
+      $("kpiCalling").textContent=fmt(last.dailyCallingUsers);
+      $("kpiCallingSub").textContent=`窗口峰值 ${fmt(Math.max(...rows.map(row=>row.dailyCallingUsers)))} 人`;
+      $("kpiNew").textContent=fmt(last.dailyNewUsers);
+      $("kpiNewSub").textContent=`窗口峰值 ${fmt(Math.max(...rows.map(row=>row.dailyNewUsers)))} 人`;
+      chart=echarts.init($("chart"));
+      chart.setOption(option());
+      window.addEventListener("resize",()=>chart.resize());
+    }
+
+    $("unlockForm").addEventListener("submit",async event=>{
+      event.preventDefault();
+      const button=event.currentTarget.querySelector("button");
+      button.disabled=true;button.textContent="正在解锁…";$("lockError").textContent="";
+      try{
+        data=await decryptPayload($("passwordInput").value);
+        document.body.classList.add("unlocked");
+        render();
+      }catch(error){
+        $("lockError").textContent="密码不正确，请重新输入。";
+        $("passwordInput").select();
+      }finally{
+        button.disabled=false;button.textContent="打开趋势图";
+      }
+    });
+
+    $("lockBtn").addEventListener("click",()=>location.reload());
+    document.querySelectorAll("[data-days]").forEach(button=>button.addEventListener("click",()=>{
+      document.querySelectorAll("[data-days]").forEach(item=>item.classList.toggle("active",item===button));
+      const days=Number(button.dataset.days);
+      const start=Math.max(0,data.rows.length-days);
+      chart.dispatchAction({type:"dataZoom",startValue:start,endValue:data.rows.length-1});
+    }));
+    $("downloadBtn").addEventListener("click",()=>{
+      const link=document.createElement("a");
+      link.href=chart.getDataURL({type:"png",pixelRatio:2,backgroundColor:"#FFFFFF"});
+      link.download=`OAP运营趋势-${data.asOf}.png`;
+      link.click();
+    });
+  </script>
+</body>
+</html>
