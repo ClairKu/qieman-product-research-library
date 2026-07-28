@@ -144,6 +144,13 @@ const pages: PageItem[] = [
     note: "密码访问 · 2026",
   },
   {
+    title: "盈米 AI 开放平台｜全站访问与点击分析",
+    href: "/pages/oap/oap-service-site-traffic-analysis-2026-07-28.html",
+    kind: "本站生产页",
+    topic: "AI 开放平台",
+    note: "UV / PV / 点击 / 来源 · 密码 2026",
+  },
+  {
     title: "王嘉烨｜2026下半年 AI开放平台目标计划与里程碑",
     href: "https://yingmi.feishu.cn/docx/QCTAd6QDTo6iKVxdA3LceZ4rnrf",
     kind: "飞书文档",
