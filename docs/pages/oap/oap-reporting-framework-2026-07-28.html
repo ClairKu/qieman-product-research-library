@@ -1,0 +1,1197 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="OAP 管理层汇报框架：为什么做、要做什么、进展成效、下一步、问题回顾与所需支持。">
+  <title>OAP 汇报框架｜2026-07-28</title>
+  <style>
+    :root {
+      --brand: #1b88ee;
+      --brand-dark: #126ec5;
+      --brand-faded: #f0f6ff;
+      --poster: #3180ec;
+      --ink: #333;
+      --muted: #606060;
+      --subtle: #8a94a3;
+      --line: #d8e1ec;
+      --paper: #fff;
+      --canvas: #f6f8fb;
+      --success: #078d77;
+      --success-bg: #eaf8f5;
+      --warning: #b36c00;
+      --warning-bg: #fff7e6;
+      --danger: #d84b27;
+      --danger-bg: #feede9;
+      --shadow: 0 14px 34px rgba(34, 80, 122, .10);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 0 0, rgba(27, 136, 238, .09), transparent 28rem),
+        var(--canvas);
+      font-family: Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.72;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body.locked { overflow: hidden; }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .gate {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,.16), transparent 19rem),
+        linear-gradient(135deg, #186fbd, #3180ec 55%, #4b9cf2);
+      transition: opacity .28s ease, visibility .28s ease;
+    }
+
+    .gate[hidden] {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .gate-card {
+      width: min(440px, 100%);
+      padding: 30px;
+      background: rgba(255,255,255,.96);
+      border: 1px solid rgba(255,255,255,.65);
+      border-radius: 24px;
+      box-shadow: 0 28px 70px rgba(7, 43, 80, .28);
+    }
+
+    .gate-mark {
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 52px;
+      color: #fff;
+      background: var(--brand);
+      border-radius: 16px;
+      font-size: 23px;
+      font-weight: 800;
+      box-shadow: 0 9px 22px rgba(27,136,238,.26);
+    }
+
+    .gate h1 {
+      margin: 20px 0 8px;
+      font-size: 26px;
+      line-height: 1.3;
+    }
+
+    .gate p {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .gate-form { display: grid; gap: 12px; }
+    .gate label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .gate input {
+      width: 100%;
+      padding: 13px 14px;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      outline: none;
+    }
+
+    .gate input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px rgba(27,136,238,.12);
+    }
+
+    .gate button {
+      padding: 13px 16px;
+      color: #fff;
+      background: var(--brand);
+      border: 0;
+      border-radius: 10px;
+      font-weight: 750;
+    }
+
+    .gate button:hover { background: var(--brand-dark); }
+    .gate-error { min-height: 22px; color: var(--danger) !important; margin: 0 !important; }
+
+    .page {
+      width: min(1180px, calc(100% - 34px));
+      margin: 24px auto 70px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 440px;
+      padding: 48px;
+      color: #fff;
+      background: linear-gradient(125deg, #186dbc, var(--poster) 58%, #4b9cf2);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 50%;
+    }
+
+    .hero::before { width: 420px; height: 420px; right: -150px; top: -120px; }
+    .hero::after { width: 260px; height: 260px; right: 15px; top: 10px; }
+
+    .hero-top,
+    .hero-grid,
+    .hero-meta { position: relative; z-index: 1; }
+
+    .hero-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0;
+      color: rgba(255,255,255,.82);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 22px;
+      height: 2px;
+      background: #fff;
+    }
+
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .hero-button {
+      padding: 9px 13px;
+      color: #fff;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .hero-button:hover { background: rgba(255,255,255,.20); }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(290px, .65fr);
+      align-items: center;
+      gap: 50px;
+      margin-top: 60px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(40px, 6vw, 66px);
+      line-height: 1.04;
+      letter-spacing: -.04em;
+    }
+
+    .hero-lead {
+      max-width: 760px;
+      margin: 20px 0 0;
+      color: rgba(255,255,255,.88);
+      font-size: 18px;
+      line-height: 1.72;
+    }
+
+    .hero-path {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .hero-path span {
+      display: grid;
+      min-height: 76px;
+      align-content: center;
+      padding: 12px 14px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 13px;
+      backdrop-filter: blur(8px);
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .hero-path b {
+      display: block;
+      margin-bottom: 2px;
+      color: rgba(255,255,255,.65);
+      font-size: 11px;
+      letter-spacing: .08em;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 22px;
+      margin-top: 52px;
+      color: rgba(255,255,255,.68);
+      font-size: 12px;
+    }
+
+    .nav {
+      position: sticky;
+      top: 10px;
+      z-index: 50;
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      margin: 15px 0 22px;
+      padding: 9px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(34,80,122,.07);
+      backdrop-filter: blur(12px);
+      scrollbar-width: thin;
+    }
+
+    .nav a {
+      flex: 0 0 auto;
+      padding: 8px 11px;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 720;
+    }
+
+    .nav a:hover { color: var(--brand); background: var(--brand-faded); }
+
+    .section {
+      margin-top: 20px;
+      padding: 34px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 7px 28px rgba(34,80,122,.055);
+      scroll-margin-top: 88px;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(250px, .62fr);
+      align-items: end;
+      gap: 28px;
+      margin-bottom: 25px;
+    }
+
+    .section-index {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--brand);
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .14em;
+    }
+
+    h2 {
+      margin: 0;
+      color: #24537f;
+      font-size: clamp(25px, 3.4vw, 33px);
+      line-height: 1.25;
+      letter-spacing: -.02em;
+    }
+
+    h3 { margin: 0 0 9px; color: #24537f; font-size: 17px; line-height: 1.45; }
+    p { margin: 0; }
+    ul { margin: 9px 0 0; padding-left: 19px; }
+    li + li { margin-top: 5px; }
+
+    .section-ask {
+      margin: 0;
+      padding-left: 14px;
+      color: var(--muted);
+      border-left: 3px solid #9ccbf8;
+      font-size: 13px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(260px, .65fr);
+      gap: 16px;
+    }
+
+    .summary-main,
+    .summary-side {
+      padding: 24px;
+      border-radius: 14px;
+    }
+
+    .summary-main {
+      background: var(--brand-faded);
+      border: 1px solid #9ccbf8;
+      border-left: 5px solid var(--brand);
+    }
+
+    .summary-main strong {
+      display: block;
+      color: #14588f;
+      font-size: 22px;
+      line-height: 1.45;
+    }
+
+    .summary-main p { margin-top: 9px; color: var(--muted); }
+    .summary-side { color: #fff; background: #24537f; }
+    .summary-side small { color: rgba(255,255,255,.68); font-weight: 700; }
+    .summary-side strong { display: block; margin-top: 7px; font-size: 17px; line-height: 1.5; }
+
+    .logic-grid,
+    .work-grid,
+    .support-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .card {
+      padding: 19px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+    }
+
+    .card-number {
+      display: inline-grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      margin-bottom: 13px;
+      color: var(--brand);
+      background: var(--brand-faded);
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .card p { color: var(--muted); font-size: 14px; }
+    .card strong { color: #24537f; }
+
+    .north-star {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 17px;
+    }
+
+    .north-star div {
+      padding: 13px;
+      color: #24537f;
+      background: #f6f9fd;
+      border: 1px dashed #b9cee2;
+      border-radius: 11px;
+      font-size: 13px;
+      font-weight: 760;
+      text-align: center;
+    }
+
+    .layer-map {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .layer {
+      position: relative;
+      padding: 21px 18px 19px;
+      background: #f8fbff;
+      border: 1px solid #d8e7f6;
+      border-radius: 14px;
+    }
+
+    .layer:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      top: 50%;
+      right: -20px;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      color: var(--brand);
+      background: #fff;
+      border: 1px solid #d8e7f6;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      font-weight: 800;
+    }
+
+    .layer b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--brand);
+      font-size: 11px;
+      letter-spacing: .08em;
+    }
+
+    .layer p { color: var(--muted); font-size: 13px; }
+    .layer em {
+      display: inline-block;
+      margin-top: 12px;
+      color: #24537f;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 760;
+    }
+
+    .deliverables {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .deliverable {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      padding: 16px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .deliverable > span {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      color: #fff;
+      background: var(--brand);
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .deliverable p { margin-top: 2px; color: var(--muted); font-size: 13px; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 11px;
+      margin-bottom: 18px;
+    }
+
+    .metric {
+      padding: 18px;
+      background: #f8fbff;
+      border: 1px solid #d8e7f6;
+      border-radius: 13px;
+    }
+
+    .metric .value {
+      display: block;
+      color: #145f9d;
+      font-size: 29px;
+      line-height: 1.1;
+      font-weight: 850;
+      letter-spacing: -.02em;
+    }
+
+    .metric .label { display: block; margin-top: 7px; font-weight: 760; }
+    .metric .detail { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+
+    .evidence-note {
+      margin: 13px 0 0;
+      padding: 12px 14px;
+      color: var(--muted);
+      background: #f7f8fa;
+      border-left: 3px solid var(--subtle);
+      border-radius: 7px;
+      font-size: 12px;
+    }
+
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+    table { width: 100%; min-width: 840px; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 13px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid #e6ebf1; }
+    th { color: #24537f; background: #f6f9fd; font-size: 12px; }
+    tbody tr:last-child td { border-bottom: 0; }
+    td { color: var(--muted); }
+    td strong { color: var(--ink); }
+
+    .status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .done { color: var(--success); background: var(--success-bg); }
+    .doing { color: var(--warning); background: var(--warning-bg); }
+    .verify { color: #6e63a8; background: #f2efff; }
+    .risk { color: var(--danger); background: var(--danger-bg); }
+
+    .maturity {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .maturity-item { padding: 14px; background: #fff; border: 1px solid var(--line); border-radius: 11px; }
+    .maturity-item span { display: block; margin-bottom: 8px; color: #24537f; font-size: 12px; font-weight: 780; }
+    .bar { height: 7px; overflow: hidden; background: #e8eef5; border-radius: 99px; }
+    .bar i { display: block; height: 100%; background: linear-gradient(90deg, #69b1f4, var(--brand)); border-radius: inherit; }
+    .maturity-item small { display: block; margin-top: 7px; color: var(--subtle); }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .phase {
+      position: relative;
+      padding: 20px;
+      background: #f8fbff;
+      border: 1px solid #d8e7f6;
+      border-top: 4px solid var(--brand);
+      border-radius: 13px;
+    }
+
+    .phase-time {
+      margin-bottom: 8px;
+      color: var(--brand);
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .08em;
+    }
+
+    .phase li { color: var(--muted); font-size: 13px; }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 9px;
+      margin-top: 15px;
+    }
+
+    .kpi-grid div {
+      padding: 12px;
+      background: #fff;
+      border: 1px dashed #b9cee2;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .kpi-grid strong { display: block; color: #24537f; font-size: 13px; }
+    .kpi-grid span { color: var(--subtle); font-size: 11px; }
+
+    .review-list { display: grid; gap: 11px; }
+    .review {
+      display: grid;
+      grid-template-columns: 160px 1fr 1fr;
+      gap: 16px;
+      padding: 17px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .review-title { color: #24537f; font-weight: 800; }
+    .review h4 { margin: 0 0 4px; color: var(--subtle); font-size: 11px; letter-spacing: .08em; }
+    .review p { color: var(--muted); font-size: 13px; }
+
+    .support-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .support {
+      padding: 19px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+    }
+
+    .support small { color: var(--brand); font-size: 11px; font-weight: 850; letter-spacing: .08em; }
+    .support strong { display: block; margin: 7px 0 5px; color: #24537f; font-size: 16px; }
+    .support p { color: var(--muted); font-size: 13px; }
+
+    .talk {
+      margin-top: 18px;
+      border: 1px solid #9ccbf8;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .talk summary {
+      padding: 13px 16px;
+      color: #14588f;
+      background: var(--brand-faded);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .talk p { padding: 15px 16px; color: var(--muted); font-size: 14px; }
+
+    .source-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .source {
+      padding: 15px;
+      background: #f7f8fa;
+      border-radius: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .source strong { display: block; margin-bottom: 4px; color: var(--ink); }
+
+    footer {
+      margin-top: 20px;
+      padding: 23px 28px;
+      color: rgba(255,255,255,.82);
+      background: var(--poster);
+      border-radius: 16px;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .five-minute .detail-long,
+    .five-minute .speaker-long { display: none !important; }
+
+    @media (max-width: 900px) {
+      .hero { padding: 34px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 28px; margin-top: 45px; }
+      .hero-path { grid-template-columns: repeat(4, 1fr); }
+      .section-head { grid-template-columns: 1fr; gap: 10px; }
+      .logic-grid, .work-grid { grid-template-columns: repeat(2, 1fr); }
+      .layer-map { grid-template-columns: repeat(2, 1fr); }
+      .layer:nth-child(2)::after { display: none; }
+      .metrics, .maturity { grid-template-columns: repeat(2, 1fr); }
+      .timeline { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .page { width: min(100% - 20px, 1180px); margin-top: 10px; }
+      .hero { min-height: 0; padding: 27px 20px; border-radius: 19px; }
+      .hero-top { align-items: flex-start; }
+      .hero-actions { justify-content: flex-end; }
+      .hero-button { padding: 7px 9px; font-size: 11px; }
+      .hero h1 { font-size: 38px; }
+      .hero-lead { font-size: 15px; }
+      .hero-path { grid-template-columns: 1fr 1fr; }
+      .hero-path span { min-height: 64px; font-size: 12px; }
+      .hero-meta { margin-top: 30px; }
+      .section { padding: 24px 18px; }
+      .summary, .logic-grid, .work-grid, .support-grid, .deliverables,
+      .source-grid, .layer-map { grid-template-columns: 1fr; }
+      .layer::after { display: none !important; }
+      .north-star { grid-template-columns: 1fr 1fr; }
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .metric .value { font-size: 23px; }
+      .review { grid-template-columns: 1fr; gap: 9px; }
+      .kpi-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .gate, .nav, .hero-actions { display: none !important; }
+      .page { width: 100%; margin: 0; }
+      .hero, .section, footer { box-shadow: none; break-inside: avoid; }
+      .section { page-break-inside: avoid; }
+      .talk { display: none; }
+    }
+  </style>
+</head>
+<body class="locked">
+  <section class="gate" id="gate" aria-label="访问验证">
+    <div class="gate-card">
+      <div class="gate-mark">O</div>
+      <h1>OAP 汇报框架</h1>
+      <p>内部规划材料，请输入访问密码后查看。</p>
+      <form class="gate-form" id="gate-form">
+        <label for="password">访问密码</label>
+        <input id="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="请输入密码" autofocus>
+        <button type="submit">进入报告</button>
+        <p class="gate-error" id="gate-error" role="alert"></p>
+      </form>
+    </div>
+  </section>
+
+  <main class="page" id="page">
+    <header class="hero">
+      <div class="hero-top">
+        <p class="eyebrow">Yingmi AI Open Platform</p>
+        <div class="hero-actions">
+          <button class="hero-button" type="button" id="mode-button">切换 5 分钟版</button>
+          <button class="hero-button" type="button" onclick="window.print()">打印 / 导出 PDF</button>
+        </div>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <h1>OAP 汇报框架</h1>
+          <p class="hero-lead">
+            核心不是汇报“做了多少接口”，而是回答：为什么必须做成平台、平台如何创造业务结果、
+            当前距离“可经营”还有多远，以及需要管理层拍板什么。
+          </p>
+        </div>
+        <div class="hero-path" aria-label="汇报主线">
+          <span><b>01</b>为什么做</span>
+          <span><b>02</b>要做什么</span>
+          <span><b>03</b>进展成效</span>
+          <span><b>04</b>下一步</span>
+          <span><b>05</b>问题回顾</span>
+          <span><b>06</b>需要支持</span>
+        </div>
+      </div>
+      <div class="hero-meta">
+        <span>版本：管理层汇报建议稿 v1.0</span>
+        <span>日期：2026-07-28</span>
+        <span>量化基线：截至 2026-07-21</span>
+        <span>密级：内部使用</span>
+      </div>
+    </header>
+
+    <nav class="nav" aria-label="报告目录">
+      <a href="#summary">一页结论</a>
+      <a href="#why">为什么做</a>
+      <a href="#what">要做什么</a>
+      <a href="#progress">进展与成效</a>
+      <a href="#next">下一步规划</a>
+      <a href="#review">问题回顾</a>
+      <a href="#support">需要支持</a>
+      <a href="#sources">来源边界</a>
+    </nav>
+
+    <section class="section" id="summary">
+      <div class="section-head">
+        <div>
+          <span class="section-index">00 / EXECUTIVE SUMMARY</span>
+          <h2>先用一页说清：OAP 正从“接口项目”进入“经营平台”阶段</h2>
+        </div>
+        <p class="section-ask">管理层只需先听清三件事：平台价值是否成立、当前卡在哪里、这次需要什么决策。</p>
+      </div>
+      <div class="summary">
+        <div class="summary-main">
+          <strong>底座和规模已形成，但“能力—场景—渠道—商业结果”还没有完全闭环。</strong>
+          <p>
+            当前最重要的不是继续堆接口，而是治理好 69 条正式能力，做出可复用的 Skills / Agents，
+            跑通真实用户和机构场景，并让身份、授权、计量、审计、验收和收入归因进入同一套平台。
+          </p>
+        </div>
+        <div class="summary-side">
+          <small>本次建议拍板</small>
+          <strong>以“有效场景与经营结果”为主验收；统一治理标准；聚焦渠道；给关键工作流唯一 Owner。</strong>
+        </div>
+      </div>
+      <details class="talk">
+        <summary>建议开场话术（30 秒）</summary>
+        <p>OAP 已经不是一个从零开始的接口项目。我们已有能力资产、用户和调用规模，但距离真正的平台化经营，还差统一治理、场景交付和商业闭环。今天重点汇报三件事：为什么下一阶段必须从“开放接口”升级为“经营平台”，当前做到了什么、还卡在哪里，以及需要管理层拍板的四项支持。</p>
+      </details>
+    </section>
+
+    <section class="section" id="why">
+      <div class="section-head">
+        <div>
+          <span class="section-index">01 / WHY NOW</span>
+          <h2>为什么做：把盈米专业能力变成 AI 时代可分发、可交付、可经营的资产</h2>
+        </div>
+        <p class="section-ask">这一章不讲功能，回答“不做会失去什么、做成会得到什么”。</p>
+      </div>
+      <div class="logic-grid">
+        <article class="card">
+          <span class="card-number">01</span>
+          <h3>AI 入口正在重构用户路径</h3>
+          <p>用户先在大模型、智能体和工作助手中提出任务，再寻找可信金融能力。只守住 App 入口，能力难以进入新的决策链路。</p>
+        </article>
+        <article class="card">
+          <span class="card-number">02</span>
+          <h3>专业能力仍是“系统孤岛”</h3>
+          <p>数据、投研、投顾、内容和交易运营能力分散在接口、系统与人工 SOP 中，外部 AI 无法低成本理解和稳定调用。</p>
+        </article>
+        <article class="card">
+          <span class="card-number">03</span>
+          <h3>单点项目无法形成复利</h3>
+          <p>每个渠道、机构和 Agent 都重复对接，会不断复制权限、文档、合规、验收和运维成本，交付速度越来越慢。</p>
+        </article>
+        <article class="card">
+          <span class="card-number">04</span>
+          <h3>金融 AI 必须有统一治理</h3>
+          <p>客户数据、投顾建议、内容发布与交易动作不能依赖通用 Key 和口头边界，必须可授权、可撤回、可审计、可追责。</p>
+        </article>
+        <article class="card">
+          <span class="card-number">05</span>
+          <h3>把能力供给变成业务交付</h3>
+          <p>市场买的不是 API，而是基金诊断、财富规划、内容生产、客服排障等可验收结果。Skills / Agents 是从工具到结果的桥。</p>
+        </article>
+        <article class="card">
+          <span class="card-number">06</span>
+          <h3>建立第二增长与商业化曲线</h3>
+          <p>通过平台渠道分发、机构套餐、用量计费与共建服务，让已有能力从内部成本项转化为可复用的产品资产。</p>
+        </article>
+      </div>
+      <div class="north-star" aria-label="平台目标">
+        <div>能力可发现</div>
+        <div>接入可授权</div>
+        <div>交付可验收</div>
+        <div>使用可经营</div>
+      </div>
+      <details class="talk">
+        <summary>这一章的一句话</summary>
+        <p>OAP 的战略价值，不是多一个官网或多一批接口，而是让盈米多年沉淀的金融专业能力，能够进入新的 AI 入口，并以统一、合规、可计量的方式规模化交付。</p>
+      </details>
+    </section>
+
+    <section class="section" id="what">
+      <div class="section-head">
+        <div>
+          <span class="section-index">02 / WHAT TO BUILD</span>
+          <h2>要做什么：一套能力资产化、场景化交付与企业级治理平台</h2>
+        </div>
+        <p class="section-ask">不要把 OAP 讲成 MCP 官网；要讲清四层如何连成一条业务链。</p>
+      </div>
+      <div class="layer-map">
+        <article class="layer">
+          <b>L1 · 能力资产层</b>
+          <h3>MCP / OpenAPI</h3>
+          <p>把金融数据、投研、投顾、内容和业务系统能力标准化，形成 AI 可理解的工具。</p>
+          <em>解决：能不能接</em>
+        </article>
+        <article class="layer">
+          <b>L2 · 场景交付层</b>
+          <h3>Skills</h3>
+          <p>封装分析框架、业务 SOP、质检规则和交付格式，让能力能稳定完成具体任务。</p>
+          <em>解决：能不能用好</em>
+        </article>
+        <article class="layer">
+          <b>L3 · 任务服务层</b>
+          <h3>Agents / AI 小顾</h3>
+          <p>理解目标、调用工具、组合技能、人工复核并完成任务闭环，嵌入真实业务场景。</p>
+          <em>解决：能不能交付</em>
+        </article>
+        <article class="layer">
+          <b>L4 · 治理经营层</b>
+          <h3>STARGATE + OAP</h3>
+          <p>统一身份、权限、发布、评测、计量、审计、渠道、套餐与生命周期。</p>
+          <em>解决：能不能规模化经营</em>
+        </article>
+      </div>
+      <div class="deliverables detail-long">
+        <article class="deliverable"><span>1</span><div><strong>统一能力台账</strong><p>MCP、Skill、Agent、渠道、Owner、风险和状态同一套资产口径。</p></div></article>
+        <article class="deliverable"><span>2</span><div><strong>统一接入与授权</strong><p>API Key、OAuth、Scope、Service Group、配额和有效期可配置。</p></div></article>
+        <article class="deliverable"><span>3</span><div><strong>统一发布与评测</strong><p>登记、评审、测试、灰度、发布、监控、下线都有闸口和证据。</p></div></article>
+        <article class="deliverable"><span>4</span><div><strong>统一场景产品层</strong><p>官网发现、AI 实验室试用、AI 小顾承接、机构方案可组合。</p></div></article>
+        <article class="deliverable"><span>5</span><div><strong>统一运营看板</strong><p>从申请、激活、调用到有效场景、留资、交易、收入全漏斗。</p></div></article>
+        <article class="deliverable"><span>6</span><div><strong>统一商业化包装</strong><p>开发者基础包、机构投顾包、内容运营包与共建服务。</p></div></article>
+      </div>
+      <details class="talk">
+        <summary>这一章的一句话</summary>
+        <p>底层 MCP 提供标准工具，中层 Skills 把工具变成稳定方法，上层 Agents 完成端到端任务，STARGATE 与 OAP 则负责把身份、权限、质量、渠道和商业结果统一治理。</p>
+      </details>
+    </section>
+
+    <section class="section" id="progress">
+      <div class="section-head">
+        <div>
+          <span class="section-index">03 / PROGRESS &amp; IMPACT</span>
+          <h2>做了什么、做得怎样、成效：底座和规模已形成，闭环成熟度仍不均衡</h2>
+        </div>
+        <p class="section-ask">成效分三层讲：能力资产、平台使用、业务结果。前两层有基线，第三层仍需补齐。</p>
+      </div>
+      <div class="metrics" aria-label="平台基线指标">
+        <article class="metric"><span class="value">69</span><span class="label">五大正式能力</span><span class="detail">数据 41｜投顾 12｜投研 7｜内容 5｜通用 4</span></article>
+        <article class="metric"><span class="value">1,849</span><span class="label">底层 API 路由</span><span class="detail">其中 1,578 条未分组；不能等同于对外能力数</span></article>
+        <article class="metric"><span class="value">7,443</span><span class="label">平台总用户</span><span class="detail">已使用用户 4,486；不等同于 MAU</span></article>
+        <article class="metric"><span class="value">902.9 万</span><span class="label">累计调用</span><span class="detail">日均 20,521 次；需拆成功、外部和生产流量</span></article>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>工作流</th><th>当前状态</th><th>已确认产出</th><th>怎样 / 成效判断</th><th>下一验收点</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>能力资产</strong></td>
+              <td><span class="status done">基线建立</span></td>
+              <td>形成 1,849 条路由、34 个服务分组、69 条正式能力的可追溯台账。</td>
+              <td>能力规模已形成；正式能力口径与底层资产口径已分开。</td>
+              <td>69 条能力补齐 Owner、分类、风险、渠道、授权和发布状态。</td>
+            </tr>
+            <tr>
+              <td><strong>治理控制面</strong></td>
+              <td><span class="status doing">持续完善</span></td>
+              <td>STARGATE 已覆盖 Key、分组、路由、Channel、Scope、OAuth、发布与审计等核心对象。</td>
+              <td>平台“管得住”的骨架存在；当前映射仍需登录后台复核。</td>
+              <td>完成 OpenChannel + Scope/OAuth + 发布生效的当前清单。</td>
+            </tr>
+            <tr>
+              <td><strong>产品与场景层</strong></td>
+              <td><span class="status verify">待当期复核</span></td>
+              <td>OAP v2 / AI 实验室已形成 PRD 与原型方向，围绕账号、积分、MCP / Skills 上架推进。</td>
+              <td>方向已成形；缺当前排期、版本状态和真实创作者验收数据。</td>
+              <td>5 个创作者跑通“创建—试用—评测—发布—复用”。</td>
+            </tr>
+            <tr>
+              <td><strong>渠道分发</strong></td>
+              <td><span class="status verify">待当期复核</span></td>
+              <td>历史记录显示千问、微信等渠道已开展对接与送审准备。</td>
+              <td>技术接入不等于有效获客；尚缺真实用户漏斗与来源归因。</td>
+              <td>每个主渠道完成 1 个 L2 端到端场景并进入统一看板。</td>
+            </tr>
+            <tr>
+              <td><strong>机构商业化</strong></td>
+              <td><span class="status doing">机会验证</span></td>
+              <td>基金诊断等场景已进入机构需求与方案评估，形成可模块化交付方向。</td>
+              <td>说明市场需求存在；尚不能用机会数量替代合同、收入或验收成效。</td>
+              <td>选 1 个机构样板，明确范围、SLA、验收矩阵、成本与转付费路径。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="maturity detail-long" aria-label="四层成熟度判断">
+        <div class="maturity-item"><span>能力资产</span><div class="bar"><i style="width:72%"></i></div><small>规模已形成，治理待补</small></div>
+        <div class="maturity-item"><span>治理控制</span><div class="bar"><i style="width:58%"></i></div><small>对象齐全，映射待核验</small></div>
+        <div class="maturity-item"><span>场景交付</span><div class="bar"><i style="width:38%"></i></div><small>方案成形，验收不足</small></div>
+        <div class="maturity-item"><span>经营闭环</span><div class="bar"><i style="width:25%"></i></div><small>机会存在，归因缺失</small></div>
+      </div>
+      <p class="evidence-note">成熟度为汇报判断图，不是后台统计值。量化指标来自 2026-07-21 台账；OAP v2、渠道和机构进展需要负责人以当期证据刷新后再用于正式汇报。</p>
+      <details class="talk">
+        <summary>这一章的一句话</summary>
+        <p>我们已经证明“能力能接、平台有人用”，下一阶段要证明“场景能稳定交付、渠道能形成有效用户、机构能形成可验收收入”。</p>
+      </details>
+    </section>
+
+    <section class="section" id="next">
+      <div class="section-head">
+        <div>
+          <span class="section-index">04 / NEXT ROADMAP</span>
+          <h2>下一步规划：先补治理和样板闭环，再做渠道与商业规模</h2>
+        </div>
+        <p class="section-ask">路线图按可验收结果排，不按功能清单排；以下为建议规划，需各 Owner 确认。</p>
+      </div>
+      <div class="timeline">
+        <article class="phase">
+          <div class="phase-time">0—30 天｜锁基线</div>
+          <h3>统一资产、指标与 MVP</h3>
+          <ul>
+            <li>完成 69 条正式能力治理清单</li>
+            <li>统一用户、激活、MAU、调用、有效应用口径</li>
+            <li>冻结身份、评测、发布、计量最小闭环</li>
+            <li>确定种子场景、主渠道与唯一 Owner</li>
+          </ul>
+        </article>
+        <article class="phase">
+          <div class="phase-time">30—90 天｜做闭环</div>
+          <h3>跑通场景、渠道与机构样板</h3>
+          <ul>
+            <li>≥20 个高质量种子应用，分层统计创建、发布、有效</li>
+            <li>2 个主渠道各完成 1 个 L2 场景</li>
+            <li>1 个机构样板完成方案、SLA 与验收矩阵</li>
+            <li>运营看板能看成功率、留存、漏斗与成本</li>
+          </ul>
+        </article>
+        <article class="phase">
+          <div class="phase-time">Q4｜做规模</div>
+          <h3>验证增长与商业化模型</h3>
+          <ul>
+            <li>至少 1 条路径达到 L3：有完整漏斗和业务结果</li>
+            <li>验证订阅、用量、共建三类收费模式</li>
+            <li>建立长尾清理、质量评级与合规抽检</li>
+            <li>用场景使用数据反哺能力与产品优先级</li>
+          </ul>
+        </article>
+      </div>
+      <div class="kpi-grid detail-long">
+        <div><strong>能力质量</strong><span>成功率 / 延迟 / 缺口</span></div>
+        <div><strong>有效使用</strong><span>激活 / MAU / 留存</span></div>
+        <div><strong>有效场景</strong><span>完成率 / 采纳率</span></div>
+        <div><strong>渠道经营</strong><span>获客 / 留资 / 转化</span></div>
+        <div><strong>商业结果</strong><span>试点 / 收入 / 续费</span></div>
+      </div>
+      <details class="talk">
+        <summary>这一章的一句话</summary>
+        <p>未来 90 天不以“上线了多少功能”为主目标，而以“治理好多少正式能力、跑通多少有效场景、形成几条可归因的渠道和机构闭环”为验收。</p>
+      </details>
+    </section>
+
+    <section class="section" id="review">
+      <div class="section-head">
+        <div>
+          <span class="section-index">05 / RETROSPECTIVE</span>
+          <h2>问题回顾：当前不是缺能力，而是缺统一口径、闭环验收和经营责任</h2>
+        </div>
+        <p class="section-ask">复盘要落到“症状—根因—改法”，避免只列风险或追责。</p>
+      </div>
+      <div class="review-list">
+        <article class="review">
+          <div class="review-title">01｜数量代替结果</div>
+          <div><h4>表现</h4><p>底层路由、应用创建数、技术接入容易被当成对外能力和有效用户成效。</p></div>
+          <div><h4>改法</h4><p>统一“正式能力、有效应用、L2/L3 渠道、可验收收入”定义，数量分层统计。</p></div>
+        </article>
+        <article class="review">
+          <div class="review-title">02｜平台治理分散</div>
+          <div><h4>表现</h4><p>MCP、Skills、Agents、渠道和机构项目各自维护权限、发布与资产口径。</p></div>
+          <div><h4>改法</h4><p>STARGATE 与 OAP / AI 实验室使用同一资产 ID、Owner、权限、评测和审计规则。</p></div>
+        </article>
+        <article class="review">
+          <div class="review-title">03｜技术打通早于产品闭环</div>
+          <div><h4>表现</h4><p>渠道完成 API 接入后，真实用户是否能完成任务、是否留资与转化仍不可见。</p></div>
+          <div><h4>改法</h4><p>每个渠道必须用真实场景验收，并接入身份、来源、调用、结果和业务归因。</p></div>
+        </article>
+        <article class="review">
+          <div class="review-title">04｜商业化过度定制</div>
+          <div><h4>表现</h4><p>机构机会依赖单次方案与专项开发，难沉淀为复用产品和可预测成本。</p></div>
+          <div><h4>改法</h4><p>以标准场景包 + 配置项 + SLA + 验收矩阵交付，定制需求必须反哺标准资产。</p></div>
+        </article>
+        <article class="review detail-long">
+          <div class="review-title">05｜责任与数据断点</div>
+          <div><h4>表现</h4><p>部分工作流缺唯一 Owner、ETA 和当期证据，历史记录容易被沿用为当前状态。</p></div>
+          <div><h4>改法</h4><p>关键流唯一 Owner；周里程碑绑定证据链接；无当前数据就明确标“待复核”。</p></div>
+        </article>
+      </div>
+      <details class="talk">
+        <summary>这一章的一句话</summary>
+        <p>过去阶段完成了从 0 到 1 的能力开放，下一阶段要纠正“数量优先、治理分散、技术接入即成功”的惯性，转向以有效场景和经营结果为中心。</p>
+      </details>
+    </section>
+
+    <section class="section" id="support">
+      <div class="section-head">
+        <div>
+          <span class="section-index">06 / SUPPORT &amp; DECISIONS</span>
+          <h2>需要的支持：四项管理决策 + 两类协同资源</h2>
+        </div>
+        <p class="section-ask">支持必须具体到“谁拍板、拍什么、何时验收”，不能只写“希望加强协同”。</p>
+      </div>
+      <div class="support-grid">
+        <article class="support">
+          <small>DECISION 01</small>
+          <strong>确定平台主验收指标</strong>
+          <p>同意以有效应用、L2/L3 渠道、场景完成率、机构验收和收入归因为主验收，不以接口或创建数量替代。</p>
+        </article>
+        <article class="support">
+          <small>DECISION 02</small>
+          <strong>统一治理标准与控制面</strong>
+          <p>明确 STARGATE + OAP / AI 实验室共同承载身份、权限、发布、评测、计量、审计和生命周期。</p>
+        </article>
+        <article class="support">
+          <small>DECISION 03</small>
+          <strong>聚焦主渠道与样板场景</strong>
+          <p>管理层确定 2 个 Q3 主渠道、1 个备选渠道，以及 1 个终端场景与 1 个机构场景，避免资源摊薄。</p>
+        </article>
+        <article class="support">
+          <small>DECISION 04</small>
+          <strong>为关键工作流指定唯一 Owner</strong>
+          <p>能力治理、产品场景、渠道经营、机构商业化各设唯一结果负责人，并用周度里程碑验收。</p>
+        </article>
+        <article class="support detail-long">
+          <small>RESOURCE 01</small>
+          <strong>数据与技术协同</strong>
+          <p>研发、数据、运维配合完成 69 条能力当前映射、调用口径拆分、统一埋点、稳定性指标和经营看板。</p>
+        </article>
+        <article class="support detail-long">
+          <small>RESOURCE 02</small>
+          <strong>业务、合规与样板客户</strong>
+          <p>投顾、运营、合规、法务共同确定场景边界；商务提供 1 个可复盘的机构试点，且慢提供真实用户样本。</p>
+        </article>
+      </div>
+      <details class="talk" open>
+        <summary>建议收口话术（30 秒）</summary>
+        <p>这次需要的不是泛泛的资源投入，而是四个明确决策：主指标、统一治理、渠道聚焦和唯一 Owner。只要这四件事拍板，团队就能把现有能力资产转化为 90 天内可验收的场景、渠道与机构闭环。</p>
+      </details>
+    </section>
+
+    <section class="section" id="sources">
+      <div class="section-head">
+        <div>
+          <span class="section-index">07 / SOURCES &amp; BOUNDARIES</span>
+          <h2>来源与数据边界</h2>
+        </div>
+        <p class="section-ask">正式上会前，应由各 Owner 对当期状态、排期和商业结果做一次刷新确认。</p>
+      </div>
+      <div class="source-grid">
+        <div class="source"><strong>量化基线｜已确认</strong>《OAP-STARGATE 接口资产台账》，快照时间 2026-07-21：路由、服务分组、正式能力、用户与调用量。</div>
+        <div class="source"><strong>产品定位｜规划判断</strong>《盈米 AI 开放平台能力体系规划与治理方案》及《盈米 AI 开放平台 v0.1 PRD》：MCP / Skills / Agents / 治理经营框架。</div>
+        <div class="source"><strong>历史里程碑｜已确认但需保留日期</strong>2025 年 OAP 项目周报、阶段报告：立项、版本能力与早期运营口径；不可与 2026 快照直接同比。</div>
+        <div class="source"><strong>待刷新｜不作为当前成效</strong>OAP v2 / AI 实验室排期、千问/微信上线状态、MAU、有效应用、渠道漏斗、机构合同/收入/验收。</div>
+      </div>
+      <p class="evidence-note">安全说明：本页面为静态网页，密码门禁属于前端访问提示，不等同于服务端鉴权。页面未包含 API Key、密钥、客户名单、调用明细或内部系统地址。</p>
+    </section>
+
+    <footer>盈米基金｜OAP 管理层汇报框架｜2026-07-28｜内部使用</footer>
+  </main>
+
+  <script>
+    const gate = document.getElementById("gate");
+    const gateForm = document.getElementById("gate-form");
+    const passwordInput = document.getElementById("password");
+    const gateError = document.getElementById("gate-error");
+    const modeButton = document.getElementById("mode-button");
+    const expectedHash = "158a323a7ba44870f23d96f1516dd70aa48e9a72db4ebb026b0a89e212a208ab";
+
+    async function sha256(value) {
+      const data = new TextEncoder().encode(value);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(hashBuffer))
+        .map(byte => byte.toString(16).padStart(2, "0"))
+        .join("");
+    }
+
+    function unlock() {
+      gate.hidden = true;
+      document.body.classList.remove("locked");
+      sessionStorage.setItem("oap-report-unlocked", "1");
+    }
+
+    if (sessionStorage.getItem("oap-report-unlocked") === "1") unlock();
+
+    gateForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const submittedHash = await sha256(passwordInput.value);
+      if (submittedHash === expectedHash) {
+        gateError.textContent = "";
+        unlock();
+      } else {
+        gateError.textContent = "密码不正确，请重试。";
+        passwordInput.value = "";
+        passwordInput.focus();
+      }
+    });
+
+    modeButton.addEventListener("click", () => {
+      const enabled = document.body.classList.toggle("five-minute");
+      modeButton.textContent = enabled ? "切换完整版" : "切换 5 分钟版";
+    });
+  </script>
+</body>
+</html>
