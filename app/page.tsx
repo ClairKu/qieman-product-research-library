@@ -151,6 +151,13 @@ const pages: PageItem[] = [
     note: "UV / PV / 点击 / 来源 · 密码 2026",
   },
   {
+    title: "盈米 AI 开放平台｜阶段复盘与 2026 下半年经营计划",
+    href: "/pages/oap/oap-reporting-framework-2026-07-28.html",
+    kind: "本站生产页",
+    topic: "AI 开放平台",
+    note: "管理层汇报成稿 · 密码 2026 · 2026-07-30",
+  },
+  {
     title: "王嘉烨｜2026下半年 AI开放平台目标计划与里程碑",
     href: "https://yingmi.feishu.cn/docx/QCTAd6QDTo6iKVxdA3LceZ4rnrf",
     kind: "飞书文档",
