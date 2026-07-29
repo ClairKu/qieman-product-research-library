@@ -241,20 +241,7 @@
   </style>
 </head>
 <body>
-  <section class="gate" id="gate" aria-labelledby="gate-title">
-    <div class="gate-card">
-      <div class="gate-mark" aria-hidden="true">且</div>
-      <h1 id="gate-title">策略定位图</h1>
-      <p>请输入访问密码查看晨星风险与3年期评分二维图。</p>
-      <form class="gate-form" id="gate-form">
-        <input id="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="访问密码" aria-label="访问密码" required>
-        <button type="submit">进入</button>
-      </form>
-      <p class="gate-error" id="gate-error" role="alert" aria-live="polite"></p>
-    </div>
-  </section>
-
-  <main id="report" hidden>
+  <main id="report">
     <header class="hero">
       <div class="hero-inner">
         <p class="eyebrow">Qieman · Four Money Strategy Map</p>
@@ -317,7 +304,7 @@
     </section>
   </main>
 
-  <footer id="footer" hidden>
+  <footer id="footer">
     <div class="footer-inner">
       <p>来源：Clair 提供的《公募策略体系》表</p>
       <p>整理更新：2026-07-27 · 内部研究使用</p>
@@ -326,38 +313,6 @@
 
   <script>
     (() => {
-      const gate = document.getElementById("gate");
-      const report = document.getElementById("report");
-      const footer = document.getElementById("footer");
-      const form = document.getElementById("gate-form");
-      const password = document.getElementById("password");
-      const error = document.getElementById("gate-error");
-
-      function unlock() {
-        gate.hidden = true;
-        report.hidden = false;
-        footer.hidden = false;
-        sessionStorage.setItem("qieman-risk-map-unlocked", "1");
-        requestAnimationFrame(drawChart);
-      }
-
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        if (password.value === "2026") {
-          error.textContent = "";
-          unlock();
-        } else {
-          error.textContent = "密码不正确，请重试。";
-          password.select();
-        }
-      });
-
-      if (sessionStorage.getItem("qieman-risk-map-unlocked") === "1") {
-        unlock();
-      } else {
-        password.focus();
-      }
-
       const data = [
         { name: "花好月圆", group: "稳钱", risk: 3, score: 82, dx: 10, dy: -12, anchor: "start" },
         { name: "债基优等生", group: "稳钱", risk: 6, score: 66, dx: 10, dy: 20, anchor: "start" },
@@ -457,6 +412,7 @@
           svg.appendChild(group);
         });
       }
+      requestAnimationFrame(drawChart);
     })();
   </script>
 </body>

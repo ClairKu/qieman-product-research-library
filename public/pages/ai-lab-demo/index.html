@@ -125,19 +125,7 @@
   </style>
 </head>
 <body>
-  <section class="gate" id="gate" aria-label="访问验证">
-    <div class="gate-card" id="gateCard">
-      <img class="gate-brand" src="assets/yingmi-logo-white.png" alt="盈米基金">
-      <span class="gate-kicker">SERVICE COMPOSER · V3</span>
-      <h1>一项服务，很多种专业组件</h1>
-      <p>AI 根据金融场景自动选择官方可视化组件，用户用自然语言调整、重排并保存为自己的长期服务。</p>
-      <form class="gate-form" id="gateForm">
-        <label class="sr-only" for="password">访问密码</label><input id="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="请输入访问密码"><button type="submit">进入 Demo</button>
-      </form><p class="gate-error" id="gateError" role="alert"></p>
-    </div>
-  </section>
-
-  <main class="experience" id="experience" aria-hidden="true">
+  <main class="experience" id="experience" aria-hidden="false">
     <header class="experience-head">
       <div class="brand"><img src="assets/yingmi-logo.png" alt="盈米基金"><span class="brand-divider"></span><span><b>AI 实验室</b><small>OFFICIAL COMPONENTS × PERSONAL SERVICE</small></span></div>
       <span class="version">服务组件编排 Demo · 2026.07</span>
@@ -348,11 +336,6 @@
   </main>
 
   <script>
-    const gate=document.getElementById('gate'),experience=document.getElementById('experience'),gateForm=document.getElementById('gateForm'),password=document.getElementById('password'),gateError=document.getElementById('gateError'),gateCard=document.getElementById('gateCard');
-    function unlock(){gate.classList.add('hidden');experience.setAttribute('aria-hidden','false');sessionStorage.setItem('yingmi-ai-lab-v3','unlocked')}
-    if(sessionStorage.getItem('yingmi-ai-lab-v3')==='unlocked')unlock();
-    gateForm.addEventListener('submit',e=>{e.preventDefault();if(password.value==='2026')unlock();else{gateError.textContent='密码不正确，请重新输入';gateCard.classList.remove('shake');void gateCard.offsetWidth;gateCard.classList.add('shake');password.select()}});
-
     const screens=[...document.querySelectorAll('.screen')],menuLayer=document.getElementById('menuLayer'),composeSheet=document.getElementById('composeSheet'),publishSheet=document.getElementById('publishSheet');
     function showScreen(id){screens.forEach(s=>s.classList.toggle('active',s.id===id));menuLayer.classList.remove('show');document.querySelectorAll('[data-scenario]').forEach(b=>b.classList.toggle('active',b.dataset.scenario===id.replace('Screen','')))}
     document.addEventListener('click',e=>{const target=e.target.closest('[data-screen]');if(target)showScreen(target.dataset.screen)});

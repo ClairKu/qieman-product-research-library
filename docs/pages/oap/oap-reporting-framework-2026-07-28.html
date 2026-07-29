@@ -1050,21 +1050,7 @@
     }
   </style>
 </head>
-<body class="locked">
-  <section class="gate" id="gate" aria-label="访问验证">
-    <div class="gate-card">
-      <div class="gate-mark">O</div>
-      <h1>OAP 汇报框架</h1>
-      <p>内部规划材料，请输入访问密码后查看。</p>
-      <form class="gate-form" id="gate-form">
-        <label for="password">访问密码</label>
-        <input id="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="请输入密码" autofocus>
-        <button type="submit">进入报告</button>
-        <p class="gate-error" id="gate-error" role="alert"></p>
-      </form>
-    </div>
-  </section>
-
+<body>
   <main class="page" id="page">
     <header class="hero">
       <div class="hero-top">
@@ -1560,49 +1546,14 @@
         <div class="source"><strong>案例与商业｜内部方案材料</strong>MCP 解决方案案例库、山西证券投标审查、火富牛 MCP 指南、金融展调研与历史收费标准。</div>
         <div class="source"><strong>未来规划｜目标，不是成效</strong>《AI 小顾—AI 实验室—AI 开放平台产品方案》及 OKR：统一服务模型、MVP 阶段与年末目标。</div>
       </div>
-      <p class="evidence-note">安全说明：页面不含 API Key、客户个人信息、调用明细和内部系统地址。静态页面密码仅为前端访问提示，不等同于服务端鉴权；公开仓库的源文件仍可被查看。</p>
+      <p class="evidence-note">安全说明：页面不含 API Key、客户个人信息、调用明细和内部系统地址。报告现由工作台统一访问；公开仓库中的静态页面仍可被直接查看。</p>
     </section>
 
     <footer>盈米基金｜OAP：从开放能力到第二增长曲线｜2026-07-28｜内部使用</footer>
   </main>
 
   <script>
-    const gate = document.getElementById("gate");
-    const gateForm = document.getElementById("gate-form");
-    const passwordInput = document.getElementById("password");
-    const gateError = document.getElementById("gate-error");
     const modeButton = document.getElementById("mode-button");
-    const expectedHash = "158a323a7ba44870f23d96f1516dd70aa48e9a72db4ebb026b0a89e212a208ab";
-
-    async function sha256(value) {
-      const data = new TextEncoder().encode(value);
-      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-      return Array.from(new Uint8Array(hashBuffer))
-        .map(byte => byte.toString(16).padStart(2, "0"))
-        .join("");
-    }
-
-    function unlock() {
-      gate.hidden = true;
-      document.body.classList.remove("locked");
-      sessionStorage.setItem("oap-report-unlocked", "1");
-    }
-
-    if (sessionStorage.getItem("oap-report-unlocked") === "1") unlock();
-
-    gateForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const submittedHash = await sha256(passwordInput.value);
-      if (submittedHash === expectedHash) {
-        gateError.textContent = "";
-        unlock();
-      } else {
-        gateError.textContent = "密码不正确，请重试。";
-        passwordInput.value = "";
-        passwordInput.focus();
-      }
-    });
-
     modeButton.addEventListener("click", () => {
       const enabled = document.body.classList.toggle("five-minute");
       modeButton.textContent = enabled ? "切换完整版" : "切换 5 分钟版";

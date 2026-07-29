@@ -173,20 +173,7 @@ td{padding:13px 10px;border-bottom:1px solid var(--border-light);color:var(--tex
 </style>
 </head>
 <body>
-<div class="access-gate" id="accessGate">
-  <form class="gate-card" id="gateForm" autocomplete="off">
-    <div class="gate-mark">🔐</div>
-    <h1>财务规划报告改稿建议</h1>
-    <p>请输入访问口令查看内部评审页面。</p>
-    <div class="gate-row">
-      <input id="gatePassword" type="password" inputmode="numeric" placeholder="访问口令" aria-label="访问口令"/>
-      <button class="primary-btn" type="submit">进入</button>
-    </div>
-    <p class="gate-error" id="gateError" role="alert"></p>
-  </form>
-</div>
-
-<div class="container" id="reportContent" hidden>
+<div class="container" id="reportContent">
   <div class="report-header">
     <div class="brand-lockup">
       <img class="brand-icon" src="https://asset2.qieman.com/images/ecfb2f6c-76db-4f82-b06a-5787ae8d4e16.png" alt="且慢" width="40" height="40"/>
@@ -342,28 +329,10 @@ td{padding:13px 10px;border-bottom:1px solid var(--border-light);color:var(--tex
   <div class="disclaimer" id="disclaimer">
     <p><b>评审边界：</b>本页仅基于用户提供的局部截图进行产品表达、客户沟通与合规呈现评审。页面中的 3.85% 来自该截图；没有获得底层家庭数据和计算模型，因此不对该数值的真实性或准确性背书，也不构成投资建议、投资承诺或收益保证。</p>
   </div>
-  <div class="footer" id="footer">Powered by 盈米且慢 · 评审日期 2026-07-27 · 访问口令 2026</div>
+  <div class="footer" id="footer">Powered by 盈米且慢 · 评审日期 2026-07-27 · 工作台统一访问</div>
 </div>
 
 <script>
-const gate=document.getElementById('accessGate');
-const content=document.getElementById('reportContent');
-const gateForm=document.getElementById('gateForm');
-const gatePassword=document.getElementById('gatePassword');
-const gateError=document.getElementById('gateError');
-function unlock(){
-  gate.hidden=true;
-  content.hidden=false;
-  sessionStorage.setItem('fp-report-review-access','granted');
-  window.scrollTo(0,0);
-}
-if(sessionStorage.getItem('fp-report-review-access')==='granted'){unlock()}
-gateForm.addEventListener('submit',function(event){
-  event.preventDefault();
-  if(gatePassword.value==='2026'){unlock();return}
-  gateError.textContent='口令不正确，请重试。';
-  gatePassword.select();
-});
 function toggleTheme(){
   var h=document.documentElement,d=h.getAttribute('data-theme')==='dark';
   h.setAttribute('data-theme',d?'light':'dark');

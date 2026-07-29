@@ -30,29 +30,29 @@ async function render() {
   );
 }
 
-test("server-renders the 23-page production catalog", async () => {
+test("server-renders the 24-page production catalog", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
   assert.match(html, /且慢产品研究页面库/);
-  assert.match(html, /23/);
-  assert.match(html, /19/);
+  assert.match(html, /24/);
+  assert.match(html, /20/);
   assert.match(html, /已有生产页/);
   assert.match(html, /飞书文档/);
   assert.match(html, /https:\/\/qieman-pages\.example\/og\.png/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
 
-test("catalog keeps all 23 entries and 19 hosted pages", async () => {
+test("catalog keeps all 24 entries and 20 hosted pages", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const hrefs = [...source.matchAll(/href:\s*"([^"]+)"/g)].map((match) => match[1]);
   const hosted = hrefs.filter((href) => href.startsWith("/pages/"));
 
-  assert.equal(hrefs.length, 23);
-  assert.equal(hosted.length, 19);
-  assert.equal(new Set(hrefs).size, 23);
+  assert.equal(hrefs.length, 24);
+  assert.equal(hosted.length, 20);
+  assert.equal(new Set(hrefs).size, 24);
 
   await Promise.all(
     hosted.map((href) =>
@@ -96,8 +96,8 @@ test("GitHub Pages artifact is standalone and keeps all hosted routes", async ()
     (match) => match[1],
   );
 
-  assert.equal(hosted.length, 19);
-  assert.equal(new Set(hosted).size, 19);
+  assert.equal(hosted.length, 20);
+  assert.equal(new Set(hosted).size, 20);
   assert.doesNotMatch(html, /<script\b|localhost:|invalid\.invalid|href="\/pages\//);
   assert.match(
     html,
