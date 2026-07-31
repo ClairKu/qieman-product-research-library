@@ -158,6 +158,13 @@ const pages: PageItem[] = [
     note: "管理层汇报成稿 · 密码 2026 · 2026-07-30",
   },
   {
+    title: "盈米 AI 开放平台｜上线以来迭代复盘与下半年 OKR 汇报",
+    href: "/pages/oap/oap-h2-okr-iteration-review-2026-07-31.html",
+    kind: "本站生产页",
+    topic: "AI 开放平台",
+    note: "版本节奏 · 问题复盘 · 决策建议 · 密码 2026",
+  },
+  {
     title: "王嘉烨｜2026下半年 AI开放平台目标计划与里程碑",
     href: "https://yingmi.feishu.cn/docx/QCTAd6QDTo6iKVxdA3LceZ4rnrf",
     kind: "飞书文档",

@@ -30,29 +30,29 @@ async function render() {
   );
 }
 
-test("server-renders the 25-page production catalog", async () => {
+test("server-renders the 26-page production catalog", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
   assert.match(html, /且慢产品研究页面库/);
-  assert.match(html, /25/);
-  assert.match(html, /21/);
+  assert.match(html, /26/);
+  assert.match(html, /22/);
   assert.match(html, /已有生产页/);
   assert.match(html, /飞书文档/);
   assert.match(html, /https:\/\/qieman-pages\.example\/og\.png/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
 
-test("catalog keeps all 25 entries and 21 hosted pages", async () => {
+test("catalog keeps all 26 entries and 22 hosted pages", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const hrefs = [...source.matchAll(/href:\s*"([^"]+)"/g)].map((match) => match[1]);
   const hosted = hrefs.filter((href) => href.startsWith("/pages/"));
 
-  assert.equal(hrefs.length, 25);
-  assert.equal(hosted.length, 21);
-  assert.equal(new Set(hrefs).size, 25);
+  assert.equal(hrefs.length, 26);
+  assert.equal(hosted.length, 22);
+  assert.equal(new Set(hrefs).size, 26);
 
   await Promise.all(
     hosted.map((href) =>
@@ -104,14 +104,28 @@ test("completed OAP management report is encrypted at rest", async () => {
   assert.doesNotMatch(report, /9,145,099|DECISION 01|月活与服务复用/);
 });
 
+test("OAP H2 OKR iteration review is encrypted at rest", async () => {
+  const report = await readFile(
+    new URL(
+      "../public/pages/oap/oap-h2-okr-iteration-review-2026-07-31.html",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+
+  assert.match(report, /const payload=\{"salt":/);
+  assert.match(report, /迭代复盘与下半年 OKR 汇报/);
+  assert.doesNotMatch(report, /9,145,099|8,292 名用户|20 个种子应用/);
+});
+
 test("GitHub Pages artifact is standalone and keeps all hosted routes", async () => {
   const html = await readFile(new URL("../docs/index.html", import.meta.url), "utf8");
   const hosted = [...html.matchAll(/href="(pages\/[^"]+)"/g)].map(
     (match) => match[1],
   );
 
-  assert.equal(hosted.length, 21);
-  assert.equal(new Set(hosted).size, 21);
+  assert.equal(hosted.length, 22);
+  assert.equal(new Set(hosted).size, 22);
   assert.doesNotMatch(html, /<script\b|localhost:|invalid\.invalid|href="\/pages\//);
   assert.match(
     html,
