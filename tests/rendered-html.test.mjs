@@ -118,6 +118,26 @@ test("OAP H2 OKR iteration review is encrypted at rest", async () => {
   assert.doesNotMatch(report, /9,145,099|8,292 名用户|20 个种子应用/);
 });
 
+test("OAP journey and metrics visualization is encrypted at rest", async () => {
+  const report = await readFile(
+    new URL(
+      "../public/pages/oap/oap-journey-metrics-2026-08-02.html",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+
+  assert.match(report, /const payload=\{"salt":/);
+  assert.match(report, /关键历程 × 用户趋势/);
+  assert.doesNotMatch(report, /智谱采购|山西证券|9,145,099|REPORT_DATA/);
+  await access(
+    new URL(
+      "../docs/pages/oap/oap-journey-metrics-2026-08-02.html",
+      import.meta.url,
+    ),
+  );
+});
+
 test("GitHub Pages artifact is standalone and keeps all hosted routes", async () => {
   const html = await readFile(new URL("../docs/index.html", import.meta.url), "utf8");
   const hosted = [...html.matchAll(/href="(pages\/[^"]+)"/g)].map(
