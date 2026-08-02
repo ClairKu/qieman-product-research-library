@@ -128,7 +128,8 @@ test("OAP journey and metrics visualization is encrypted at rest", async () => {
   );
 
   assert.match(report, /const payload=\{"salt":/);
-  assert.match(report, /关键历程 × 用户趋势/);
+  assert.match(report, /关键历程 × 四指标增长/);
+  assert.match(report, /19 个主节点与 489 日序列双向联动/);
   assert.doesNotMatch(report, /智谱采购|山西证券|9,145,099|REPORT_DATA/);
   await access(
     new URL(
