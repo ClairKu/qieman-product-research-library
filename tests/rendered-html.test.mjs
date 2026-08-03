@@ -128,7 +128,8 @@ test("OAP journey and metrics visualization is directly accessible", async () =>
   );
 
   assert.doesNotMatch(report, /const payload=\{"salt":|请输入访问密码/);
-  assert.match(report, /<h1>关键历程 × 用户增长<\/h1>/);
+  assert.match(report, /<h1>关键历程，用户增长持续攀升<\/h1>/);
+  assert.match(report, /05 用户增长 YINGMI AI · OAP JOURNEY \/ 2025\.03—2026\.08/);
   assert.match(report, /从能力开放、生态上架到超级入口接入，从需求验证到规模放大与商业化条件储备/);
   assert.match(report, /智谱采购盈米 MCP/);
   assert.match(report, /山西证券 AI 项目投标/);
