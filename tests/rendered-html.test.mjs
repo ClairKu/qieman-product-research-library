@@ -118,7 +118,7 @@ test("OAP H2 OKR iteration review is encrypted at rest", async () => {
   assert.doesNotMatch(report, /9,145,099|8,292 名用户|20 个种子应用/);
 });
 
-test("OAP journey and metrics visualization is encrypted at rest", async () => {
+test("OAP journey and metrics visualization is directly accessible", async () => {
   const report = await readFile(
     new URL(
       "../public/pages/oap/oap-journey-metrics-2026-08-02.html",
@@ -127,9 +127,12 @@ test("OAP journey and metrics visualization is encrypted at rest", async () => {
     "utf8",
   );
 
-  assert.match(report, /const payload=\{"salt":/);
-  assert.match(report, /盈米 AI 开放平台历程・里程碑/);
-  assert.doesNotMatch(report, /智谱采购|山西证券|9,145,099|REPORT_DATA/);
+  assert.doesNotMatch(report, /const payload=\{"salt":|请输入访问密码/);
+  assert.match(report, /<h1>关键历程 × 用户增长<\/h1>/);
+  assert.match(report, /从能力开放、生态上架到超级入口接入，从需求验证到规模放大与商业化条件储备/);
+  assert.match(report, /智谱采购盈米 MCP/);
+  assert.match(report, /山西证券 AI 项目投标/);
+  assert.match(report, /9,145,099/);
   await access(
     new URL(
       "../docs/pages/oap/oap-journey-metrics-2026-08-02.html",
