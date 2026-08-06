@@ -90,7 +90,7 @@ test("published copies contain no local or placeholder URLs", async () => {
   await access(root);
 });
 
-test("completed OAP management report is encrypted at rest", async () => {
+test("completed OAP management report is directly accessible", async () => {
   const report = await readFile(
     new URL(
       "../public/pages/oap/oap-reporting-framework-2026-07-28.html",
@@ -99,12 +99,12 @@ test("completed OAP management report is encrypted at rest", async () => {
     "utf8",
   );
 
-  assert.match(report, /const payload=\{"salt":/);
-  assert.match(report, /阶段复盘与经营计划/);
-  assert.doesNotMatch(report, /9,145,099|DECISION 01|月活与服务复用/);
+  assert.doesNotMatch(report, /const payload=\{"salt":|type="password"|请输入访问密码/);
+  assert.match(report, /阶段复盘与 2026 下半年经营计划/);
+  assert.match(report, /9,145,099|DECISION 01|月活与服务复用/);
 });
 
-test("OAP H2 OKR iteration review is encrypted at rest", async () => {
+test("OAP H2 OKR iteration review is directly accessible", async () => {
   const report = await readFile(
     new URL(
       "../public/pages/oap/oap-h2-okr-iteration-review-2026-07-31.html",
@@ -113,9 +113,9 @@ test("OAP H2 OKR iteration review is encrypted at rest", async () => {
     "utf8",
   );
 
-  assert.match(report, /const payload=\{"salt":/);
-  assert.match(report, /迭代复盘与下半年 OKR 汇报/);
-  assert.doesNotMatch(report, /9,145,099|8,292 名用户|20 个种子应用/);
+  assert.doesNotMatch(report, /const payload=\{"salt":|type="password"|请输入访问密码/);
+  assert.match(report, /上线以来迭代复盘与 2026 下半年 OKR 汇报/);
+  assert.match(report, /9,145,099|8,292 名用户|20 个种子应用/);
 });
 
 test("OAP journey and metrics visualization is directly accessible", async () => {
