@@ -133,7 +133,9 @@ test("OAP journey and metrics visualization is directly accessible", async () =>
   assert.match(report, /从能力开放、生态上架到超级入口接入，从需求验证到规模放大与商业化条件储备/);
   assert.match(report, /智谱采购盈米 MCP/);
   assert.match(report, /山西证券 AI 项目投标/);
-  assert.match(report, /9,145,099/);
+  assert.match(report, /id="latest-calls">[\d,]+<\/strong>/);
+  assert.match(report, /id="data-refresh-button"/);
+  assert.match(report, /oap-report-data-updated/);
   await access(
     new URL(
       "../docs/pages/oap/oap-journey-metrics-2026-08-02.html",
