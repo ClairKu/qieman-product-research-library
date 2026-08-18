@@ -233,7 +233,7 @@ console.log(
 
 if (flag("--push")) {
   const git = (...cmd) => execFileSync("git", cmd, { cwd: root, encoding: "utf8" });
-  git("pull", "--rebase", "origin", "main");
+  git("pull", "--rebase", "--autostash", "origin", "main");
   git("add", `public/${LIVE}`, `docs/${LIVE}`, `public/${PAGE}`, `docs/${PAGE}`);
   const staged = git("diff", "--cached", "--name-only").trim();
   if (!staged) {
