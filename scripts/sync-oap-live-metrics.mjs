@@ -207,7 +207,8 @@ function bakeIntoPage(payload) {
       .replace(/(<span>累计申请<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmt(payload.readings.cumulativeUsers)}$2`)
       .replace(/(<span>总调用量<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmt(payload.readings.cumulativeCalls)}$2`)
       .replace(/(<span>月活用户（MAU）<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmt(payload.readings.mau)}$2`)
-      .replace(/(截至 <b id="cutoff-label">)[^<]*(<\/b>)/, `$1${payload.asOf}$2`);
+      .replace(/(<b id="cutoff-label">)[^<]*(<\/b>)/, `$1${payload.asOf}$2`)
+      .replace(/(<b id="cutoff-foot">)[^<]*(<\/b>)/, `$1${payload.asOf}$2`);
     writeFileSync(file, html);
   }
 }

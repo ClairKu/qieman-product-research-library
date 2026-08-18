@@ -62,8 +62,11 @@
     .chart-head>div:first-child{min-width:0}
     .chart-head h2{margin:0;max-width:760px;font-size:clamp(20px,2.2vw,32px);line-height:1.18;font-weight:600;letter-spacing:-.02em}
     .chart-head p{margin:4px 0 0;max-width:min(760px,64vw);overflow:hidden;color:#adb5ca;font-size:11px;line-height:1.45;white-space:nowrap;text-overflow:ellipsis}
-    .event-readings{display:grid;grid-template-columns:repeat(3,minmax(112px,1fr));min-width:390px;text-align:left;white-space:nowrap}
-    .event-readings div{min-width:0;padding:4px 18px 3px;overflow:hidden}
+    .event-readings{display:grid;grid-template-columns:repeat(3,minmax(104px,1fr)) auto;text-align:left;white-space:nowrap}
+    .reading-update strong{display:flex;align-items:center;gap:7px}
+    .reading-update b{font-weight:600;font-size:14px;letter-spacing:0;color:#e9e6ff;font-variant-numeric:tabular-nums}
+    @media(max-width:900px){.reading-update b{font-size:11px}.live-icon{width:16px;height:16px}}
+    .event-readings div{min-width:0;padding:4px 14px 3px;overflow:hidden}
     .event-readings div+div{border-left:1px solid rgba(255,255,255,.14)}
     .event-readings span{display:block;overflow:hidden;color:#bcb2ee;font:800 9px var(--sans);letter-spacing:.08em;text-overflow:ellipsis}
     .event-readings strong{display:block;margin-top:5px;color:#fff;font:600 clamp(24px,2.25vw,38px)/.95 var(--serif);font-variant-numeric:tabular-nums;letter-spacing:-.025em}
@@ -85,27 +88,26 @@
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
     @media(min-width:821px) and (max-width:1100px){
       .masthead{padding:13px 20px 11px}.eyebrow{margin-bottom:9px}h1{font-size:28px}.subhead{margin-top:8px;font-size:10px}
-      .chart-head{height:116px;min-height:116px;padding:8px 14px 50px;grid-template-columns:1fr}.chart-head h2{font-size:20px}.chart-head p{max-width:100%;font-size:9px;white-space:nowrap;text-overflow:ellipsis}.event-readings{position:absolute;left:14px;right:14px;bottom:6px;min-width:0;grid-template-columns:repeat(3,minmax(0,1fr))}.event-readings div{padding:3px 9px 2px}.event-readings span{font-size:7px}.event-readings strong{margin-top:2px;font-size:18px}
+      .chart-head{height:116px;min-height:116px;padding:8px 14px 50px;grid-template-columns:1fr}.chart-head h2{font-size:20px}.chart-head p{max-width:100%;font-size:9px;white-space:nowrap;text-overflow:ellipsis}.event-readings{position:absolute;left:14px;right:14px;bottom:6px;min-width:0;grid-template-columns:repeat(3,minmax(0,1fr)) auto}.event-readings div{padding:3px 9px 2px}.event-readings span{font-size:7px}.event-readings strong{margin-top:2px;font-size:18px}
       .chart-wrap{padding:0 14px 5px}.chart-foot{grid-template-columns:1fr;padding:9px 14px 11px;gap:5px}.chart-meta{justify-content:space-between}
     }
     @media(max-width:820px){
       .masthead{padding:11px 14px 9px}.eyebrow{margin-bottom:7px}h1{padding-right:0;font-size:22px}.subhead{margin-top:6px;font-size:9px;padding-right:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       .journey{grid-template-columns:1fr;grid-template-rows:minmax(0,58%) minmax(0,42%)}
       .chart-panel{grid-row:1}.timeline-panel{grid-row:2;justify-self:center;width:min(100%,560px);border-right:0;border-top:1px solid var(--line)}
-      .chart-head{height:112px;min-height:112px;padding:6px 12px 48px;grid-template-columns:1fr}.chart-head h2{font-size:17px}.chart-head p{display:block;max-width:100%;margin-top:2px;font-size:9px;line-height:1.35;white-space:nowrap;text-overflow:ellipsis}.event-readings{position:absolute;left:12px;right:12px;bottom:5px;min-width:0;grid-template-columns:repeat(3,minmax(0,1fr))}.event-readings div{min-width:0;padding:3px 8px 2px}.event-readings span{font-size:7px;white-space:nowrap}.event-readings strong{margin-top:2px;font-size:17px}
+      .chart-head{height:112px;min-height:112px;padding:6px 12px 48px;grid-template-columns:1fr}.chart-head h2{font-size:17px}.chart-head p{display:block;max-width:100%;margin-top:2px;font-size:9px;line-height:1.35;white-space:nowrap;text-overflow:ellipsis}.event-readings{position:absolute;left:12px;right:12px;bottom:5px;min-width:0;grid-template-columns:repeat(3,minmax(0,1fr)) auto}.event-readings div{min-width:0;padding:3px 8px 2px}.event-readings span{font-size:7px;white-space:nowrap}.event-readings strong{margin-top:2px;font-size:17px}
       .chart-wrap{padding:0 12px 4px}#trend-chart{min-height:180px}.chart-foot{grid-template-columns:1fr;padding:8px 12px 10px;gap:4px}.metric-toggles{gap:4px}.metric-toggle{padding:4px 6px;font-size:8px}.chart-meta{justify-content:space-between;gap:5px}.cutoff{font-size:7px}
       .timeline-head{padding:8px 14px 7px}.timeline-head h2{font-size:16px}.stream{font-size:8px}.milestone-list{padding:5px 7px 7px}.milestone{margin-bottom:2px;padding:7px 8px 7px 11px}.month-label{font-size:9px}.event-item{grid-template-columns:74px minmax(0,1fr);gap:7px}.event-chip{font-size:8px}.event-text{font-size:10px}.timeline-foot{padding:9px 10px 10px}
     }
     @media(max-width:440px){.event-readings{gap:3px}.event-readings strong{font-size:14px}.chart-head h2{padding-right:0}.chart-head p{max-width:100%}.metric-toggle{gap:4px;padding:3px 5px}.metric-toggle:before{width:9px}.event-text{font-size:10px}}
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
     @media print{html,body{height:auto;overflow:visible}.page{height:auto}.journey{min-height:720px}}
-    .live-icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:2px;padding:0;border:0;border-radius:6px;background:transparent;color:inherit;opacity:.7;cursor:pointer;transition:opacity .15s,color .15s}
-    .live-icon:hover{opacity:1;color:#b9a8ff}
+    .live-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;padding:0;border:0;border-radius:6px;background:transparent;color:#bcb2ee;opacity:.75;cursor:pointer;transition:opacity .15s,color .15s}
+    .live-icon:hover{opacity:1;color:#fff}
     .live-icon:focus-visible{outline:1px solid #9884ff;outline-offset:1px}
     .live-icon.loading svg{animation:live-spin .8s linear infinite}
     @keyframes live-spin{to{transform:rotate(360deg)}}
-    .live-status{font:600 9px var(--sans);color:#6fd3c4;white-space:nowrap}
-    .live-status:empty{display:none}
+    #live-label.live{color:#6fd3c4}
     .live-dialog{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:rgba(11,18,36,.52);backdrop-filter:blur(6px)}
     .live-dialog[hidden]{display:none}
     .live-card{width:min(300px,calc(100vw - 48px));padding:22px 22px 18px;border:1px solid var(--line);border-radius:16px;background:var(--paper);box-shadow:0 24px 70px rgba(22,25,39,.28)}
@@ -153,6 +155,7 @@
             <div><span>累计申请</span><strong id="reading-users">10,262</strong></div>
             <div><span>总调用量</span><strong id="reading-calls">9,487,741</strong></div>
             <div><span>月活用户（MAU）</span><strong id="reading-mau">2,421</strong></div>
+            <div class="reading-update"><span id="live-label">数据更新</span><strong><b id="cutoff-label">2026-08-18</b><button class="live-icon" id="live-update" type="button" aria-label="更新实时数据" title="更新实时数据"><svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M13.2 8a5.2 5.2 0 1 1-1.6-3.76"/><path d="M13.5 1.8v3h-3"/></svg></button></strong></div>
           </div>
         </header>
         <div class="chart-wrap" id="chart-wrap">
@@ -169,13 +172,7 @@
             <button class="metric-toggle new-users" type="button" data-metric="newUsers" aria-pressed="true">每日新增</button>
             <button class="metric-toggle calls" type="button" data-metric="calls" aria-pressed="true">总调用量</button>
           </div>
-          <div class="chart-meta">
-            <span class="live-status" id="live-status" role="status" aria-live="polite"></span>
-            <span class="cutoff">截至 <b id="cutoff-label">2026-08-18</b></span>
-            <button class="live-icon" id="live-update" type="button" aria-label="更新实时数据" title="更新实时数据">
-              <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M13.2 8a5.2 5.2 0 1 1-1.6-3.76"/><path d="M13.5 1.8v3h-3"/></svg>
-            </button>
-          </div>
+          <div class="chart-meta"><span class="cutoff">数据截至 <b id="cutoff-foot">2026-08-18</b></span></div>
         </footer>
       </section>
     </section>
@@ -199,7 +196,7 @@
       // Live metrics: password-unlocked refresh from oap-metrics-live.json (AES-GCM).
       const STORE_KEY="oap-live-metrics-v1";
       const MAX_AGE_MS=60*60*1000;
-      const status=document.getElementById("live-status");
+      const label=document.getElementById("live-label");
       const button=document.getElementById("live-update");
       const dialog=document.getElementById("live-dialog");
       const form=document.getElementById("live-form");
@@ -216,9 +213,12 @@
         document.getElementById("reading-calls").textContent=fmt(payload.readings?.cumulativeCalls??last.cumulativeCalls);
         document.getElementById("reading-mau").textContent=fmt(payload.readings?.mau??payload.latestMonthlyActiveUsers);
         document.getElementById("cutoff-label").textContent=payload.asOf;
+        const foot=document.getElementById("cutoff-foot");
+        if(foot)foot.textContent=payload.asOf;
         const syncedAt=(payload.generatedAt||"").replace("T"," ").slice(5,16);
-        status.textContent=`实时 · ${syncedAt}`;
-        status.title=`实时数据 · 同步于 ${syncedAt}`;
+        label.textContent=`实时 · 同步于 ${syncedAt.slice(6)}`;
+        label.classList.add("live");
+        label.title=`实时数据 · 同步于 ${syncedAt}`;
       };
       try{
         const cached=JSON.parse(sessionStorage.getItem(STORE_KEY)||"null");
