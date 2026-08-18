@@ -63,9 +63,10 @@
     .chart-head h2{margin:0;max-width:760px;font-size:clamp(20px,2.2vw,32px);line-height:1.18;font-weight:600;letter-spacing:-.02em}
     .chart-head p{margin:4px 0 0;max-width:min(760px,64vw);overflow:hidden;color:#adb5ca;font-size:11px;line-height:1.45;white-space:nowrap;text-overflow:ellipsis}
     .event-readings{display:grid;grid-template-columns:repeat(3,minmax(104px,1fr)) auto;text-align:left;white-space:nowrap}
+    .reading-update{max-width:150px}
     .reading-update strong{display:flex;align-items:center;gap:7px}
     .reading-update b{font-weight:600;font-size:14px;letter-spacing:0;color:#e9e6ff;font-variant-numeric:tabular-nums}
-    @media(max-width:1320px){.event-readings div{padding:3px 10px 2px}.event-readings strong{font-size:clamp(20px,2vw,32px)}.reading-update b{font-size:12px}.live-icon{width:17px;height:17px}.chart-head h2{font-size:clamp(18px,2vw,30px)}}
+    @media(max-width:1320px){.reading-update{max-width:128px}.event-readings div{padding:3px 10px 2px}.event-readings strong{font-size:clamp(20px,2vw,32px)}.reading-update b{font-size:12px}.live-icon{width:17px;height:17px}.chart-head h2{font-size:clamp(18px,2vw,30px)}}
     @media(max-width:900px){.reading-update b{font-size:11px}.live-icon{width:16px;height:16px}}
     .event-readings div{min-width:0;padding:4px 14px 3px;overflow:hidden}
     .event-readings div+div{border-left:1px solid rgba(255,255,255,.14)}
@@ -217,7 +218,7 @@
         const foot=document.getElementById("cutoff-foot");
         if(foot)foot.textContent=payload.asOf;
         const syncedAt=(payload.generatedAt||"").replace("T"," ").slice(5,16);
-        label.textContent=`实时 · 同步于 ${syncedAt.slice(6)}`;
+        label.textContent=`实时 · ${syncedAt.slice(6)}`;
         label.classList.add("live");
         label.title=`实时数据 · 同步于 ${syncedAt}`;
       };
