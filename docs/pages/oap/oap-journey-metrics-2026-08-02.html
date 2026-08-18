@@ -65,6 +65,7 @@
     .event-readings{display:grid;grid-template-columns:repeat(3,minmax(104px,1fr)) auto;text-align:left;white-space:nowrap}
     .reading-update strong{display:flex;align-items:center;gap:7px}
     .reading-update b{font-weight:600;font-size:14px;letter-spacing:0;color:#e9e6ff;font-variant-numeric:tabular-nums}
+    @media(max-width:1320px){.event-readings div{padding:3px 10px 2px}.event-readings strong{font-size:clamp(20px,2vw,32px)}.reading-update b{font-size:12px}.live-icon{width:17px;height:17px}.chart-head h2{font-size:clamp(18px,2vw,30px)}}
     @media(max-width:900px){.reading-update b{font-size:11px}.live-icon{width:16px;height:16px}}
     .event-readings div{min-width:0;padding:4px 14px 3px;overflow:hidden}
     .event-readings div+div{border-left:1px solid rgba(255,255,255,.14)}
