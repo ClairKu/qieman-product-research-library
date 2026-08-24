@@ -1,9 +1,9 @@
 /**
- * Sync OAP Stargate dashboard metrics to an encrypted live JSON on GitHub Pages.
+ * Sync OAP Stargate dashboard metrics to a plaintext live JSON on GitHub Pages.
  *
  * The journey page (pages/oap/oap-journey-metrics-2026-08-02.html) fetches
- * pages/oap/oap-metrics-live.json and decrypts it in-browser with the access
- * password, so public viewers can refresh to the latest data on demand.
+ * pages/oap/oap-metrics-live.json on load (and via the refresh icon), so
+ * public viewers always see the latest data — no password required.
  *
  * Data source (intranet only, run from a machine on the Yingmi office network):
  *   - Preferred: Redash REST API at https://zhu.yingmi-inc.com (REDASH_API_KEY env),
@@ -17,10 +17,9 @@
  *     --bake       also rewrite the baked-in metrics inside the journey page HTML
  *     --from-file  skip querying; build from a {generatedAt,mau,newByDay,callsByDay} file
  *
- * Env: REDASH_API_KEY (preferred data path), OAP_LIVE_PASSWORD (default "OAP")
+ * Env: REDASH_API_KEY (preferred data path)
  */
 import { execFileSync } from "node:child_process";
-import { randomBytes, webcrypto } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
@@ -29,7 +28,6 @@ const PAGE = "pages/oap/oap-journey-metrics-2026-08-02.html";
 const LIVE = "pages/oap/oap-metrics-live.json";
 const SKIP_KEY = "479c9d2e-4d05-4098-bd72-994c82e0fd22";
 const REDASH_URL = process.env.REDASH_URL || "https://zhu.yingmi-inc.com";
-const PASSWORD = process.env.OAP_LIVE_PASSWORD || "OAP";
 const args = process.argv.slice(2);
 const flag = (name) => args.includes(name);
 const argValue = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : null);
@@ -162,29 +160,6 @@ function buildPayload(source) {
   };
 }
 
-async function encrypt(plaintext) {
-  const encoder = new TextEncoder();
-  const salt = randomBytes(16);
-  const iv = randomBytes(12);
-  const material = await webcrypto.subtle.importKey("raw", encoder.encode(PASSWORD), "PBKDF2", false, ["deriveKey"]);
-  const key = await webcrypto.subtle.deriveKey(
-    { name: "PBKDF2", salt, iterations: 250000, hash: "SHA-256" },
-    material,
-    { name: "AES-GCM", length: 256 },
-    false,
-    ["encrypt"],
-  );
-  const data = new Uint8Array(await webcrypto.subtle.encrypt({ name: "AES-GCM", iv }, key, encoder.encode(plaintext)));
-  return {
-    v: 1,
-    updatedAt: beijingNowISO(),
-    salt: Buffer.from(salt).toString("base64"),
-    iv: Buffer.from(iv).toString("base64"),
-    iterations: 250000,
-    data: Buffer.from(data).toString("base64"),
-  };
-}
-
 function bakeIntoPage(payload) {
   for (const dir of ["public", "docs"]) {
     const file = path.join(root, dir, PAGE);
@@ -224,7 +199,7 @@ if (!Array.isArray(source.newByDay) || source.newByDay.length < 400 || !source.m
 }
 
 const payload = buildPayload(source);
-const envelope = JSON.stringify(await encrypt(JSON.stringify(payload)));
+const envelope = JSON.stringify(payload);
 for (const dir of ["public", "docs"]) writeFileSync(path.join(root, dir, LIVE), envelope);
 if (flag("--bake")) bakeIntoPage(payload);
 
