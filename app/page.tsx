@@ -16,6 +16,13 @@ type PageItem = {
 
 const pages: PageItem[] = [
   {
+    title: "字节系 OAuth × MCP 月度情报雷达｜2026-09-02",
+    href: "/pages/competitive-intelligence/doubao-oauth-mcp-radar-2026-09-02.html",
+    kind: "本站生产页",
+    topic: "竞品情报",
+    note: "豆包 / TRAE / 扣子 / 飞书 / 火山引擎｜31 天全产品线扫描",
+  },
+  {
     title: "且慢投顾模块现况盘点报告 · 2026年7月",
     href: "/pages/advisor-revamp/01-投顾模块现况盘点报告.html",
     kind: "本站生产页",

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>字节系 OAuth × MCP 月度情报雷达｜2026-09-02</title>
+  <meta name="description" content="2026-08-03 至 2026-09-02，豆包、豆包工作台、豆包手机助手、TRAE、扣子、飞书与火山引擎 OAuth/MCP 动态全景。">
+  <style>
+    :root{--ink:#172033;--muted:#657086;--paper:#f7f4ee;--card:#fff;--line:#dedbd3;--red:#e24a3b;--orange:#ef8d32;--blue:#2768e8;--green:#18856f;--violet:#7458d8;--shadow:0 22px 60px rgba(32,38,52,.10)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.65}a{color:inherit}.wrap{width:min(1160px,calc(100% - 36px));margin:auto}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--red)}
+    .hero{min-height:92vh;display:grid;align-items:end;padding:86px 0 54px;background:radial-gradient(circle at 82% 12%,rgba(226,74,59,.15),transparent 32%),linear-gradient(145deg,#fff 0%,#f7f4ee 60%,#ece7dd 100%);border-bottom:1px solid var(--line)}.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:72px;align-items:end}.hero h1{margin:16px 0 22px;font-size:clamp(54px,8.3vw,108px);line-height:.92;letter-spacing:-.065em;font-weight:800}.hero h1 span{display:block;color:var(--red)}.dek{max-width:760px;margin:0;font-size:clamp(17px,2vw,24px);line-height:1.45;color:#3d485d}.scope{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}.chip{padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.72);font-size:12px;font-weight:700}.signal{padding:28px;border-radius:24px;background:var(--ink);color:#fff;box-shadow:var(--shadow)}.signal-label{font-size:11px;letter-spacing:.14em;color:#aeb6c6}.signal strong{display:block;margin:10px 0;font-size:64px;line-height:1;color:#ff6c5d}.signal p{margin:0;color:#cbd1dc;font-size:14px}.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:32px;background:var(--line);border:1px solid var(--line)}.meta div{padding:15px;background:rgba(255,255,255,.86)}.meta b{display:block;font-size:20px}.meta span{font-size:11px;color:var(--muted)}
+    .nav{position:sticky;top:0;z-index:10;border-bottom:1px solid var(--line);background:rgba(247,244,238,.92);backdrop-filter:blur(14px)}.nav .wrap{display:flex;gap:24px;overflow:auto}.nav a{flex:0 0 auto;padding:14px 0;text-decoration:none;font-size:12px;font-weight:800;color:var(--muted)}.nav a:hover{color:var(--red)}section{padding:92px 0;border-bottom:1px solid var(--line)}.section-head{display:grid;grid-template-columns:.36fr .64fr;gap:44px;margin-bottom:34px}.section-head h2{margin:0;font-size:clamp(34px,5vw,60px);line-height:1;letter-spacing:-.045em}.section-head p{margin:0;padding-top:8px;color:var(--muted);font-size:16px}.kicker{display:block;margin-bottom:12px;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--red)}
+    .theses{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.thesis,.card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:0 8px 30px rgba(32,38,52,.05)}.thesis{padding:25px;min-height:260px}.num{font:800 52px/1 Georgia,serif;color:#e2ddd2}.thesis h3,.card h3{margin:20px 0 10px;font-size:22px;line-height:1.25}.thesis p,.card p{margin:0;color:var(--muted);font-size:14px}.verdict{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;font-weight:800;color:var(--red)}
+    .matrix-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}table{width:100%;min-width:900px;border-collapse:collapse}th,td{padding:16px 14px;text-align:left;border-bottom:1px solid #ece8e0;vertical-align:top;font-size:13px}th{position:sticky;top:45px;background:#f2eee6;color:#5c6577;font-size:11px;letter-spacing:.05em}td:first-child{font-weight:800}.dot{display:inline-flex;align-items:center;gap:7px}.dot:before{content:"";width:9px;height:9px;border-radius:50%;background:#aaa}.yes:before{background:var(--green)}.partial:before{background:var(--orange)}.no:before{background:var(--red)}.unknown:before{background:#9aa2b1}.surface{display:block;margin-top:5px;font-size:10px;color:var(--muted)}
+    .timeline{position:relative;margin-left:10px;padding-left:32px;border-left:2px solid #d6d0c4}.event{position:relative;display:grid;grid-template-columns:110px 1fr;gap:22px;padding:0 0 30px}.event:before{content:"";position:absolute;left:-40px;top:7px;width:14px;height:14px;border-radius:50%;background:var(--paper);border:3px solid var(--red)}.date{font:800 15px Georgia,serif;color:var(--red)}.event h3{margin:0 0 5px;font-size:18px}.event p{margin:0;color:var(--muted);font-size:13px}.badge{display:inline-block;margin-left:7px;padding:3px 7px;border-radius:6px;background:#efece5;color:#657086;font-size:9px;font-weight:800;vertical-align:2px}.badge.a{background:#e5f4ef;color:#14715f}.badge.b{background:#edf1fb;color:#345ea8}.badge.c{background:#fff0df;color:#9a5d1e}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:18px}.stack{display:grid;gap:14px}.card{padding:23px}.card h3{margin-top:4px}.card ul{margin:14px 0 0;padding-left:18px;color:var(--muted);font-size:13px}.card li+li{margin-top:7px}.callout{padding:32px;border-radius:24px;background:var(--ink);color:#fff}.callout h3{margin:0 0 12px;font-size:28px}.callout p{color:#c8cfda}.callout .quote{margin:22px 0 0;padding:18px;border-left:3px solid #ff6c5d;background:rgba(255,255,255,.06);font-size:16px}.auth-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.node{position:relative;padding:20px 15px;min-height:150px;border:1px solid var(--line);border-radius:17px;background:#fff}.node:not(:last-child):after{content:"→";position:absolute;right:-17px;top:58px;z-index:2;width:24px;height:24px;text-align:center;border-radius:50%;background:var(--red);color:#fff}.node b{display:block;margin-bottom:8px;font-size:14px}.node small{color:var(--muted)}
+    .risk-grid,.action-grid,.source-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.risk{padding:22px;border-top:4px solid var(--orange)}.risk.high{border-top-color:var(--red)}.risk.low{border-top-color:var(--green)}.risk strong{display:block;margin-bottom:7px}.action{padding:24px;background:#fff;border:1px solid var(--line);border-radius:18px}.action time{font:800 13px Georgia,serif;color:var(--red)}.action h3{margin:12px 0 8px}.action p{color:var(--muted);font-size:13px}.source{padding:18px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.6)}.source a{font-size:13px;font-weight:800;text-decoration:none}.source a:hover{text-decoration:underline}.source p{margin:6px 0 0;color:var(--muted);font-size:11px}.source .level{display:inline-block;margin-bottom:9px;font-size:10px;font-weight:800;color:var(--green)}
+    .boundary{margin-top:22px;padding:20px;border:1px dashed #b9b2a6;border-radius:14px;color:var(--muted);font-size:12px}.foot{padding:56px 0 80px}.foot-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px}.foot h2{font-size:36px;line-height:1.1}.foot p{color:var(--muted);font-size:13px}.stamp{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;background:#e7f3ef;color:#176e60;font-size:11px;font-weight:800}
+    @media(max-width:860px){.hero-grid,.section-head,.split,.foot-grid{grid-template-columns:1fr}.hero{min-height:auto}.hero h1{font-size:58px}.signal{margin-top:0}.theses,.risk-grid,.action-grid,.source-grid{grid-template-columns:1fr}.auth-flow{grid-template-columns:1fr}.node:not(:last-child):after{content:"↓";right:auto;left:50%;top:auto;bottom:-17px}.event{grid-template-columns:80px 1fr}section{padding:64px 0}.section-head{gap:16px}.meta{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Competitive Intelligence · 2026/08/03—09/02</div>
+          <h1>字节系<span>OAuth × MCP</span>月度雷达</h1>
+          <p class="dek">不是一张“新闻汇总表”，而是一张产品能力真相图：入口正在统一，协议与授权仍然分裂。</p>
+          <div class="scope"><span class="chip">豆包</span><span class="chip">豆包工作台</span><span class="chip">豆包手机助手</span><span class="chip">TRAE / TraeWork</span><span class="chip">扣子</span><span class="chip">飞书 / Aily</span><span class="chip">火山引擎</span></div>
+        </div>
+        <aside class="signal"><div class="signal-label">本月最强信号</div><strong>1→N</strong><p>豆包工作台成为统一前门，但每个客户端仍有自己的认证方式、协议边界与产品节奏。</p></aside>
+      </div>
+      <div class="meta"><div><b>31 天</b><span>观察窗口</span></div><div><b>9 条</b><span>窗口内有效事件</span></div><div><b>8 类</b><span>产品/能力面</span></div></div>
+    </div>
+  </header>
+  <nav class="nav"><div class="wrap"><a href="#verdict">结论</a><a href="#matrix">产品矩阵</a><a href="#timeline">时间线</a><a href="#truth">OAuth 真相</a><a href="#impact">对盈米影响</a><a href="#actions">行动</a><a href="#sources">证据</a></div></nav>
+
+  <section id="verdict"><div class="wrap">
+    <div class="section-head"><h2><span class="kicker">Executive verdict</span>一个前门，三种成熟度</h2><p>近一月真正的变量不是“又多了几个 MCP”，而是产品入口、协议能力和企业治理出现了不同步。营销叙事已经跨产品统一，底层授权还没有。</p></div>
+    <div class="theses">
+      <article class="thesis"><div class="num">01</div><h3>入口层：高度确定</h3><p>豆包工作台正式承接技能、连接器、工作伙伴与桌面操作；TRAE Work 和扣子团队并入豆包，前门收拢速度非常快。</p><div class="verdict">已发生 · 高置信</div></article>
+      <article class="thesis"><div class="num">02</div><h3>协议层：碎片化</h3><p>豆包工作台可填 MCP Server URL + Headers；TRAE CLI 文档支持浏览器 OAuth，但 8 月 10 日 TraeCode CN 桌面版仍明确不支持直接浏览器 OAuth。</p><div class="verdict">同集团、不同客户端、不同答案</div></article>
+      <article class="thesis"><div class="num">03</div><h3>治理层：正在补课</h3><p>飞书强调继承用户身份与对象权限；火山引擎已有身份认证、细粒度访问能力。但跨端令牌、撤销、审计与授权范围尚未看到统一公开规范。</p><div class="verdict">能力存在 · 统一治理未证实</div></article>
+    </div>
+  </div></section>
+
+  <section id="matrix"><div class="wrap">
+    <div class="section-head"><h2><span class="kicker">Capability matrix</span>产品能力真相图</h2><p>“支持连接器”不等于“支持标准 OAuth MCP”。下表把 MCP 接入、浏览器 OAuth、静态凭证与本月新增拆开看。</p></div>
+    <div class="matrix-wrap"><table>
+      <thead><tr><th>产品线 / 表面</th><th>MCP 接入</th><th>浏览器 OAuth</th><th>静态 Header / Token</th><th>本月动向</th><th>判断</th></tr></thead>
+      <tbody>
+        <tr><td>豆包工作台<span class="surface">桌面端</span></td><td><span class="dot yes">已确认</span></td><td><span class="dot unknown">未证实为通用能力</span></td><td><span class="dot yes">已确认</span></td><td>8/21 技能与连接器；8/25 独立产品；9/2 多智能体 / Mac GUI</td><td>本月主角，但自定义 MCP 目前最可靠路径仍是 URL + Headers</td></tr>
+        <tr><td>豆包手机助手<span class="surface">努比亚合作机</span></td><td><span class="dot partial">媒体披露</span></td><td><span class="dot unknown">未公开</span></td><td><span class="dot unknown">未公开</span></td><td>9/2 披露从 GUI 跨应用转向应用开放 MCP</td><td>商业路线已转弯，接口与授权细节尚无公开技术说明</td></tr>
+        <tr><td>TRAE CLI<span class="surface">命令行</span></td><td><span class="dot yes">已确认</span></td><td><span class="dot yes">SSE 服务可用</span></td><td><span class="dot partial">普通认证优先</span></td><td>窗口内无新增公告；当前官方文档有效</td><td>字节系目前公开 OAuth 说明最完整的表面</td></tr>
+        <tr><td>TraeCode CN<span class="surface">桌面 IDE</span></td><td><span class="dot yes">已确认</span></td><td><span class="dot no">8/10 明确不支持</span></td><td><span class="dot yes">Headers</span></td><td>社区确认 OAuth/refresh 缺口仍在评估</td><td>不能拿 TRAE CLI 文档替代桌面版验收</td></tr>
+        <tr><td>TraeWork<span class="surface">工作智能体</span></td><td><span class="dot yes">插件市场</span></td><td><span class="dot unknown">未公开</span></td><td><span class="dot partial">依插件</span></td><td>8/10 企查查 MCP 上架；8/24 能力并入豆包</td><td>产品名退场，能力进入豆包工作台</td></tr>
+        <tr><td>扣子 / Coze Space<span class="surface">应用与扩展</span></td><td><span class="dot yes">可发布/消费</span></td><td><span class="dot partial">依扩展</span></td><td><span class="dot partial">PAT / 环境变量</span></td><td>本月无新的 MCP 协议发布</td><td>当前能力是真实存量，不能包装成本月新闻</td></tr>
+        <tr><td>飞书 / Aily<span class="surface">连接器与工作伙伴</span></td><td><span class="dot partial">可通过 MCP/HTTP</span></td><td><span class="dot yes">HTTP 连接器支持</span></td><td><span class="dot yes">Bearer/API Key</span></td><td>8/13 Aily 更名；随后融入豆包工作台</td><td>权限继承强，但 OAuth 连接器不等于 OAuth MCP</td></tr>
+        <tr><td>豆包搜索 / 火山引擎<span class="surface">Search / AgentKit</span></td><td><span class="dot yes">当前能力</span></td><td><span class="dot partial">身份能力存在</span></td><td><span class="dot partial">依服务配置</span></td><td>8/17 媒体称搜索完成 MCP 多协议扩展</td><td>AgentKit 有身份/细粒度能力；本月官方变更日志不足</td></tr>
+        <tr><td>豆包主 App / Seed / 即梦等<span class="surface">消费端与模型层</span></td><td><span class="dot unknown">未见相关发布</span></td><td><span class="dot unknown">未见</span></td><td><span class="dot unknown">未见</span></td><td>窗口内未检出可核实 OAuth/MCP 动态</td><td>不等于“绝对没有”，只代表公开证据未覆盖</td></tr>
+      </tbody>
+    </table></div>
+  </div></section>
+
+  <section id="timeline"><div class="wrap">
+    <div class="section-head"><h2><span class="kicker">31-day timeline</span>真正值得看的九个节点</h2><p>按“发生日期”而不是“文章发布日期”归并；组织动作、产品发布、技术能力与行业协议分别标注。</p></div>
+    <div class="timeline">
+      <article class="event"><div class="date">08·10</div><div><h3>TraeCode CN 暴露 OAuth 缺口 <span class="badge a">官方社区 A</span></h3><p>官方答复：当前 MCP 客户端不支持直接浏览器 OAuth 2.0 授权及自动刷新，只能静态配置 Headers，团队仍在评估。</p></div></article>
+      <article class="event"><div class="date">08·10</div><div><h3>企查查 MCP 上架 TraeWork <span class="badge c">媒体 C</span></h3><p>企业信息查询进入工作智能体插件市场，说明“垂直数据服务 + MCP”开始渠道化。</p></div></article>
+      <article class="event"><div class="date">08·13</div><div><h3>飞书 Aily 更名“豆包工作伙伴” <span class="badge b">多源 B</span></h3><p>品牌层先行合并，为后续豆包工作台统一入口铺路。</p></div></article>
+      <article class="event"><div class="date">08·17</div><div><h3>豆包搜索称完成 MCP 多协议扩展 <span class="badge b">媒体 B</span></h3><p>8 月更新被报道为支持更多工具协议；暂未找到一一对应的公开官方变更日志。</p></div></article>
+      <article class="event"><div class="date">08·21</div><div><h3>豆包工作台上线技能与连接器 <span class="badge b">多源 B</span></h3><p>市场宣称技能和连接器超过 200 个；自定义 MCP 通过 Server URL 与 Headers 配置，并限定本机使用。</p></div></article>
+      <article class="event"><div class="date">08·22</div><div><h3>MCP 官方路线图把“代理身份”推上台面 <span class="badge a">官方 A</span></h3><p>明确指出当前以“人在浏览器同意”为中心的授权不足以覆盖云端代理，后续聚焦企业托管授权、工作负载身份与令牌交换。</p></div></article>
+      <article class="event"><div class="date">08·24—25</div><div><h3>TRAE / 扣子团队并入豆包；豆包工作台独立发布 <span class="badge b">多源 B</span></h3><p>组织和品牌收拢完成关键一步，TRAE IDE / CLI 继续服务编程，TRAE Work 能力则进入豆包工作台。</p></div></article>
+      <article class="event"><div class="date">08·27—28</div><div><h3>纷享销客连接器进入豆包工作台 <span class="badge c">厂商 C</span></h3><p>厂商文档确认上架；同页展示 PKCE OAuth 是其跨客户端推荐方案，但未直接证明豆包工作台自定义 MCP 已通用支持浏览器 OAuth。</p></div></article>
+      <article class="event"><div class="date">09·02</div><div><h3>两条路线同时加速 <span class="badge b">多源 B</span></h3><p>豆包工作台发布多智能体与 Mac GUI；豆包手机助手合作机披露从 GUI 跨应用转向 MCP 接入。</p></div></article>
+    </div>
+  </div></section>
+
+  <section id="truth"><div class="wrap">
+    <div class="section-head"><h2><span class="kicker">Protocol reality</span>OAuth 到底支持了没有？</h2><p>答案不能用一个“是”或“否”概括。必须把客户端表面、传输方式、认证发现、动态注册和令牌刷新逐层验收。</p></div>
+    <div class="split">
+      <div class="callout"><h3>最容易犯的错</h3><p>看到“连接应用”“跳转登录”“授权成功”就认定 MCP OAuth 已跑通。</p><div class="quote">登录弹窗 ≠ MCP 客户端完成 OAuth 元数据发现、PKCE、回调、令牌刷新与撤销。</div></div>
+      <div class="stack">
+        <article class="card"><h3>已证实</h3><ul><li>TRAE CLI：SSE MCP 可发起浏览器 OAuth，并引用 RFC 8414 / RFC 7591。</li><li>TraeCode CN：截至 8/10 不支持直接浏览器 OAuth，只能 Headers。</li><li>豆包工作台：自定义 MCP 可填 URL 和 Headers；第三方示例使用 Bearer Token。</li></ul></article>
+        <article class="card"><h3>仍未证实</h3><ul><li>豆包工作台是否对任意远程 MCP 支持 OAuth 2.1 + PKCE。</li><li>是否支持 refresh token、按资源 audience、撤销和多账号切换。</li><li>手机助手 MCP 的授权主体、scope、合作方白名单与审核机制。</li></ul></article>
+      </div>
+    </div>
+    <h3 style="margin:46px 0 18px">一条合格的 OAuth MCP 验收链</h3>
+    <div class="auth-flow"><div class="node"><b>01 发现资源</b><small>读取 Protected Resource Metadata，不靠人工粘贴隐式约定。</small></div><div class="node"><b>02 发现授权端</b><small>定位授权服务器、端点与支持的能力。</small></div><div class="node"><b>03 PKCE 授权</b><small>浏览器明确同意 scope，回调绑定客户端。</small></div><div class="node"><b>04 资源绑定</b><small>access token 只对指定 MCP resource 有效。</small></div><div class="node"><b>05 刷新与撤销</b><small>可刷新、可退出、可审计、可单端撤销。</small></div></div>
+    <div class="boundary">协议基线：2026-07-28 MCP 规范位于本次窗口外，仅作为判断基准；它要求 OAuth 2.0 Protected Resource Metadata，并采用 OAuth 2.1 安全措施。不能把该规范当作字节产品“本月已经实现”的证据。</div>
+  </div></section>
+
+  <section id="impact"><div class="wrap">
+    <div class="section-head"><h2><span class="kicker">Implication for Yingmi</span>对盈米不是“接不接”，而是“怎么不被绑死”</h2><p>短期需要兼容现实，长期必须坚持标准。最优策略是双通道认证、按客户端隔离凭证，并把能力验收做到产品表面级。</p></div>
+    <div class="risk-grid">
+      <article class="card risk high"><strong>高风险｜把豆包当成一个客户端</strong><p>豆包工作台、手机助手、TRAE CLI、TraeCode CN 的认证栈不一致。同一服务必须维护表面级兼容矩阵。</p></article>
+      <article class="card risk"><strong>中风险｜共享一个长期 Token</strong><p>Header 方案最容易上线，也最容易造成跨客户端泄露与无法独立撤销。每个客户端/用户都应独立凭证。</p></article>
+      <article class="card risk low"><strong>机会｜金融数据进入连接器市场</strong><p>企查查、CRM 已证明垂直企业数据可被平台分发。盈米可优先用“只读诊断 + 明确来源”切入。</p></article>
+    </div>
+  </div></section>
+
+  <section id="actions"><div class="wrap">
+    <div class="section-head"><h2><span class="kicker">Recommended moves</span>30 / 60 / 90 天动作</h2><p>兼容层不是妥协，前提是所有降级路径都可撤销、可审计、可逐步退出。</p></div>
+    <div class="action-grid">
+      <article class="action"><time>0—30 DAYS</time><h3>建立“产品表面”验收矩阵</h3><p>分别实测豆包工作台、TRAE CLI、TraeCode CN、Coze；记录 transport、OAuth discovery、PKCE、refresh、revoke、错误回退和多账号行为。</p></article>
+      <article class="action"><time>31—60 DAYS</time><h3>上线双通道认证</h3><p>标准通道采用 Streamable HTTP + OAuth 2.1/PKCE；兼容通道只发短期、只读、单客户端 Bearer Token，设置到期与主动撤销。</p></article>
+      <article class="action"><time>61—90 DAYS</time><h3>争取手机与工作台合作位</h3><p>准备工具白名单、scope 表、二次确认、审计日志、隐私说明和故障降级；用“基金诊断/组合风险只读服务”作为最小合作包。</p></article>
+    </div>
+    <div class="split" style="margin-top:18px"><article class="card"><h3>服务端现在就做</h3><ul><li>发布 <code>/.well-known/oauth-protected-resource</code> 与授权服务器元数据。</li><li>优先 Client ID Metadata Documents，避免只依赖已被新规范降级的动态注册。</li><li>按工具拆分 read / write scope；写操作逐次确认。</li><li>返回数据附来源、时点、口径和证据等级。</li></ul></article><article class="card"><h3>明确不做</h3><ul><li>不复用一把 API Key 给所有 AI 客户端。</li><li>不以授权页面、回调页面或“连接成功”文案作为验收结论。</li><li>不让手机 GUI 自动化成为金融交易主路径。</li><li>不把第三方厂商的 OAuth 能力嫁接为平台通用能力。</li></ul></article></div>
+  </div></section>
+
+  <section id="sources"><div class="wrap">
+    <div class="section-head"><h2><span class="kicker">Evidence ledger</span>可追溯证据库</h2><p>A 为官方文档/官方社区；B 为多家媒体或企业高管口径；C 为合作厂商/单一媒体。所有结论均保留证据边界。</p></div>
+    <div class="source-grid">
+      <article class="source"><span class="level">A · 官方文档</span><br><a href="https://docs.trae.cn/cli_model-context-protocol">TRAE CLI｜MCP 与 OAuth</a><p>浏览器授权、发现与注册流程。</p></article>
+      <article class="source"><span class="level">A · 官方社区</span><br><a href="https://forum.trae.cn/t/topic/175024">TraeCode CN｜OAuth 缺口答复</a><p>2026-08-10；静态 Headers 与不支持项。</p></article>
+      <article class="source"><span class="level">A · 官方文档</span><br><a href="https://docs.coze.cn/guides_publish_to_space">扣子｜发布为 MCP 工具</a><p>当前能力及扩展鉴权差异。</p></article>
+      <article class="source"><span class="level">A · 官方文档</span><br><a href="https://www.volcengine.com/product/agentkit">火山引擎 AgentKit</a><p>MCP、身份认证与细粒度权限能力。</p></article>
+      <article class="source"><span class="level">A · 官方生态</span><br><a href="https://www.feishu.cn/content/ya5j9hjw">飞书 Aily｜自定义连接器认证</a><p>Basic、API Key、Bearer 与 OAuth；注意它是 HTTP 连接器模型。</p></article>
+      <article class="source"><span class="level">A · 协议官方</span><br><a href="https://blog.modelcontextprotocol.io/posts/mcp-roadmap/">MCP 2026 路线图</a><p>2026-08-22；代理身份与企业托管授权。</p></article>
+      <article class="source"><span class="level">B · 多源新闻</span><br><a href="https://finance.eastmoney.com/a/202608253853361265.html">豆包工作台发布与团队整合</a><p>2026-08-25；组织与产品入口收拢。</p></article>
+      <article class="source"><span class="level">B · 新闻</span><br><a href="https://www.bjnews.com.cn/detail/1788337533129803.html">豆包工作台 9/2 更新</a><p>多智能体调度与 Mac GUI。</p></article>
+      <article class="source"><span class="level">B · 新闻</span><br><a href="https://www.ithome.com/0/997/409.htm">豆包手机助手转向 MCP</a><p>2026-09-02；合作机与跨应用路线变化。</p></article>
+      <article class="source"><span class="level">B · 新闻</span><br><a href="https://finance.sina.com.cn/roll/2026-08-17/doc-ininrkkn9067484.shtml">字节 AI 产品周动态</a><p>豆包搜索 MCP 多协议扩展等。</p></article>
+      <article class="source"><span class="level">C · 厂商文档</span><br><a href="https://help.flomoapp.com/advance/mcp/token.html">flomo｜豆包工作台 MCP 配置</a><p>URL + Authorization Bearer；仅本机可用。</p></article>
+      <article class="source"><span class="level">C · 厂商文档</span><br><a href="https://help.fxiaoke.com/ee88/a823/6aab">纷享销客｜多客户端 MCP 接入</a><p>2026-08-28 更新；包含豆包工作台上架信息与 PKCE 方案。</p></article>
+      <article class="source"><span class="level">C · 行业媒体</span><br><a href="https://www.beating.news/flash/362784">豆包工作台技能/连接器</a><p>2026-08-21；200+ 与自定义 MCP 配置。</p></article>
+      <article class="source"><span class="level">C · 财经媒体</span><br><a href="https://m.caizhongshe.cn/article-6868890050575004930.html">企查查 MCP 上架 TraeWork</a><p>2026-08-10；垂直数据服务渠道化。</p></article>
+      <article class="source"><span class="level">A · 规范基线（窗口外）</span><br><a href="https://blog.modelcontextprotocol.io/posts/2026-07-28/">MCP 2026-07-28 规范发布</a><p>OAuth 2.1 安全措施与资源元数据，仅作基线。</p></article>
+    </div>
+    <div class="boundary"><b>检索边界：</b>覆盖公开网页、官方文档、官方社区、厂商帮助中心与主流媒体；未接入字节内部版本日志、合作方后台或灰度账号。结论中的“未检出”表示公开证据不足，不等于产品绝对不存在该能力。市场宣称“200+”来自同期媒体/厂商口径，未获得完整官方清单逐项核对。</div>
+  </div></section>
+
+  <footer class="foot"><div class="wrap foot-grid"><div><span class="stamp">● 已交叉核验 · 2026-09-02</span><h2>真正的竞争壁垒，不是先上 MCP，而是先把身份与责任链做完整。</h2></div><div><p>报告口径：事件窗口 2026-08-03 00:00 至 2026-09-02 23:59（Asia/Shanghai）。产品当前能力如果无本月变更，仅标为“存量能力”，不计入本月新闻。</p><p>研究用途：产品战略、MCP 兼容规划、合作准入与安全评审；不构成对任何平台兼容性的永久承诺。</p></div></div></footer>
+</body></html>
