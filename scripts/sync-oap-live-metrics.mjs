@@ -21,6 +21,7 @@
  */
 import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
+import { lookup } from "node:dns/promises";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname);
@@ -188,6 +189,18 @@ function bakeIntoPage(payload) {
   }
 }
 
+// Both data paths (Redash and ontology) live on the office intranet. Probe
+// intranet DNS before querying so an off-VPN run exits quietly (code 2)
+// instead of dumping a fetch stack trace every 2 hours.
+if (!argValue("--from-file")) {
+  try {
+    await lookup(new URL(REDASH_URL).hostname);
+  } catch {
+    console.log(`skipped: intranet DNS unreachable (${new URL(REDASH_URL).hostname}) — not on VPN/office network`);
+    process.exit(2);
+  }
+}
+
 const source = argValue("--from-file")
   ? JSON.parse(readFileSync(argValue("--from-file"), "utf8"))
   : process.env.REDASH_API_KEY
@@ -209,14 +222,39 @@ console.log(
 
 if (flag("--push")) {
   const git = (...cmd) => execFileSync("git", cmd, { cwd: root, encoding: "utf8" });
-  git("pull", "--rebase", "--autostash", "origin", "main");
+  const retryNet = async (label, fn, attempts = 3, waitMs = 20000) => {
+    for (let i = 1; i <= attempts; i++) {
+      try {
+        fn();
+        return true;
+      } catch (err) {
+        console.log(`${label} attempt ${i}/${attempts} failed: ${String(err.stderr || err.message).trim().slice(0, 200)}`);
+        if (i < attempts) await new Promise((r) => setTimeout(r, waitMs));
+      }
+    }
+    return false;
+  };
+
+  // Commit locally BEFORE touching the network so a GitHub outage never
+  // strands fresh data in a dirty working tree; the next run's
+  // pull --rebase + push picks a pending commit up automatically.
   git("add", `public/${LIVE}`, `docs/${LIVE}`, `public/${PAGE}`, `docs/${PAGE}`);
-  const staged = git("diff", "--cached", "--name-only").trim();
-  if (!staged) {
-    console.log("nothing to push");
-  } else {
+  if (git("diff", "--cached", "--name-only").trim()) {
     git("commit", "-m", `Sync OAP live metrics (asOf ${payload.asOf}, ${payload.generatedAt})`);
-    git("push", "origin", "main");
+  }
+  const ahead = Number(git("rev-list", "--count", "origin/main..HEAD").trim() || "0");
+  if (!ahead) {
+    console.log("nothing to push");
+  } else if (
+    (await retryNet("pull --rebase", () => git("pull", "--rebase", "--autostash", "origin", "main"))) &&
+    (await retryNet("push", () => git("push", "origin", "main")))
+  ) {
     console.log("pushed");
+  } else {
+    try {
+      git("rebase", "--abort"); // clear a half-applied rebase so the tree stays clean
+    } catch {}
+    console.log("committed locally; push deferred to next run (GitHub unreachable)");
+    process.exit(3);
   }
 }

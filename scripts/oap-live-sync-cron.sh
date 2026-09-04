@@ -13,14 +13,27 @@ MARKER=~/Library/Logs/.oap-metrics-sync-notified
 
 {
   echo "---- $(date '+%Y-%m-%d %H:%M:%S') start"
-  if node "$REPO/scripts/sync-oap-live-metrics.mjs" --push 2>&1; then
-    echo "ok"
-    rm -f "$MARKER"
-  else
-    echo "FAILED"
-    if [ ! -f "$MARKER" ] || [ -n "$(find "$MARKER" -mtime +1 2>/dev/null)" ]; then
-      touch "$MARKER"
-      osascript -e 'display notification "OAP 实时数据同步失败，请检查 ~/Library/Logs/oap-metrics-sync.log（常见原因：不在办公网 / ontology 登录过期）" with title "OAP Metrics Sync"' 2>/dev/null || true
-    fi
-  fi
+  node "$REPO/scripts/sync-oap-live-metrics.mjs" --push 2>&1
+  code=$?
+  case $code in
+    0)
+      echo "ok"
+      rm -f "$MARKER"
+      ;;
+    2)
+      # off-VPN precheck skip: quiet, no notification, keep the marker state
+      echo "skipped (off intranet)"
+      ;;
+    3)
+      # data synced and committed locally, GitHub unreachable; next run pushes
+      echo "push deferred"
+      ;;
+    *)
+      echo "FAILED"
+      if [ ! -f "$MARKER" ] || [ -n "$(find "$MARKER" -mtime +1 2>/dev/null)" ]; then
+        touch "$MARKER"
+        osascript -e 'display notification "OAP 实时数据同步失败，请检查 ~/Library/Logs/oap-metrics-sync.log（常见原因：ontology 登录过期 / 数据源异常）" with title "OAP Metrics Sync"' 2>/dev/null || true
+      fi
+      ;;
+  esac
 } >> "$LOG" 2>&1
