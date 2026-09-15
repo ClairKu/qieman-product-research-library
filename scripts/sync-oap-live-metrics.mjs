@@ -29,6 +29,7 @@ const PAGE = "pages/oap/oap-journey-metrics-2026-08-02.html";
 const LIVE = "pages/oap/oap-metrics-live.json";
 const SKIP_KEY = "479c9d2e-4d05-4098-bd72-994c82e0fd22";
 const REDASH_URL = process.env.REDASH_URL || "https://zhu.yingmi-inc.com";
+const OFFICIAL_OVERVIEW_URL = "https://qieman.com/pmdj/v1/stargate/official-website/overview-stats";
 const args = process.argv.slice(2);
 const flag = (name) => args.includes(name);
 const argValue = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : null);
@@ -42,6 +43,22 @@ const SQL = {
 function beijingNowISO() {
   const now = new Date(Date.now() + 8 * 3600e3);
   return `${now.toISOString().slice(0, 19)}+08:00`;
+}
+
+async function fetchOfficialOverviewStats() {
+  const response = await fetch(OFFICIAL_OVERVIEW_URL, {
+    headers: { Accept: "application/json" },
+  });
+  if (!response.ok) throw new Error(`official overview ${response.status}`);
+  const stats = await response.json();
+  const servedInstitutionCount = Number(stats.servedInstitutionCount);
+  if (!Number.isInteger(servedInstitutionCount) || servedInstitutionCount < 1) {
+    throw new Error(`official overview institution count invalid: ${JSON.stringify(stats).slice(0, 200)}`);
+  }
+  return {
+    servedInstitutionCount,
+    servedInstitutionAsOf: beijingNowISO(),
+  };
 }
 
 async function redashQuery(query) {
@@ -143,6 +160,10 @@ function buildPayload(source) {
     latestMonthlyActiveUsers: source.mau,
     monthlyActiveAsOf: last,
     monthlyActiveDefinition: "滚动近 30 天有调用记录的去重 apiKey 数（OAP 后台官方口径）",
+    servedInstitutionCount: source.servedInstitutionCount,
+    servedInstitutionAsOf: source.servedInstitutionAsOf,
+    servedInstitutionDefinition: "盈米 AI 开放平台官网“服务金融机构”口径",
+    servedInstitutionSourceUrl: OFFICIAL_OVERVIEW_URL,
     firstUserRecord: firstUser,
     firstCallRecord: firstCall,
     sourceRecordCounts: {
@@ -155,8 +176,9 @@ function buildPayload(source) {
       cumulativeUsers: latest.cumulativeUsers,
       cumulativeCalls: latest.cumulativeCalls,
       mau: source.mau,
+      servedInstitutions: source.servedInstitutionCount,
     },
-    note: `生产库 dw-tidb/ying99_oap 实时聚合，与 Stargate 后台 dashboard 同口径（排除内部测试 apiKey）；${last} 为部分日数据`,
+    note: `用户与调用数据来自生产库 dw-tidb/ying99_oap 实时聚合，与 Stargate 后台 dashboard 同口径（排除内部测试 apiKey）；服务金融机构来自盈米 AI 开放平台官网 overview-stats 同源统计；${last} 为部分日数据`,
     rows,
   };
 }
@@ -169,11 +191,19 @@ function bakeIntoPage(payload) {
     const current = JSON.parse(html.match(metricsPattern)[2]);
     const baked = {
       ...current,
+      schema: payload.schema,
+      generatedAt: payload.generatedAt,
       asOf: payload.asOf,
       rangeLabel: payload.rangeLabel,
       latestMonthlyActiveUsers: payload.latestMonthlyActiveUsers,
       monthlyActiveAsOf: payload.monthlyActiveAsOf,
+      monthlyActiveDefinition: payload.monthlyActiveDefinition,
+      servedInstitutionCount: payload.servedInstitutionCount,
+      servedInstitutionAsOf: payload.servedInstitutionAsOf,
+      servedInstitutionDefinition: payload.servedInstitutionDefinition,
+      servedInstitutionSourceUrl: payload.servedInstitutionSourceUrl,
       sourceRecordCounts: payload.sourceRecordCounts,
+      readings: payload.readings,
       note: payload.note,
       rows: payload.rows,
     };
@@ -183,6 +213,7 @@ function bakeIntoPage(payload) {
       .replace(/(<span>累计申请<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmt(payload.readings.cumulativeUsers)}$2`)
       .replace(/(<span>总调用量<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmt(payload.readings.cumulativeCalls)}$2`)
       .replace(/(<span>月活用户（MAU）<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmt(payload.readings.mau)}$2`)
+      .replace(/(<span>覆盖金融机构<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmt(payload.readings.servedInstitutions)}$2`)
       .replace(/(<b id="cutoff-label">)[^<]*(<\/b>)/, `$1${payload.asOf}$2`)
       .replace(/(<b id="cutoff-foot">)[^<]*(<\/b>)/, `$1${payload.asOf}$2`);
     writeFileSync(file, html);
@@ -201,13 +232,20 @@ if (!argValue("--from-file")) {
   }
 }
 
-const source = argValue("--from-file")
+const coreSource = argValue("--from-file")
   ? JSON.parse(readFileSync(argValue("--from-file"), "utf8"))
   : process.env.REDASH_API_KEY
     ? await fetchViaRedash()
     : fetchViaOntology();
+const officialOverview = await fetchOfficialOverviewStats();
+const source = { ...coreSource, ...officialOverview };
 
-if (!Array.isArray(source.newByDay) || source.newByDay.length < 400 || !source.mau) {
+if (
+  !Array.isArray(source.newByDay) ||
+  source.newByDay.length < 400 ||
+  !source.mau ||
+  !Number.isInteger(source.servedInstitutionCount)
+) {
   throw new Error(`source data failed sanity check: ${JSON.stringify(source).slice(0, 200)}`);
 }
 
@@ -217,7 +255,7 @@ for (const dir of ["public", "docs"]) writeFileSync(path.join(root, dir, LIVE), 
 if (flag("--bake")) bakeIntoPage(payload);
 
 console.log(
-  `synced asOf=${payload.asOf} users=${payload.readings.cumulativeUsers} calls=${payload.readings.cumulativeCalls} mau=${payload.readings.mau} rows=${payload.rows.length}`,
+  `synced asOf=${payload.asOf} users=${payload.readings.cumulativeUsers} calls=${payload.readings.cumulativeCalls} mau=${payload.readings.mau} institutions=${payload.readings.servedInstitutions} rows=${payload.rows.length}`,
 );
 
 if (flag("--push")) {

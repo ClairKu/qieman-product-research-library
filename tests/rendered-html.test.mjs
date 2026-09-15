@@ -135,6 +135,8 @@ test("OAP journey and metrics visualization is directly accessible", async () =>
   assert.match(report, /智谱采购盈米 MCP/);
   assert.match(report, /山西证券 AI 项目投标/);
   assert.match(report, /id="reading-calls">[\d,]+<\/strong>/);
+  assert.match(report, /id="reading-institutions">[\d,]+<\/strong>/);
+  assert.match(report, /覆盖金融机构/);
   assert.match(report, /id="live-update"/);
   assert.match(report, /oap-metrics-live\.json/);
   await access(
@@ -142,6 +144,15 @@ test("OAP journey and metrics visualization is directly accessible", async () =>
       "../docs/pages/oap/oap-journey-metrics-2026-08-02.html",
       import.meta.url,
     ),
+  );
+
+  const liveMetrics = JSON.parse(
+    await readFile(new URL("../public/pages/oap/oap-metrics-live.json", import.meta.url), "utf8"),
+  );
+  assert.equal(typeof liveMetrics.readings.servedInstitutions, "number");
+  assert.equal(
+    liveMetrics.servedInstitutionSourceUrl,
+    "https://qieman.com/pmdj/v1/stargate/official-website/overview-stats",
   );
 });
 
