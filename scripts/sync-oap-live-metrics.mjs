@@ -209,7 +209,7 @@ function bakeIntoPage(payload) {
     };
     html = html.replace(metricsPattern, (_, open, __, close) => `${open}${JSON.stringify(baked)}${close}`);
     const fmt = (value) => new Intl.NumberFormat("zh-CN").format(value);
-    const fmtWan = (value) => `${new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 1, useGrouping: false }).format(value / 10000)}万`;
+    const fmtWan = (value) => `${new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 0, useGrouping: false }).format(value / 10000)}万`;
     html = html
       .replace(/(<span>累计申请<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmt(payload.readings.cumulativeUsers)}$2`)
       .replace(/(<span>总调用量<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmtWan(payload.readings.cumulativeCalls)}$2`)

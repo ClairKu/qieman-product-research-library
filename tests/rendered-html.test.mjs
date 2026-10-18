@@ -141,8 +141,10 @@ test("OAP journey and metrics visualization is directly accessible", async () =>
     "腾讯 WorkBuddy 接入盈米 Skills / 专家团",
     "百度文心助手接入盈米 MCP",
     "山西证券采购盈米 MCP",
+    "荣耀手机接入中",
+    "豆包手机合作探索",
   ]) assert.ok(report.includes(milestone), `Missing milestone: ${milestone}`);
-  assert.match(report, /id="reading-calls">[\d.]+万<\/strong>/);
+  assert.match(report, /id="reading-calls">\d+万<\/strong>/);
   assert.match(report, /id="reading-institutions">[\d,]+<\/strong>/);
   assert.match(report, /覆盖金融机构/);
   assert.match(report, /id="live-update"/);
