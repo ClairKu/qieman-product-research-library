@@ -209,9 +209,10 @@ function bakeIntoPage(payload) {
     };
     html = html.replace(metricsPattern, (_, open, __, close) => `${open}${JSON.stringify(baked)}${close}`);
     const fmt = (value) => new Intl.NumberFormat("zh-CN").format(value);
+    const fmtWan = (value) => `${new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 1, useGrouping: false }).format(value / 10000)}万`;
     html = html
       .replace(/(<span>累计申请<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmt(payload.readings.cumulativeUsers)}$2`)
-      .replace(/(<span>总调用量<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmt(payload.readings.cumulativeCalls)}$2`)
+      .replace(/(<span>总调用量<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmtWan(payload.readings.cumulativeCalls)}$2`)
       .replace(/(<span>月活用户（MAU）<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmt(payload.readings.mau)}$2`)
       .replace(/(<span>覆盖金融机构<\/span><strong[^>]*>)[^<]*(<\/strong>)/, `$1${fmt(payload.readings.servedInstitutions)}$2`)
       .replace(/(<b id="cutoff-label">)[^<]*(<\/b>)/, `$1${payload.asOf}$2`)

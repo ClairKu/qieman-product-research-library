@@ -130,11 +130,19 @@ test("OAP journey and metrics visualization is directly accessible", async () =>
   assert.doesNotMatch(report, /const payload=\{"salt":|请输入访问密码/);
   assert.match(report, /<h1>盈米 AI 开放平台关键历程与增长<\/h1>/);
   assert.match(report, /<h2>盈米 AI 开放平台用户与用量增长走势<\/h2>/);
-  assert.match(report, /05 用户增长 YINGMI AI · OAP JOURNEY \/ 2025\.03—2026\.08/);
+  assert.match(report, /05 用户增长 YINGMI AI · OAP JOURNEY \/ 2025\.03—2026\.10/);
   assert.match(report, /从能力开放、生态上架到超级入口接入，从需求验证到规模放大与商业化条件储备/);
   assert.match(report, /智谱采购盈米 MCP/);
   assert.match(report, /山西证券 AI 项目投标/);
-  assert.match(report, /id="reading-calls">[\d,]+<\/strong>/);
+  for (const milestone of [
+    "豆包 / 豆包工作接入盈米 MCP",
+    "千问主 Agent 接入盈米 MCP / Skills",
+    "千问办公、金山办公接入盈米 MCP",
+    "腾讯 WorkBuddy 接入盈米 Skills / 专家团",
+    "百度文心助手接入盈米 MCP",
+    "山西证券采购盈米 MCP",
+  ]) assert.ok(report.includes(milestone), `Missing milestone: ${milestone}`);
+  assert.match(report, /id="reading-calls">[\d.]+万<\/strong>/);
   assert.match(report, /id="reading-institutions">[\d,]+<\/strong>/);
   assert.match(report, /覆盖金融机构/);
   assert.match(report, /id="live-update"/);
